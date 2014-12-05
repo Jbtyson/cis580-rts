@@ -17,7 +17,7 @@ UnitBar.prototype = {
 		if(this.unitList != unitList) {
 			this.unitList = unitList;
 			// Clear the thumbnails and create the new ones
-			this.unitThumnails = [];
+			this.unitThumbnails = [];
 			for(i = 0; i < this.maxUnitsDisplayed && i < this.unitList.length; i++) {
 				this.unitThumbnails[i] = {};
 				this.unitThumbnails[i].image = new Image();
