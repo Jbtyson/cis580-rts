@@ -6,7 +6,7 @@ GuiResources = function() {
 	
 	this.img = {
 		// Minimap
-		minimapBackground: new Image(),
+		minimap: new Image(),
 		
 		// Unit Panel
 		unitPanelBackground: new Image(),
@@ -18,7 +18,7 @@ GuiResources = function() {
 		
 		// Command Panel
 		buttonBackground: new Image(),
-		commandBackground: new Image(),
+		commandPanel: new Image(),
 		
 		// Resource Bar
 		resourceBar: new Image(),
@@ -37,6 +37,10 @@ GuiResources.prototype = {
 	
 		this.img.resourceBar.onload = onload;
 		this.img.resourceBar.src = "img/ui/resourceBar.png";
+		this.img.commandPanel.onload = onload;
+		this.img.commandPanel.src = "img/ui/commandPanel.png";
+		this.img.minimap.onload = onload;
+		this.img.minimap.src = "img/ui/minimap.png";
 		
 		
 		// this.sfx.audio.onload = this.onload;

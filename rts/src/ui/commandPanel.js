@@ -1,7 +1,9 @@
 // CommandPanel.js
-// James Tyson, Alex Lesperance
+// James Tyson
 // Command panel displays all of the actions available to the current unit or building. "unit" can be either a building or a unit. Displays up to 9 actions.
 var CommandPanel = function() {
+	this.image = Resource.gui.img.commandPanel
+
 	this.dimensions = { width:128, height:128 }
 	this.buttonDimensions = { width:32, height:32 }
 	this.position = { x: WIDTH - this.dimensions.width, y: HEIGHT - this.dimensions.height }
@@ -41,8 +43,7 @@ CommandPanel.prototype = {
 	render: function(context) {
 		context.save();
 		// Render background
-		context.fillStyle = "blue";
-		context.fillRect(this.position.x, this.position.y, this.dimensions.width, this.dimensions.height);
+		context.drawImage(this.image, this.position.x, this.position.y);
 		
 		// Render all of the buttons
 		for(i = 0; i < this.buttons.length; i++) {
