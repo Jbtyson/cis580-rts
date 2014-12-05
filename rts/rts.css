@@ -47,3 +47,10 @@
 	bottom: 5px;
 	right: 10px;
 }
+
+#gui-timer 
+{
+	position: absolute;
+	bottom: 144px;
+	left: 5 px;
+}
