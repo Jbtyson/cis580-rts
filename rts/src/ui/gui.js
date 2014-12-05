@@ -1,6 +1,8 @@
 // Gui.js
 // James Tyson
-var Gui = function() {
+var Gui = function(game) {
+	this.game = game;
+	
 	this.minimap = new Minimap();
 	this.commandPanel = new CommandPanel();
 	this.resourceBar = new ResourceBar();

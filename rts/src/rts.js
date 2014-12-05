@@ -27,6 +27,8 @@ var Game = function (canvasId) {
 	
 	this.input = new Input(this.screen, window);
 	
+	this.gui = new Gui();
+	
 	Tilemap.load(tilemapData, {
 		onload: function(c) {
 			Tilemap.render(c);
@@ -138,6 +140,9 @@ Game.prototype = {
 			}
 			this.units[i].update(elapsedTime);
 		}
+		
+		// Update the GUI
+		this.gui.update(elapsedTime);
 	},
 	
 	placeLevelObjects: function() {
@@ -231,6 +236,9 @@ Game.prototype = {
 		if (this.sb != null) {
 			this.sb.render(this.backBufferContext);
 		}
+		
+		// Render the GUI
+		this.gui.render(this.backBufferContext);
 		
 		// Flip buffers
 		this.screenContext.drawImage(this.backBuffer, 0, 0);
