@@ -1,4 +1,4 @@
-// max erdwien
+// Max Erdwien
 // Screen Size
 var WIDTH = 640;
 var HEIGHT = 640;

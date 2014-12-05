@@ -12,7 +12,7 @@ var CommandPanel = function() {
 
 CommandPanel.prototype = {
 	update: function(gameTime, unit) {
-		if(unit == "undefined") {
+		if(typeof(unit) == "undefined") {
 			this.unit = unit;
 			this.buttons = [];
 		}
@@ -21,7 +21,7 @@ CommandPanel.prototype = {
 			this.unit = unit;
 			this.buttons = [];
 			if(this.unit != "undefined")
-				this.unit.actions.length = 5;
+				this.unit.actions.length = 10;
 			for(i - 0; i < this.maxButtons && i < this.unit.actions.length; i++) {
 				this.buttons[i] = {};
 				this.buttons[i].image = new Image();
