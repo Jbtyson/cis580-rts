@@ -21,7 +21,7 @@ GuiResources = function() {
 		commandBackground: new Image(),
 		
 		// Resource Bar
-		resourceBarBackground: new Image(),
+		resourceBar: new Image(),
 		minerals: new Image(),
 		gas: new Image(),
 		supply: new Image(),
@@ -33,8 +33,11 @@ GuiResources = function() {
 
 GuiResources.prototype = {
 	load: function() {
-		// this.img.image.onload = this.onload;
-		// this.img.image.src = "asf.png";
+		onload = function() { this.loading -= 1; console.log("got here");}
+	
+		this.img.resourceBar.onload = onload;
+		this.img.resourceBar.src = "img/ui/resourceBar.png";
+		
 		
 		// this.sfx.audio.onload = this.onload;
 		// this.sfx.audio.src = "gjr.wav";

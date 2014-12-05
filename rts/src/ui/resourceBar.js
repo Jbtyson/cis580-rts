@@ -2,7 +2,8 @@
 // James Tyson
 var ResourceBar = function(resources) {
 	this.resources = resources;
-
+	this.image = Resource.gui.img.resourceBar;
+	
 	this.dimensions = { width:WIDTH, height:32 }
 	this.position = { x:0, y:0 }
 	this.iconDimensions = { width:16, height:16 }
@@ -18,16 +19,16 @@ var ResourceBar = function(resources) {
 	}
 	this.gas = {
 		img: null,
-		imgPosition: { x:this.minerals.imgPosition.x+128, y:this.minerals.imgPosition.y },
+		imgPosition: { x:this.minerals.imgPosition.x+96, y:this.minerals.imgPosition.y },
 		text: "",
-		textPosition: { x:this.minerals.imgPosition.x+128 + this.iconDimensions.width + this.textOffset.x, 
+		textPosition: { x:this.minerals.imgPosition.x+96 + this.iconDimensions.width + this.textOffset.x, 
 						y:this.minerals.imgPosition.y + this.textOffset.y }
 	}
 	this.supply = {
 		img: null,
-		imgPosition: { x:this.dimensions.width - 128, y:this.minerals.imgPosition.y },
+		imgPosition: { x:this.dimensions.width - 96, y:this.minerals.imgPosition.y },
 		text: "",
-		textPosition: { x:this.dimensions.width - 128 + this.iconDimensions.width + this.textOffset.x, 
+		textPosition: { x:this.dimensions.width - 96 + this.iconDimensions.width + this.textOffset.x, 
 						y:this.minerals.imgPosition.y + this.textOffset.y }
 	}
 }
@@ -42,8 +43,7 @@ ResourceBar.prototype = {
 	render: function(context) {
 		context.save();
 		// Render the background
-		context.fillStyle = "blue";
-		context.fillRect(this.position.x, this.position.y, this.dimensions.width, this.dimensions.height);
+		context.drawImage(this.image, this.position.x, this.position.y);
 		
 		// Render the resource icons
 		context.fillStyle = "cyan";
