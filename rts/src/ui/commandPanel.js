@@ -17,11 +17,11 @@ CommandPanel.prototype = {
 			this.buttons = [];
 		}
 		
-		else if(this.unit != unit) {
+		if(this.unit != unit) {
 			this.unit = unit;
 			this.buttons = [];
 			this.unit.actions.length = 1;
-			for(i - 0; i < this.maxButtons && i < this.unit.actions.length; i++) {
+			for(i = 0; i < this.maxButtons && i < this.unit.actions.length; i++) {
 				this.buttons[i] = {};
 				this.buttons[i].image = new Image();
 				//this.buttons[i].image.src = this.unit.actions[i].thumbPath;
