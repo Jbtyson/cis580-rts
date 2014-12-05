@@ -17,11 +17,10 @@ CommandPanel.prototype = {
 			this.buttons = [];
 		}
 		
-		if(this.unit != unit) {
+		else if(this.unit != unit) {
 			this.unit = unit;
 			this.buttons = [];
-			if(this.unit != "undefined")
-				this.unit.actions.length = 10;
+			this.unit.actions.length = 1;
 			for(i - 0; i < this.maxButtons && i < this.unit.actions.length; i++) {
 				this.buttons[i] = {};
 				this.buttons[i].image = new Image();
@@ -34,8 +33,7 @@ CommandPanel.prototype = {
 				else if(i < 6)
 					this.buttons[i].position.y = this.buttonStartPosition.y + this.buttonDimensions.height;
 				else
-					this.buttons[i].position.y = this.buttonStartPosition.y + 2*this.buttonDimensions.height;
-					
+					this.buttons[i].position.y = this.buttonStartPosition.y + 2*this.buttonDimensions.height;	
 			}
 		}
 	},
