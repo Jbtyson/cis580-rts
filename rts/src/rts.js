@@ -31,6 +31,8 @@ var Game = function (canvasId) {
 	
 	this.input = new Input(this.screen, window);
 	
+	// Necessary for gui making - James
+	this.resources = { minerals:0, gas:100, supply:10, supplyMax:200 };
 	this.selectedUnits = [];
 	this.gui = new Gui(this);
 	
@@ -96,7 +98,6 @@ Game.prototype = {
 	// http://gameprogrammingpatterns.com/update-method.html
 	update: function(elapsedTime) {
 		var self = this;
-		
 		// scootch the map around
 		// check for boundary hits
 		if (globaly >= GLOBAL_HEIGHT-HEIGHT) {
