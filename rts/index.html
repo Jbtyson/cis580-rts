@@ -1,0 +1,35 @@
+<!DOCTYPE HTML/>
+<html>
+	<head>
+		<meta charset="utf8">
+		<title>RTS</title>
+		<link type="text/css" rel="stylesheet" href="rts.css" />
+	</head>
+	
+	<body>
+		<div id="game-container">
+			<canvas id="game" width="640" height="640"></canvas>
+			<div id="gui-top-left"></div>
+			<div id="gui-top-center"></div>
+			<div id="gui-top-right"></div>
+			<div id="gui-bottom-left"></div>
+			<div id="gui-bottom-center"></div>
+			<div id="gui-bottom-right"></div>
+		</div>
+		
+		<script src="src/gameplay/requestNextAnimationFrame.js"></script>
+		<script src="src/gameplay/collisiondetector.js"></script>
+		<script src="src/gameplay/input.js"></script>
+		<script src="src/gameplay/selectbox.js"></script>
+		
+		<script src="src/units/unit.js"></script>
+		<script src="src/units/hoplite.js"></script>
+		<script src="src/units/villager.js"></script>
+		<script src="src/units/faction.js"></script>
+		
+		<script src="src/map/tilemap.js"></script>
+		<script src="src/map/testmap.js"></script>
+		
+		<script src="src/rts.js"></script>
+	</body>
+</html>

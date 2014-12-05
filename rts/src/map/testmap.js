@@ -22,7 +22,7 @@ var tilemapData = { "height":20,
  "tilesets":[
         {
          "firstgid":1,
-         "image":"tiles.png",
+         "image":"img/maps/tiles.png",
          "imageheight":128,
          "imagewidth":128,
          "margin":0,
