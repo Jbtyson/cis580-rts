@@ -245,6 +245,8 @@ Game.prototype = {
 		
 		this.startTime = Date.now();
 		
+		// ***TODO:StartScreen
+		
 		window.requestNextAnimationFrame(
 			function(time) {
 				self.loop.call(self, time);
@@ -286,6 +288,8 @@ Game.prototype = {
 		
 		// We only want to render once
 		self.render(this.elapsedTime);
+		
+		// ***TODO:Check victory conditions
 		
 		// Repeat the game loop
 		window.requestNextAnimationFrame(
