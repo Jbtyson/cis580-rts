@@ -17,7 +17,7 @@ Gui.prototype = {
 		this.minimap.update(gameTime);
 		
 		// Update the commandPanel
-		this.commandPanel.update(gameTime);
+		this.commandPanel.update(gameTime, this.game.selectedUnits[0]);
 		
 		// Update the resourceBar
 		this.resourceBar.update(gameTime);

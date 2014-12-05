@@ -23,7 +23,7 @@ UnitBar.prototype = {
 				this.unitThumbnails[i].image = new Image();
 				//this.unitThumbnails[i].image.src = "img/common_unit"; //this.unitList[i].thumbPath;
 				this.unitThumbnails[i].position = {};
-				this.unitThumbnails[i].position.x = (i < this.maxUnitsInRow) ? this.unitStartPosition.x + (i * this.unitDimensions.width) : this.unitStartPosition.x + ((i-8) * this.unitDimensions.width);
+				this.unitThumbnails[i].position.x = this.unitStartPosition.x + i%8 * this.unitDimensions.width;
 				this.unitThumbnails[i].position.y = (i < this.maxUnitsInRow) ? this.unitStartPosition.y : this.unitStartPosition.y + this.unitDimensions.height;
 			}
 		}
