@@ -24,7 +24,7 @@ Gui.prototype = {
 		this.resourceBar.update(gameTime);
 		
 		// Update the unitBar
-		this.unitBar.update(gameTime);
+		this.unitBar.update(gameTime, this.game.selectedUnits);
 		
 		// Update the unitPortrait
 		this.unitPortrait.update(gameTime);

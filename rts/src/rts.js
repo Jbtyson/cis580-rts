@@ -27,7 +27,9 @@ var Game = function (canvasId) {
 	
 	this.input = new Input(this.screen, window);
 	
-	this.gui = new Gui();
+	this.selectedUnits = [];
+	this.gui = new Gui(this);
+	
 	
 	Tilemap.load(tilemapData, {
 		onload: function(c) {
@@ -174,6 +176,9 @@ Game.prototype = {
 	},
 	
 	endSelectBox: function(e) {
+		// Clear the selected units (James)
+		this.selectedUnits = [];
+		
 		for (var i = 0; i < this.units.length; i++) {
 			if (!e.ctrlKey && !e.shiftKey) {
 				this.units[i].selected = false;
@@ -182,6 +187,8 @@ Game.prototype = {
 					this.cd.detect(this.sb, this.units[i])) {
 				this.units[i].selected = true;
 				console.log(this.units[i]);
+				// Add the selected unit into the array of selected units (James)
+				this.selectedUnits.push(this.units[i]);
 			}
 		}
 		this.sb = null;
