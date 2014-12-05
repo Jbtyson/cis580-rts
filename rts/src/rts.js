@@ -14,6 +14,7 @@ var globaly = 0;
 
 // Resources
 var Resource = new ResourceManager();
+Resource.load();
 
 // Game class
 //----------------------------------

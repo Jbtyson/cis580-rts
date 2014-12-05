@@ -30,5 +30,7 @@ ResourceManager.prototype = {
 			else
 				this.loading = false;
 		}
+		
+		console.log("successfully loaded");
 	},
 }
