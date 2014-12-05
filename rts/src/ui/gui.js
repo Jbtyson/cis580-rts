@@ -8,6 +8,7 @@ var Gui = function(game) {
 	this.resourceBar = new ResourceBar();
 	this.unitBar = new UnitBar();
 	this.unitPortrait = new UnitPortrait();
+	this.timer = new Timer();
 }
 
 Gui.prototype = {
@@ -27,6 +28,9 @@ Gui.prototype = {
 		
 		// Update the unitPortrait
 		this.unitPortrait.update(gameTime);
+		
+		// Update the timer
+		this.timer.update(gameTime);
 	},
 	
 	// Render the gui
@@ -45,5 +49,8 @@ Gui.prototype = {
 		
 		// Update the unitPortrait
 		this.unitPortrait.render(context);
+		
+		//Update the timer
+		this.timer.render(context);
 	},
 }
