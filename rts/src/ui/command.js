@@ -4,11 +4,11 @@ var CommandPanel = function() {
 }
 
 CommandPanel.prototype = {
-	update(gameTime) {
+	update: function(gameTime) {
 	
 	},
 	
-	render(gameTime) {
+	render: function(context) {
 		
 	},
 }

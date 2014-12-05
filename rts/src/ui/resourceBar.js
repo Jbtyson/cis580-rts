@@ -4,11 +4,11 @@ var ResourceBar = function() {
 }
 
 ResourceBar.prototype = {
-	update(gameTime) {
+	update: function(gameTime) {
 	
 	},
 	
-	render(gameTime) {
+	render: function(context) {
 		
 	},
 }
