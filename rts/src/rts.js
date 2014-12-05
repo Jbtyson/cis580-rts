@@ -12,6 +12,10 @@ var TIME_STEP = 1000/60;
 var globalx = 0;
 var globaly = 0;
 
+// Resources
+var Resource = new ResourceManager();
+Resource.load();
+
 // Game class
 //----------------------------------
 var Game = function (canvasId) {
