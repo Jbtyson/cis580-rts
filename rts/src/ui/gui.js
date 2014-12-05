@@ -1,4 +1,5 @@
 // Gui.js
+// James Tyson
 var Gui = function() {
 	this.minimap = new Minimap();
 	this.commandPanel = new CommandPanel();
@@ -8,6 +9,7 @@ var Gui = function() {
 }
 
 Gui.prototype = {
+	// Update the gui
 	update: function(gameTime) {
 		// Update the minimap
 		this.minimap.update(gameTime);
@@ -25,6 +27,7 @@ Gui.prototype = {
 		this.unitPortrait.update(gameTime);
 	},
 	
+	// Render the gui
 	render: function(context) {
 		// Update the minimap
 		this.minimap.render(context);
