@@ -6,7 +6,7 @@ var UnitBar = function() {
 	this.unitList = [];
 	this.unitThumbnails = []
 	this.unitDimensions = { width:32, height:32 }
-	this.unitStartPosition = { x:this.position.x + 32, y:this.position.y + 32 }
+	this.unitStartPosition = { x:this.position.x + 32, y:this.position.y + 16 }
 	this.maxUnitsDisplayed = ((this.dimensions.width / 32) - 2) * 2;
 	this.maxUnitsInRow = this.maxUnitsDisplayed / 2;
 }
