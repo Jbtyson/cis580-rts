@@ -4,11 +4,11 @@ var UnitPortrait = function() {
 }
 
 UnitPortrait.prototype = {
-	update(gameTime) {
+	update: function(gameTime) {
 	
 	},
 	
-	render(gameTime) {
+	render: function(context) {
 		
 	},
 }
