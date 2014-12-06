@@ -86,6 +86,8 @@ var Game = function (canvasId) {
 	this.STARTING_FPS = 60;
 	
 	this.started = false;
+	//this.units = [];
+	this.gameOver = false;
 }
 	
 Game.prototype = {
@@ -301,13 +303,26 @@ Game.prototype = {
 		self.render(this.elapsedTime);
 		
 		// ***TODO:Check victory conditions
+		if( self.units.length <= 90 ) {
+			this.gameOver = true;
+		}
 		
-		// Repeat the game loop
-		window.requestNextAnimationFrame(
-			function(time) {
-				self.loop.call(self, time);
-			}
-		);
+		if (this.paused || this.gameOver || !this.started) {
+			 // In PAUSE_TIMEOUT (100) ms, call this method again to see if the game
+			 // is still paused. There's no need to check more frequently.
+			 setTimeout( function () {
+					window.requestNextAnimationFrame(
+						 function (time) {
+								self.loop.call(self, time);
+						 });
+			 }, this.PAUSE_TIMEOUT);
+             
+		} else {
+			// Repeat the game loop
+			window.requestNextAnimationFrame( function(time) {
+					self.loop.call(self, time);
+			});
+		}
 	}
 }
 var game = new Game('game');
