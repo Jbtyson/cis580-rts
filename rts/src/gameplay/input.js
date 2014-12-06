@@ -60,6 +60,14 @@ Input.prototype = {
 			case 32: // spacebar
 				game.paused = !game.paused;
 				break;
+			case 13: // enter; start new game
+				if( !game.started ) {
+					game.started = true;
+				}
+				/*if(this.gameOver) {
+					// reset game
+				}*/
+				break;
 		}
 	},
 	

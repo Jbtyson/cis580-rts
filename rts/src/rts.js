@@ -33,7 +33,7 @@ var Game = function (canvasId) {
 	
 	Tilemap.load(tilemapData, {
 		onload: function(c) {
-			Tilemap.render(c);
+			// Tilemap.render(c); // Is this necessary?
 		},
 		ctx: this.screenContext
 	});
@@ -84,6 +84,8 @@ var Game = function (canvasId) {
 	this.lastTime = 0;
 	this.gameTime = 0;
 	this.STARTING_FPS = 60;
+	
+	this.started = false;
 }
 	
 Game.prototype = {
@@ -245,13 +247,22 @@ Game.prototype = {
 		
 		this.startTime = Date.now();
 		
-		// ***TODO:StartScreen
+		// ***StartScreen - Michael Speirs
+		Resource.gui.img.splash = new Image();
+		Resource.gui.img.splash.src = "img/startScreen.png";
+		self.screenContext.drawImage(Resource.gui.img.splash,0,0);
 		
-		window.requestNextAnimationFrame(
-			function(time) {
-				self.loop.call(self, time);
+		var splashloop = setInterval( function() { // wait till user starts game
+			if( self.started ) {
+				clearInterval(splashloop);
+				window.requestNextAnimationFrame(
+					function(time) {
+						self.loop.call(self, time);
+					}
+				);
 			}
-		);
+		},200);
+
 	},
 	
 	// The game loop.  See
