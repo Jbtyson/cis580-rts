@@ -64,9 +64,10 @@ Input.prototype = {
 				if( !game.started ) {
 					game.started = true;
 				}
-				/*if(this.gameOver) {
+				if(game.gameOver) {
 					// reset game
-				}*/
+					game.gameOver = false;
+				}
 				break;
 		}
 	},

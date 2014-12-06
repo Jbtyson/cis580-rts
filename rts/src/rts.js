@@ -300,11 +300,18 @@ Game.prototype = {
 		}
 		
 		// We only want to render once
-		self.render(this.elapsedTime);
+		if(!self.gameOver) {
+			self.render(this.elapsedTime);
+		}
 		
 		// ***TODO:Check victory conditions
-		if( self.units.length <= 90 ) {
-			this.gameOver = true;
+		if( self.units.length <= 40 ) {
+			self.gameOver = true;
+			self.started = false;
+			self.screenContext.drawImage(Resource.gui.img.splash,0,0);
+			self.units = [];
+			self.factions = [];
+			self.placeLevelObjects();
 		}
 		
 		if (this.paused || this.gameOver || !this.started) {
@@ -315,7 +322,7 @@ Game.prototype = {
 						 function (time) {
 								self.loop.call(self, time);
 						 });
-			 }, this.PAUSE_TIMEOUT);
+			 }, 200);
              
 		} else {
 			// Repeat the game loop
