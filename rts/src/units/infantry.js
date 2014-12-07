@@ -1,26 +1,26 @@
-// max erdwien
-//Ryan Woodburn: Added a range of 0, added GetAttackRange() method
-var Hoplite = function(x, y, faction) {
-	this.maxhealth = 60;
+//Ryan Woodburn
+//Adapted off of hoplite
+var Infantry = function(x, y, faction) {
+	this.maxhealth = 30;
 	this.__proto__ = new Unit(x, y, this.maxhealth, faction);
 	
-	this.radius = 16;
-	this.borderwidth = 6;
+	this.radius = 8;
+	this.borderwidth = 3;
 	// in pixels per second
-	this.maxvel = 200;
+	this.maxvel = 100;
 	// in health per second
 	this.damage = 6;
-	this.range = 0;
+	this.range = 8;
 	
-	this.render = HopliteRender;
-	this.update = HopliteUpdate;
-	this.getHitbox = HopliteGetHitbox;
+	this.render = Render;
+	this.update = Update;
+	this.getHitbox = GetHitbox;
 	this.getAttackRange = GetAttackRange;
-	this.move = HopliteMove;
-	this.attack = HopliteAttack;
+	this.move = Move;
+	this.attack = Attack;
 }
 
-HopliteRender = function(ctx) {
+Render = function(ctx) {
 	ctx.save();
 	ctx.beginPath();
 	if (this.selected) {
@@ -36,7 +36,7 @@ HopliteRender = function(ctx) {
 	ctx.stroke();
 	
 	// draw health bar
-	var maxbarlength = 16;
+	var maxbarlength = this.radius;
 	var barheight = 4;
 	var barlength = maxbarlength * (this.health/this.maxhealth);
 	ctx.fillStyle = "#00FF00";
@@ -46,7 +46,7 @@ HopliteRender = function(ctx) {
 	ctx.restore();
 }
 
-HopliteUpdate = function(elapsedTime) {
+Update = function(elapsedTime) {
 	var secs = elapsedTime / 1000;
 	if (this.mode == "move" ||
 			(this.mode == "attack" && !game.cd.detect(this.targetunit, this))) {
@@ -64,6 +64,7 @@ HopliteUpdate = function(elapsedTime) {
 		// stop if target has been reached
 		if (this.mode == "move") {
 			var deltaxf = this.targetx - this.x;
+			var deltayf = this.targety - this.y;
 			var deltayf = this.targety - this.y;
 			if (deltaxi/deltaxf < 0 || deltaxi/deltaxf < 0) {
 				this.velx = 0;
@@ -92,7 +93,7 @@ HopliteUpdate = function(elapsedTime) {
 	}
 }
 
-HopliteGetHitbox = function() {
+GetHitbox = function() {
 	return {
 		type: "circle",
 		x: this.x,
@@ -106,11 +107,11 @@ GetAttackRange = function() {
 		type: "circle",
 		x: this.x,
 		y: this.y,
-		radius: this.radius + this.range;
+		radius: this.radius + this.range
 	};
 }
 
-HopliteMove = function(x, y) {
+Move = function(x, y) {
 	this.mode = "move";
 	this.targetx = x;
 	this.targety = y;
@@ -130,14 +131,10 @@ HopliteMove = function(x, y) {
 	}
 }
 
-HopliteAttack = function(unit) {
+Attack = function(unit) {
 	// temporarily changes mode to "move"
 	this.move(unit.x, unit.y);
 	this.mode = "attack";
 	this.targetunit = unit;
 }
-
-
-
-
 

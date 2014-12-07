@@ -1,5 +1,6 @@
 // Max Erdwien
 // Screen Size
+//Ryan Woodburn: replaced hoplites with infantry, changed cd.detect method call in UnitOrder
 var WIDTH = 640;
 var HEIGHT = 640;
 
@@ -165,14 +166,14 @@ Game.prototype = {
 		if (spawnlots) {
 			for (var i = 0; i < 5; i++) {
 				for (var j = 0; j < 5; j++) {
-					this.units.push(new Hoplite(i*64+32, j*64+32, this.factions[0]));
-					this.units.push(new Hoplite(i*64+32+320, j*64+32+320, this.factions[1]));
+					this.units.push(new Infantry(i*64+32, j*64+32, this.factions[0]));
+					this.units.push(new Infantry(i*64+32+320, j*64+32+320, this.factions[1]));
 				}
 			}
 		} else {
-			this.units.push(new Hoplite(30, 30, this.factions[0]));
-			this.units.push(new Hoplite(500, 500, this.factions[0]));
-			this.units.push(new Hoplite(100, 30, this.factions[1]));
+			this.units.push(new Infantry(30, 30, this.factions[0]));
+			this.units.push(new Infantry(500, 500, this.factions[0]));
+			this.units.push(new Infantry(100, 30, this.factions[1]));
 		}
 	},
 	
@@ -212,7 +213,7 @@ Game.prototype = {
 		};
 		for (var i = 0; i < this.units.length; i++) {
 			if (this.units[i].faction != this.playerFaction &&
-					this.cd.detect(this.units[i], mousebox)) {
+					this.cd.detect(mousebox, this.units[i])) {
 				for (var j = 0; j < this.units.length; j++) {
 					if (this.units[j].selected) {
 						this.units[j].attack(this.units[i]);
