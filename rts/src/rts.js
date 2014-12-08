@@ -90,6 +90,8 @@ var Game = function (canvasId) {
 	this.lastTime = 0;
 	this.gameTime = 0;
 	this.STARTING_FPS = 60;
+	
+	this.numPlayers = 2;
 }
 	
 Game.prototype = {
@@ -159,20 +161,20 @@ Game.prototype = {
 		
 		this.playerFaction = this.factions[0];
 		
-		this.units = new Array();
+		//this.units = new Array();
 		
 		var spawnlots = true;
 		if (spawnlots) {
 			for (var i = 0; i < 5; i++) {
 				for (var j = 0; j < 5; j++) {
-					this.units.push(new Hoplite(i*64+32, j*64+32, this.factions[0]));
-					this.units.push(new Hoplite(i*64+32+320, j*64+32+320, this.factions[1]));
+					factions[0].units.push(new Hoplite(i*64+32, j*64+32, this.factions[0]));
+					factions[0].units.push(new Hoplite(i*64+32+320, j*64+32+320, this.factions[1]));
 				}
 			}
 		} else {
-			this.units.push(new Hoplite(30, 30, this.factions[0]));
-			this.units.push(new Hoplite(500, 500, this.factions[0]));
-			this.units.push(new Hoplite(100, 30, this.factions[1]));
+			factions[0].units.push(new Hoplite(30, 30, this.factions[0]));
+			factions[0].units.push(new Hoplite(500, 500, this.factions[0]));
+			factions[1].units.push(new Hoplite(100, 30, this.factions[1]));
 		}
 	},
 	
