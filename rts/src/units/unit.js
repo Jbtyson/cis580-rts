@@ -1,9 +1,9 @@
 // max erdwien
-var Unit = function(x, y, health, faction) {
+var Unit = function(x, y, health, color) {
 	this.x = x;
 	this.y = y;
 	this.health = health;
-	this.faction = faction;
+	this.color = color;
 	// mode is basically an enumeration. its values are:
 	// idle
 	// move

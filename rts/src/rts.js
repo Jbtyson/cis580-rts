@@ -36,6 +36,9 @@ var Game = function (canvasId) {
 	this.selectedUnits = [];
 	this.gui = new Gui(this);
 	
+	this.factions = [];
+	this.numPlayers = 2;
+	this.factionColors = ["#FF0000","#0000FF"];
 	
 	Tilemap.load(tilemapData, {
 		onload: function(c) {
@@ -90,8 +93,6 @@ var Game = function (canvasId) {
 	this.lastTime = 0;
 	this.gameTime = 0;
 	this.STARTING_FPS = 60;
-	
-	this.numPlayers = 2;
 }
 	
 Game.prototype = {
@@ -100,6 +101,7 @@ Game.prototype = {
 	// http://gameprogrammingpatterns.com/update-method.html
 	update: function(elapsedTime) {
 		var self = this;
+		
 		// scootch the map around
 		// check for boundary hits
 		if (globaly >= GLOBAL_HEIGHT-HEIGHT) {
@@ -140,41 +142,43 @@ Game.prototype = {
 		}
 		
 		// update units
-		for (var i = 0; i < this.units.length; i++) {
-			if (this.units[i].health <= 0) {
-				// removes unit from array and ensures no units are skipped
-				this.units.splice(i, 1);
-				i--;
-				continue;
+		self.factions.forEach( function(faction) {
+			for (var i = 0; i < faction.units.length; i++) {
+				if (faction.units[i].health <= 0) {
+					// removes unit from array and ensures no units are skipped
+					faction.units.splice(i, 1);
+					i--;
+					continue;
+				}
+				faction.units[i].update(elapsedTime);
 			}
-			this.units[i].update(elapsedTime);
-		}
+		});
 		
 		// Update the GUI
-		this.gui.update(elapsedTime);
+		self.gui.update(elapsedTime);
 	},
 	
 	placeLevelObjects: function() {
-		this.factions = new Array();
-		this.factions.push(new Faction("#FF0000"));
-		this.factions.push(new Faction("#0000FF"));
+		var self = this;
 		
-		this.playerFaction = this.factions[0];
+		for( i = 0; i < self.numPlayers; i++) { // create players and assign colors
+			self.factions.push(new Faction(self.factionColors[i]));
+		}
 		
-		//this.units = new Array();
+		self.playerFaction = self.factions[0]; // self
 		
 		var spawnlots = true;
 		if (spawnlots) {
 			for (var i = 0; i < 5; i++) {
 				for (var j = 0; j < 5; j++) {
-					factions[0].units.push(new Hoplite(i*64+32, j*64+32, this.factions[0]));
-					factions[0].units.push(new Hoplite(i*64+32+320, j*64+32+320, this.factions[1]));
+					self.factions[0].units.push(new Hoplite(i*64+32, j*64+32, self.factions[0].color));
+					self.factions[1].units.push(new Hoplite(i*64+32+320, j*64+32+320, self.factions[1].color));
 				}
 			}
 		} else {
-			factions[0].units.push(new Hoplite(30, 30, this.factions[0]));
-			factions[0].units.push(new Hoplite(500, 500, this.factions[0]));
-			factions[1].units.push(new Hoplite(100, 30, this.factions[1]));
+			self.factions[0].units.push(new Hoplite(30, 30, self.factions[0].color));
+			self.factions[0].units.push(new Hoplite(500, 500, self.factions[0].color));
+			self.factions[1].units.push(new Hoplite(100, 30, self.factions[1].color));
 		}
 	},
 	
@@ -183,25 +187,31 @@ Game.prototype = {
 	},
 	
 	endSelectBox: function(e) {
+		var self = this;
+	
 		// Clear the selected units (James)
-		this.selectedUnits = [];
+		self.selectedUnits = [];
 		
-		for (var i = 0; i < this.units.length; i++) {
-			if (!e.ctrlKey && !e.shiftKey) {
-				this.units[i].selected = false;
+		self.factions.forEach( function(faction) {
+			for (var i = 0; i < faction.units.length; i++) {
+				if (!e.ctrlKey && !e.shiftKey) {
+					faction.units[i].selected = false;
+				}
+				if (faction.units[i].color == self.playerFaction.color &&
+						self.cd.detect(faction.sb, faction.units[i])) {
+					faction.units[i].selected = true;
+					console.log(faction.units[i]);
+					// Add the selected unit into the array of selected units (James)
+					self.selectedUnits.push(self.units[i]);
+				}
 			}
-			if (this.units[i].faction == this.playerFaction &&
-					this.cd.detect(this.sb, this.units[i])) {
-				this.units[i].selected = true;
-				console.log(this.units[i]);
-				// Add the selected unit into the array of selected units (James)
-				this.selectedUnits.push(this.units[i]);
-			}
-		}
-		this.sb = null;
+		});
+		self.sb = null;
 	},
 	
 	unitOrder: function(x, y) {
+		var self = this;
+		
 		var mousebox = {
 			getHitbox: function() {
 				return {
@@ -212,50 +222,59 @@ Game.prototype = {
 				};
 			}
 		};
-		for (var i = 0; i < this.units.length; i++) {
-			if (this.units[i].faction != this.playerFaction &&
-					this.cd.detect(this.units[i], mousebox)) {
-				for (var j = 0; j < this.units.length; j++) {
-					if (this.units[j].selected) {
-						this.units[j].attack(this.units[i]);
+		self.factions.forEach( function(faction) {
+			for (var i = 0; i < faction.units.length; i++) {
+				if (faction.units[i].color != self.playerFaction &&
+						self.cd.detect(faction.units[i], mousebox)) {
+					for (var j = 0; j < faction.units.length; j++) {
+						if (faction.units[j].selected) {
+							faction.units[j].attack(faction.units[i]);
+						}
 					}
+					return;
 				}
-				return;
 			}
-		}
-		this.moveUnit(x, y);
+		});
+		self.moveUnit(x, y);
 	},
 	
 	moveUnit: function(x, y) {
+		var self = this;
+		
 		// more efficient to have a seperate array of selected units
 		// instead of searching the whole thing; fix later, if necessary
-		for (var i = 0; i < this.units.length; i++) {
-			if (this.units[i].selected) {
-				this.units[i].move(x, y);
+		self.factions.forEach( function(faction) {
+			for (var i = 0; i < faction.units.length; i++) {
+				if (faction.units[i].selected) {
+					faction.units[i].move(x, y);
+				}
 			}
-		}
+		});
 	},
 	
 	render: function(elapsedTime) {
 		var self = this;
-		//this.backBufferContext.translate(-70, 0);
-		Tilemap.render(this.backBufferContext);
+		
+		//self.backBufferContext.translate(-70, 0);
+		Tilemap.render(self.backBufferContext);
 		
 		// render units
-		for (var i = 0; i < this.units.length; i++) {
-			this.units[i].render(this.backBufferContext);
-		}
+		self.factions.forEach( function(faction) {
+			for (var i = 0; i < faction.units.length; i++) {
+				faction.units[i].render(self.backBufferContext);
+			}
+		});
 		
 		// render selection box
-		if (this.sb != null) {
-			this.sb.render(this.backBufferContext);
+		if (self.sb != null) {
+			self.sb.render(self.backBufferContext);
 		}
 		
 		// Render the GUI
-		this.gui.render(this.backBufferContext);
+		self.gui.render(self.backBufferContext);
 		
 		// Flip buffers
-		this.screenContext.drawImage(this.backBuffer, 0, 0);
+		self.screenContext.drawImage(self.backBuffer, 0, 0);
 	},
 	
 	start: function() {

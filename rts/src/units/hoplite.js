@@ -1,7 +1,7 @@
 // max erdwien
-var Hoplite = function(x, y, faction) {
+var Hoplite = function(x, y, color) {
 	this.maxhealth = 60;
-	this.__proto__ = new Unit(x, y, this.maxhealth, faction);
+	this.__proto__ = new Unit(x, y, this.maxhealth, color);
 	
 	this.radius = 16;
 	this.borderwidth = 6;
@@ -26,7 +26,7 @@ HopliteRender = function(ctx) {
 		ctx.strokeStyle = "#000000";
 	}
 	ctx.lineWidth = this.borderwidth;
-	ctx.fillStyle = this.faction.color;
+	ctx.fillStyle = this.color;
 	ctx.beginPath();
 	ctx.arc(this.x-globalx, this.y-globaly, this.radius-(this.borderwidth/2), 0, 2*Math.PI, false);
 	ctx.fill();
@@ -81,7 +81,7 @@ HopliteUpdate = function(elapsedTime) {
 	
 	else if (this.mode == "idle") {
 		for (var i = 0; i <  game.units.length; i++) {
-			if (game.units[i].faction != this.faction &&
+			if (game.units[i].color != this.color &&
 					game.cd.detect(this, game.units[i])) {
 				this.attack(game.units[i]);
 			}
