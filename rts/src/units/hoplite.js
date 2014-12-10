@@ -12,6 +12,10 @@ var Hoplite = function(x, y, color, game) {
 	// in health per second
 	this.damage = 6;
 	
+	this.x = x;
+	this.y = y;
+	this.color = color;
+	
 	//this.render = HopliteRender;
 	//this.update = HopliteUpdate;
 	//this.getHitbox = HopliteGetHitbox;
@@ -19,7 +23,7 @@ var Hoplite = function(x, y, color, game) {
 	//this.attack = HopliteAttack;
 }
 
-Hoplite.prototype = new Unit(0,0,"000000",game);
+Hoplite.prototype = new Unit(100,100,60,"#000000");
 
 Hoplite.prototype.render = function(ctx) {
 	var self = this;
