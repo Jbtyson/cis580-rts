@@ -1,4 +1,6 @@
 // max erdwien
+//Edited by Ryan Woodburn
+//Building variables and method by 
 var Villager = function(x, y, faction) {
 	this.maxhealth = 60;
 	this.__proto__ = new Unit(x, y, this.maxhealth, faction);
@@ -11,7 +13,9 @@ var Villager = function(x, y, faction) {
 	// in pixels per second
 	this.maxvel = 200;
 	// in health per second
-	this.damage = 6;
+	this.damage = 3;
+	
+	this.Villagerbuildingspeed = 1.0;
 	
 	this.render = VillagerRender;
 	this.update = VillagerUpdate;
@@ -67,6 +71,15 @@ VillagerUpdate = function(elapsedTime) {
 		}
 	}
 	
+	else if (this.mode == "attack" && game.cd.detect(this.targetunit, this)) {
+		this.targetunit.health -= this.damage*secs;
+		//console.log(this.targetunit.health);
+		if (this.targetunit.health <= 0) {
+			this.mode = "idle";
+			this.targetunit = null;
+		}
+	}
+	
 	else if (this.mode == "idle") {
 		for (var i = 0; i <  game.units.length; i++) {
 			if (game.units[i].faction != this.faction &&
@@ -115,5 +128,31 @@ VillagerMove = function(x, y) {
 	}
 }
 
+Villagerbuild = function(bx,by,BuildingHp,resource,elapsedTime) {
+	var secs = elapsedTime / 1000;
+	var buildHp = 0;
+	//check resource
+
+	//read in xy position, move to xy position
+	villagerMove(bx,by);
+	
+	//buiding start && villegar stay in position
+	while(this.mode == "idle" && this.x ==bx && this.y==by && buildHP != this.BuildingHp){
+		buildHp = this.Villagerbuildingspeed * secs;
+	}
+	//outer the while loop building is stoped, out reason check
+	
+	//villegar have been moved
+	if(this.mode != "idle" || this.x !=bx || this.y != by && buildHP < this.BuildingHp){
+			//store the buildingHp on the x,y position.
+	}
+	//Building complete
+	else if(buildHp==this.BuildingHp){
+		//render Building
+	}
+	else{
+		console.log("Unknow reason for Building stoped");
+	}
+}
 
 
