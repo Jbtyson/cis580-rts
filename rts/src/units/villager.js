@@ -3,8 +3,11 @@ var Villager = function(x, y, faction) {
 	this.maxhealth = 60;
 	this.__proto__ = new Unit(x, y, this.maxhealth, faction);
 	
-	this.radius = 16;
+	this.radius = 8;
+	this.range = 0;
 	this.borderwidth = 6;
+	this.maxWeight = 50;
+	this.resources = 0;
 	// in pixels per second
 	this.maxvel = 200;
 	// in health per second
@@ -80,6 +83,15 @@ VillagerGetHitbox = function() {
 		x: this.x,
 		y: this.y,
 		radius: this.radius
+	};
+}
+
+GetAttackRange = function() {
+	return {
+		type: "circle",
+		x: this.x,
+		y: this.y,
+		radius: this.radius + this.range;
 	};
 }
 
