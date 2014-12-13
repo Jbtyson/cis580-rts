@@ -65,15 +65,6 @@ Input.prototype = {
 			case 32: // spacebar
 				self.game.paused = !self.game.paused;
 				break;
-			case 13: // enter; start new game
-				if( !game.started ) {
-					game.started = true;
-				}
-				if(game.gameOver) {
-					// reset game
-					game.gameOver = false;
-				}
-				break;
 		}
 	},
 	
@@ -105,9 +96,9 @@ Input.prototype = {
 		this.mousey = e.clientY - this.yoffset;
 		
 		// update selection box
-		if (self.game.sb != null) {
-			self.game.sb.x = this.mousex+globalx;
-			self.game.sb.y = this.mousey+globaly;
+		if (game.sb != null) {
+			game.sb.x = this.mousex+globalx;
+			game.sb.y = this.mousey+globaly;
 		}
 		
 		// check for scrolling
@@ -154,7 +145,7 @@ Input.prototype = {
 		 * 2 = right click
 		 */
 		if (e.button == 0) {
-			self.game.startSelectBox(this.mousex+globalx, this.mousey+globaly);
+			game.startSelectBox(this.mousex+globalx, this.mousey+globaly);
 		} else if (e.button == 2) {
 			
 		} else if (e.button == 1) {
@@ -166,16 +157,16 @@ Input.prototype = {
 		var self = this;
 
 		if (e.button == 0) {
-			self.game.endSelectBox(e);
+			game.endSelectBox(e);
 		} else if (e.button == 2) {
-			self.game.unitOrder(this.mousex+globalx, this.mousey+globaly);
+			game.unitOrder(this.mousex+globalx, this.mousey+globaly);
 		}
 	},
 	
 	// todo: implement double click to select all of one unit type
 	dblclick: function(e) {
 		if (e.button == 0) {
-			//self.game.selectAll();
+			//game.selectAll();
 		}
 	}
 }
