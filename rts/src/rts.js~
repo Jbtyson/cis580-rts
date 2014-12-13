@@ -190,7 +190,7 @@ Game.prototype = {
 		var self = this;
 	
 		// Clear the selected units (James)
-		self.selectedUnits = [];
+		//self.selectedUnits = [];
 		
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
