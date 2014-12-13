@@ -8,6 +8,7 @@ ResourceManager = function() {
 	this.units = new UnitResources();
 	this.buildings = new BuildingResources();
 	this.maps = new MapResources();
+	this.soundtrack = new SoundtrackResources();
 }
 
 ResourceManager.prototype = {
@@ -16,6 +17,7 @@ ResourceManager.prototype = {
 		this.units.load();
 		this.buildings.load();
 		this.gui.load();
+		this.soundtrack.load();
 		
 		console.log("successfully loaded");
 	},
