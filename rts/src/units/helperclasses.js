@@ -95,8 +95,12 @@
   // path to the goal state.
   var aStarSearch = function(goal, node, openSet, closedSet) {
   
-    // Are we at the goal? If so, render the successful 
-    // strategy and stop
+    // Are we at the goal? If so, return the final node
+	// with the path. Also, get rid of the first node
+	// in the path because that's where the unit moving
+	// already is and it looks weird if it goes to the
+	// center of the tile it's already on before moving
+	// on.
     if(goal.x == node.x && goal.y == node.y) {
 		node.path.shift();
 		node.path = node.path.concat({ x: node.x, y: node.y });

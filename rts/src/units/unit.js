@@ -36,6 +36,9 @@ var Unit = function(x, y, health, faction) {
 	}
 	this.targetunit = null;
 	
+	/* C.J. Dopheide
+	This takes in an x y coordinate and uses an A* search to get a path to those coordinates.
+	*/
 	this.getPath = function(x, y)
 	{
 		var tile = Tilemap.tileAt(Math.floor(x/64), Math.floor(y/64), 0);
@@ -59,6 +62,9 @@ var Unit = function(x, y, health, faction) {
 		}
 	}
 	
+	/* C.J. Dopheide
+	This sets the unit's next destination to the next node in the path to the target destination.
+	*/
 	this.getNextDest = function()
 	{
 		this.nextNode = this.destNode.path.shift();
@@ -84,6 +90,12 @@ var Unit = function(x, y, health, faction) {
 		this.updateDir();
 	}
 	
+	/* Max Erdwien
+	   Modified by: C.J. Dopheide
+	   This is basically a slightly tweaked copy of what used to be the HopliteMove function in
+	   hoplite.js, it sets the unit's x and y velocities based on the direction it's immediate
+	   destination is in.
+	 */
 	this.updateDir = function()
 	{
 		var deltax = this.nextx - this.x;
@@ -109,6 +121,11 @@ var Unit = function(x, y, health, faction) {
 		}
 	}
 	
+	/* C.J. Dopheide
+	This is just a quick and dirty way to get the units out from that ball that they tend
+	to form.  Since it just uses random values to shake them apart, it takes awhile and looks
+	ugly, someone might want to update it at some point.
+	*/
 	this.loseStack = function(unit)
 	{
 		var movex = Math.random() * this.radius + Math.random() * -this.radius;
