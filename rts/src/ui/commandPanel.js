@@ -51,7 +51,7 @@ CommandPanel.prototype = {
 			// Render background for buttons
 			context.drawImage(this.buttonImage, this.buttons[i].position.x, this.buttons[i].position.y);
 			// Render button images
-			context.drawImage(this.buttons[i].image, this.buttons[i].position.x, this.buttons[i].position.y);
+			//context.drawImage(this.buttons[i].image, this.buttons[i].position.x, this.buttons[i].position.y);
 		}
 		
 		context.restore();
