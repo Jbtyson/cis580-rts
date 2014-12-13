@@ -347,10 +347,9 @@ Game.prototype = {
 		
 		// Manage soundtrack
 		if( self.playlist[self.currentTrack].ended ) {
+			self.currentTrack++;
 			if(self.currentTrack >= self.playlist.length) {
 				self.currentTrack = 0;
-			} else {
-				self.currentTrack++;
 			}
 			self.playlist[self.currentTrack].play();
 		}
