@@ -162,7 +162,7 @@ Game.prototype = {
 				}
 			}
 		} else {
-			this.units.push(new HopliteHoplite(30, 30, this.factions[0]));
+			this.units.push(new Hoplite(30, 30, this.factions[0]));
 			this.units.push(new Hoplite(500, 500, this.factions[0]));
 			this.units.push(new Hoplite(100, 30, this.factions[1]));
 		}
