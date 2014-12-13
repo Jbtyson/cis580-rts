@@ -16,6 +16,8 @@ Minimap.prototype = {
 	render: function(context) {
 		context.save();
 		context.drawImage(this.image, this.position.x, this.position.y);
+		context.strokeStyle = 'green';
+		context.strokeRect(this.position.x, this.position.y, 64, 64);
 		context.restore();
 	},
 }
