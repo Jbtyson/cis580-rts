@@ -156,7 +156,7 @@ Villager.prototype.build = function(bx,by,BuildingHp,resource,elapsedTime) {
 	//check resource
 
 	//read in xy position, move to xy position
-	villagerMove(bx,by);
+	self.move(bx,by); // was villagerMove(bx,by)
 	
 	//buiding start && villegar stay in position
 	while(self.mode == "idle" && self.x ==bx && self.y==by && buildHP != self.BuildingHp){

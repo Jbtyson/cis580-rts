@@ -117,11 +117,13 @@ Hoplite.prototype.getHitbox = function() {
 }
 
 Hoplite.prototype.getAttackRange = function() {
+	var self = this;
+
 	return {
 		type: "circle",
-		x: this.x,
-		y: this.y,
-		radius: this.radius + this.range;
+		x: self.x,
+		y: self.y,
+		radius: self.radius + self.range;
 	};
 }
 

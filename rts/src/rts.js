@@ -231,6 +231,14 @@ Game.prototype = {
 					y:y,
 					radius:0
 				};
+			},
+			getAttackRange: function() {
+				return {
+					type:"circle",
+					x:x,
+					y:y,
+					radius:0
+				};
 			}
 		};
 
