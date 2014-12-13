@@ -2,7 +2,8 @@
 // James Tyson
 // Command panel displays all of the actions available to the current unit or building. "unit" can be either a building or a unit. Displays up to 9 actions.
 var CommandPanel = function() {
-	this.image = Resource.gui.img.commandPanel
+	this.panelImage = Resource.gui.img.commandPanel
+	this.buttonImage = Resource.gui.img.commandButton
 
 	this.dimensions = { width:128, height:128 }
 	this.buttonDimensions = { width:32, height:32 }
@@ -22,7 +23,7 @@ CommandPanel.prototype = {
 		if(this.unit != unit) {
 			this.unit = unit;
 			this.buttons = [];
-			this.unit.actions.length = 1;
+			this.unit.actions.length = 9;
 			for(i = 0; i < this.maxButtons && i < this.unit.actions.length; i++) {
 				this.buttons[i] = {};
 				this.buttons[i].image = new Image();
@@ -43,15 +44,14 @@ CommandPanel.prototype = {
 	render: function(context) {
 		context.save();
 		// Render background
-		context.drawImage(this.image, this.position.x, this.position.y);
+		context.drawImage(this.panelImage, this.position.x, this.position.y);
 		
 		// Render all of the buttons
 		for(i = 0; i < this.buttons.length; i++) {
 			// Render background for buttons
-			context.fillStyle = "white";
-			context.fillRect(this.buttons[i].position.x, this.buttons[i].position.y, this.buttonDimensions.width, this.buttonDimensions.height);
+			context.drawImage(this.buttonImage, this.buttons[i].position.x, this.buttons[i].position.y);
 			// Render button images
-			context.drawImage(this.buttons[i].image, this.buttons[i].position.x, this.buttons[i].position.y);
+			//context.drawImage(this.buttons[i].image, this.buttons[i].position.x, this.buttons[i].position.y);
 		}
 		
 		context.restore();

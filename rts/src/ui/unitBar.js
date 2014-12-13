@@ -1,5 +1,8 @@
 // UnitBar.js
 var UnitBar = function() {
+	this.panelImage = Resource.gui.img.unitPanel;
+	this.unitBackgroundImage = Resource.gui.img.unitBackground;
+
 	this.dimensions = { width:320, height:96 }
 	this.position = { x:128, y:HEIGHT - this.dimensions.height }
 	
@@ -32,16 +35,14 @@ UnitBar.prototype = {
 	render: function(context) {
 		context.save();
 		// Render the panel
-		context.fillStyle = "red";
-		context.fillRect(this.position.x, this.position.y, this.dimensions.width, this.dimensions.height);
+		context.drawImage(this.panelImage,this.position.x, this.position.y);
 		
 		// Render the unit thumbnails
 		for(i = 0; i < this.unitThumbnails.length; i++) {
 			// Render background for thumbnails
-			context.fillStyle = "white";
-			context.fillRect(this.unitThumbnails[i].position.x, this.unitThumbnails[i].position.y, this.unitDimensions.width, this.unitDimensions.height);
+			context.drawImage(this.unitBackgroundImage, this.unitThumbnails[i].position.x, this.unitThumbnails[i].position.y);
 			// Render thumbnail images
-			context.drawImage(this.unitThumbnails[i].image, this.unitThumbnails[i].position.x, this.unitThumbnails[i].position.y);
+			//context.drawImage(this.unitThumbnails[i].image, this.unitThumbnails[i].position.x, this.unitThumbnails[i].position.y);
 		}
 		context.restore();
 	},

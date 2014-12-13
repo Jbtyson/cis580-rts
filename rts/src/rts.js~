@@ -1,6 +1,5 @@
 // Max Erdwien
 // Screen Size
-//Ryan Woodburn: replaced hoplites with infantry, changed cd.detect method call in UnitOrder
 var WIDTH = 640;
 var HEIGHT = 640;
 
@@ -172,23 +171,14 @@ Game.prototype = {
 		if (spawnlots) {
 			for (var i = 0; i < 5; i++) {
 				for (var j = 0; j < 5; j++) {
-
-					//self.factions[0].units.push(new Hoplite(i*64+32, j*64+32, self.factions[0].color, self));
-					//self.factions[1].units.push(new Hoplite(i*64+32+320, j*64+32+320, self.factions[1].color, self));
-					
-					self.factions[0].units.push(new Infantry(i*64+32, j*64+32, self.factions[0].color, self));
-					self.factions[1].units.push(new Infantry(i*64+32+320, j*64+32+320, self.factions[1].color, self));
+					self.factions[0].units.push(new Hoplite(i*64+32, j*64+32, self.factions[0].color, self));
+					self.factions[1].units.push(new Hoplite(i*64+32+320, j*64+32+320, self.factions[1].color, self));
 				}
 			}
 		} else {
-			//self.factions[0].units.push(new Hoplite(30, 30, self.factions[0].color, self));
-			//self.factions[0].units.push(new Hoplite(500, 500, self.factions[0].color, self));
-			//self.factions[1].units.push(new Hoplite(100, 30, self.factions[1].color, self));
-			
-			self.factions[0].units.push(new Infantry(30, 30, self.factions[0].color, self));
-			self.factions[0].units.push(new Infantry(500, 500, self.factions[0].color, self));
-			self.factions[1].units.push(new Infantry(100, 30, self.factions[1].color, self));
-
+			self.factions[0].units.push(new Hoplite(30, 30, self.factions[0].color, self));
+			self.factions[0].units.push(new Hoplite(500, 500, self.factions[0].color, self));
+			self.factions[1].units.push(new Hoplite(100, 30, self.factions[1].color, self));
 		}
 	},
 	
@@ -200,7 +190,7 @@ Game.prototype = {
 		var self = this;
 	
 		// Clear the selected units (James)
-		self.selectedUnits = [];
+		//self.selectedUnits = [];
 		
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
@@ -233,13 +223,6 @@ Game.prototype = {
 				};
 			}
 		};
-
-		for (var i = 0; i < this.units.length; i++) {
-			if (this.units[i].faction != this.playerFaction &&
-					this.cd.detect(mousebox, this.units[i])) {
-				for (var j = 0; j < this.units.length; j++) {
-					if (this.units[j].selected) {
-						this.units[j].attack(this.units[i]);
 
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {

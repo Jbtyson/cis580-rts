@@ -1,5 +1,4 @@
 // max erdwien
-//Ryan Woodburn: Added a range of 0, added GetAttackRange() method
 var Hoplite = function(x, y, color, game) {
 	this.game = game;
 
@@ -12,11 +11,6 @@ var Hoplite = function(x, y, color, game) {
 	this.maxvel = 200;
 	// in health per second
 	this.damage = 6;
-	this.range = 0;
-	
-	this.x = x;
-	this.y = y;
-	this.color = color;
 	
 	//this.render = HopliteRender;
 	//this.update = HopliteUpdate;
@@ -25,7 +19,7 @@ var Hoplite = function(x, y, color, game) {
 	//this.attack = HopliteAttack;
 }
 
-Hoplite.prototype = new Unit(100,100,60,"#000000");
+Hoplite.prototype = new Unit(0,0,"000000",game);
 
 Hoplite.prototype.render = function(ctx) {
 	var self = this;
@@ -113,15 +107,6 @@ Hoplite.prototype.getHitbox = function() {
 		x: self.x,
 		y: self.y,
 		radius: self.radius
-	};
-}
-
-GetAttackRange = function() {
-	return {
-		type: "circle",
-		x: this.x,
-		y: this.y,
-		radius: this.radius + this.range;
 	};
 }
 
