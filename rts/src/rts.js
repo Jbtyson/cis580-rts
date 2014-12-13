@@ -291,7 +291,7 @@ Game.prototype = {
 		this.startTime = Date.now();
 		
 		// ***StartScreen - Michael Speirs
-		self.screenContext.drawImage(Resource.gui.img.splash,0,0);
+		/*self.screenContext.drawImage(Resource.gui.img.splash,0,0);
 		
 		var splashloop = setInterval( function() { // wait till user starts game
 			if( self.started ) {
@@ -302,7 +302,14 @@ Game.prototype = {
 					}
 				);
 			}
-		},200);
+		},200);*/
+		
+		window.requestNextAnimationFrame(
+			function(time) {
+				self.started = true;
+				self.loop.call(self, time);
+			}
+		);
 
 	},
 	
