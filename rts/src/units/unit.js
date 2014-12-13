@@ -31,6 +31,10 @@ Unit.prototype = {
 	getHitbox: function() {
 
 	},
+	
+	getAttackRange: function() {
+	
+	},
 
 	move: function() {
 	

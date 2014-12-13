@@ -116,7 +116,7 @@ Hoplite.prototype.getHitbox = function() {
 	};
 }
 
-GetAttackRange = function() {
+Hoplite.prototype.getAttackRange = function() {
 	return {
 		type: "circle",
 		x: this.x,

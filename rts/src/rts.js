@@ -234,13 +234,6 @@ Game.prototype = {
 			}
 		};
 
-		for (var i = 0; i < this.units.length; i++) {
-			if (this.units[i].faction != this.playerFaction &&
-					this.cd.detect(mousebox, this.units[i])) {
-				for (var j = 0; j < this.units.length; j++) {
-					if (this.units[j].selected) {
-						this.units[j].attack(this.units[i]);
-
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
 				if (faction.units[i].color != self.playerFaction &&

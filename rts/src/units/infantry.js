@@ -1,8 +1,10 @@
 //Ryan Woodburn
 //Adapted off of hoplite
-var Infantry = function(x, y, faction) {
+var Infantry = function(x, y, color, game) {
+	this.game = game;
+	
 	this.maxhealth = 30;
-	this.__proto__ = new Unit(x, y, this.maxhealth, faction);
+	//this.__proto__ = new Unit(x, y, this.maxhealth, faction);
 	
 	this.radius = 8;
 	this.borderwidth = 3;
@@ -12,97 +14,111 @@ var Infantry = function(x, y, faction) {
 	this.damage = 6;
 	this.range = 8;
 	
-	this.render = Render;
-	this.update = Update;
-	this.getHitbox = GetHitbox;
-	this.getAttackRange = GetAttackRange;
-	this.move = Move;
-	this.attack = Attack;
+	this.x = x;
+	this.y = y;
+	this.color = color;
+	
+	//this.render = Render;
+	//this.update = Update;
+	//this.getHitbox = GetHitbox;
+	//this.getAttackRange = GetAttackRange;
+	//this.move = Move;
+	//this.attack = Attack;
 }
 
-Render = function(ctx) {
+Infantry.prototype = new Unit(100,100,60,"#000000");
+
+Infantry.prototype.render = function(ctx) {
+	var self = this;
+
 	ctx.save();
 	ctx.beginPath();
-	if (this.selected) {
+	if (self.selected) {
 		ctx.strokeStyle = "#00FF00";
 	} else {
 		ctx.strokeStyle = "#000000";
 	}
-	ctx.lineWidth = this.borderwidth;
-	ctx.fillStyle = this.faction.color;
+	ctx.lineWidth = self.borderwidth;
+	ctx.fillStyle = self.color;
 	ctx.beginPath();
-	ctx.arc(this.x-globalx, this.y-globaly, this.radius-(this.borderwidth/2), 0, 2*Math.PI, false);
+	ctx.arc(self.x-globalx, self.y-globaly, self.radius-(self.borderwidth/2), 0, 2*Math.PI, false);
 	ctx.fill();
 	ctx.stroke();
 	
 	// draw health bar
-	var maxbarlength = this.radius;
+	var maxbarlength = self.radius;
 	var barheight = 4;
-	var barlength = maxbarlength * (this.health/this.maxhealth);
+	var barlength = maxbarlength * (self.health/self.maxhealth);
 	ctx.fillStyle = "#00FF00";
 	ctx.beginPath();
-	ctx.rect(this.x-(maxbarlength/2)-globalx, this.y-(barheight/2)-globaly,	barlength, barheight);
+	ctx.rect(self.x-(maxbarlength/2)-globalx, self.y-(barheight/2)-globaly,	barlength, barheight);
 	ctx.fill();
 	ctx.restore();
 }
 
-Update = function(elapsedTime) {
+Infantry.prototype.update = function(elapsedTime) {
+	var self = this;
+
 	var secs = elapsedTime / 1000;
-	if (this.mode == "move" ||
-			(this.mode == "attack" && !game.cd.detect(this.targetunit, this))) {
-		if (this.mode == "attack") {
-			this.move(this.targetunit.x, this.targetunit.y);
-			this.mode = "attack";
+	if (self.mode == "move" ||
+			(self.mode == "attack" && !self.game.cd.detect(self.targetunit, self))) {
+		if (self.mode == "attack") {
+			self.move(self.targetunit.x, self.targetunit.y);
+			self.mode = "attack";
 		}
-		var deltaxi = this.targetx - this.x;
-		var deltayi = this.targety - this.y;
+		var deltaxi = self.targetx - self.x;
+		var deltayi = self.targety - self.y;
 		
 		// actually move
-		this.x += secs*this.velx;
-		this.y += secs*this.vely;
+		self.x += secs*self.velx;
+		self.y += secs*self.vely;
 		
 		// stop if target has been reached
-		if (this.mode == "move") {
-			var deltaxf = this.targetx - this.x;
-			var deltayf = this.targety - this.y;
-			var deltayf = this.targety - this.y;
+		if (self.mode == "move") {
+			var deltaxf = self.targetx - self.x;
+			var deltayf = self.targety - self.y;
+			var deltayf = self.targety - self.y;
 			if (deltaxi/deltaxf < 0 || deltaxi/deltaxf < 0) {
-				this.velx = 0;
-				this.vely = 0;
-				this.mode = "idle";
+				self.velx = 0;
+				self.vely = 0;
+				self.mode = "idle";
 			}
 		}
 	}
 	
-	else if (this.mode == "attack" && game.cd.detect(this.targetunit, this)) {
-		this.targetunit.health -= this.damage*secs;
-		//console.log(this.targetunit.health);
-		if (this.targetunit.health <= 0) {
-			this.mode = "idle";
-			this.targetunit = null;
+	else if (self.mode == "attack" && self.game.cd.detect(self.targetunit, self)) {
+		self.targetunit.health -= self.damage*secs;
+		//console.log(self.targetunit.health);
+		if (self.targetunit.health <= 0) {
+			self.mode = "idle";
+			self.targetunit = null;
 		}
 	}
 	
-	else if (this.mode == "idle") {
-		for (var i = 0; i <  game.units.length; i++) {
-			if (game.units[i].faction != this.faction &&
-					game.cd.detect(this, game.units[i])) {
-				this.attack(game.units[i]);
+	else if (self.mode == "idle") {
+		self.game.factions.forEach( function(faction) {
+			for (var i = 0; i <  faction.units.length; i++) {
+				if (faction.units[i].color != self.color &&
+						self.game.cd.detect(self, faction.units[i])) {
+					self.attack(faction.units[i]);
+				}
 			}
-		}
+		});
 	}
 }
 
-GetHitbox = function() {
+Infantry.prototype.getHitbox = function() {
+	var self = this;
+	
 	return {
 		type: "circle",
-		x: this.x,
-		y: this.y,
-		radius: this.radius
+		x: self.x,
+		y: self.y,
+		radius: self.radius
 	};
 }
 
-GetAttackRange = function() {
+Infantry.prototype.getAttackRange = function() {
 	return {
 		type: "circle",
 		x: this.x,
@@ -111,30 +127,34 @@ GetAttackRange = function() {
 	};
 }
 
-Move = function(x, y) {
-	this.mode = "move";
-	this.targetx = x;
-	this.targety = y;
+Infantry.prototype.move = function(x, y) {
+	var self = this;
+
+	self.mode = "move";
+	self.targetx = x;
+	self.targety = y;
 	
-	var deltax = x - this.x;
-	var deltay = y - this.y;
+	var deltax = x - self.x;
+	var deltay = y - self.y;
 	
-	this.velx = Math.sqrt((this.maxvel*this.maxvel * deltax*deltax) /
+	self.velx = Math.sqrt((self.maxvel*self.maxvel * deltax*deltax) /
 			(deltax*deltax + deltay*deltay));
-	this.vely = Math.sqrt((this.maxvel*this.maxvel * deltay*deltay) /
+	self.vely = Math.sqrt((self.maxvel*self.maxvel * deltay*deltay) /
 			(deltax*deltax + deltay*deltay));
-	if (this.velx/deltax < 0) {
-		this.velx *= -1;
+	if (self.velx/deltax < 0) {
+		self.velx *= -1;
 	}
-	if (this.vely/deltay < 0) {
-		this.vely *= -1;
+	if (self.vely/deltay < 0) {
+		self.vely *= -1;
 	}
 }
 
-Attack = function(unit) {
+Infantry.prototype.attack = function(unit) {
+	var self = this;
+
 	// temporarily changes mode to "move"
-	this.move(unit.x, unit.y);
-	this.mode = "attack";
-	this.targetunit = unit;
+	self.move(unit.x, unit.y);
+	self.mode = "attack";
+	self.targetunit = unit;
 }
 
