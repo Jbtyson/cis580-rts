@@ -39,10 +39,11 @@ var Game = function (canvasId) {
 	this.factions = [];
 	this.numPlayers = 2;
 	this.factionColors = ["#FF0000","#0000FF"];
+	this.activePlayers = this.numPlayers;
 	
 	Tilemap.load(tilemapData, {
 		onload: function(c) {
-			Tilemap.render(c);
+			// Tilemap.render(c); // Is this necessary?
 		},
 		ctx: this.screenContext
 	});
@@ -93,6 +94,10 @@ var Game = function (canvasId) {
 	this.lastTime = 0;
 	this.gameTime = 0;
 	this.STARTING_FPS = 60;
+	
+	this.started = false;
+	//this.units = [];
+	this.gameOver = false;
 }
 	
 Game.prototype = {
@@ -285,11 +290,27 @@ Game.prototype = {
 		
 		this.startTime = Date.now();
 		
+		// ***StartScreen - Michael Speirs
+		/*self.screenContext.drawImage(Resource.gui.img.splash,0,0);
+		
+		var splashloop = setInterval( function() { // wait till user starts game
+			if( self.started ) {
+				clearInterval(splashloop);
+				window.requestNextAnimationFrame(
+					function(time) {
+						self.loop.call(self, time);
+					}
+				);
+			}
+		},200);*/
+		
 		window.requestNextAnimationFrame(
 			function(time) {
+				self.started = true;
 				self.loop.call(self, time);
 			}
 		);
+
 	},
 	
 	// The game loop.  See
@@ -325,15 +346,54 @@ Game.prototype = {
 		}
 		
 		// We only want to render once
-		self.render(this.elapsedTime);
+		if(!self.gameOver) {
+			self.render(this.elapsedTime);
 		
-		// Repeat the game loop
-		window.requestNextAnimationFrame(
-			function(time) {
-				self.loop.call(self, time);
+			// Check which players are still active
+			self.factions.forEach( function(faction) {
+				if( faction.units.length == 0 && faction.units.length == 0 ) {
+					self.activePlayers--;
+				}
+			});
+		
+			// ***TODO:Check victory conditions
+			if( self.activePlayers == 0 ) {
+				self.gameOver = true;
+				self.started = false;
+				self.screenContext.drawImage(Resource.gui.img.splash,0,0);
+				self.factions = [];
+				self.placeLevelObjects();
 			}
-		);
+		
+		}
+		
+		if (this.paused || this.gameOver || !this.started) {
+			 // In PAUSE_TIMEOUT (100) ms, call this method again to see if the game
+			 // is still paused. There's no need to check more frequently.
+			 setTimeout( function () {
+					window.requestNextAnimationFrame(
+						 function (time) {
+								self.loop.call(self, time);
+						 });
+			 }, 200);
+             
+		} else {
+			// Repeat the game loop
+			window.requestNextAnimationFrame( function(time) {
+					self.loop.call(self, time);
+			});
+		}
 	}
 }
 var game = new Game('game');
-game.start();
+
+// Waits till images are loaded before starting game
+imgLoaded = setInterval( function() {
+	if( Resource.gui.loading > 0) {
+		clearInterval(imgLoaded);
+		console.log("PASS");
+		game.start();
+	} else {
+		console.log("NOPASS");
+	}
+}, 250);
