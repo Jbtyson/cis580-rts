@@ -43,7 +43,7 @@ UnitBar.prototype = {
 			// Render background for thumbnails
 			context.drawImage(this.unitBackgroundImage, this.unitThumbnails[i].position.x, this.unitThumbnails[i].position.y);
 			// Render thumbnail images
-			context.drawImage(this.unitThumbnails[i].image, this.unitThumbnails[i].position.x, this.unitThumbnails[i].position.y);
+			//context.drawImage(this.unitThumbnails[i].image, this.unitThumbnails[i].position.x, this.unitThumbnails[i].position.y);
 		}
 		context.restore();
 	},

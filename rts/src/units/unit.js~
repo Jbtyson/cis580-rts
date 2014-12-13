@@ -20,23 +20,9 @@ var Unit = function(x, y, health, color) {
 }
 
 Unit.prototype = {
-	render: function() {
-
-	},
-
-	update: function() {
-
-	},
-
-	getHitbox: function() {
-
-	},
-
-	move: function() {
-	
-	},
-
-	attack: function() {
-
-	}
+	render:
+	update:
+	getHitbox:
+	move:
+	attack:
 }
