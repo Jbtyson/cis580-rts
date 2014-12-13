@@ -1,4 +1,4 @@
-// max erdwien
+// Max Erdwien
 // Screen Size
 var WIDTH = 640;
 var HEIGHT = 640;
@@ -30,6 +30,12 @@ var Game = function (canvasId) {
 	this.backBufferContext = this.backBuffer.getContext('2d');
 	
 	this.input = new Input(this.screen, window);
+	
+	// Necessary for gui making - James
+	this.resources = { minerals:0, gas:100, supply:10, supplyMax:200 };
+	this.selectedUnits = [];
+	this.gui = new Gui(this);
+	
 	
 	Tilemap.load(tilemapData, {
 		onload: function(c) {
@@ -96,7 +102,6 @@ Game.prototype = {
 	// http://gameprogrammingpatterns.com/update-method.html
 	update: function(elapsedTime) {
 		var self = this;
-		
 		// scootch the map around
 		// check for boundary hits
 		if (globaly >= GLOBAL_HEIGHT-HEIGHT) {
@@ -146,6 +151,9 @@ Game.prototype = {
 			}
 			this.units[i].update(elapsedTime);
 		}
+		
+		// Update the GUI
+		this.gui.update(elapsedTime);
 	},
 	
 	placeLevelObjects: function() {
@@ -177,6 +185,9 @@ Game.prototype = {
 	},
 	
 	endSelectBox: function(e) {
+		// Clear the selected units (James)
+		this.selectedUnits = [];
+		
 		for (var i = 0; i < this.units.length; i++) {
 			if (!e.ctrlKey && !e.shiftKey) {
 				this.units[i].selected = false;
@@ -185,6 +196,8 @@ Game.prototype = {
 					this.cd.detect(this.sb, this.units[i])) {
 				this.units[i].selected = true;
 				console.log(this.units[i]);
+				// Add the selected unit into the array of selected units (James)
+				this.selectedUnits.push(this.units[i]);
 			}
 		}
 		this.sb = null;
@@ -239,6 +252,9 @@ Game.prototype = {
 		if (this.sb != null) {
 			this.sb.render(this.backBufferContext);
 		}
+		
+		// Render the GUI
+		this.gui.render(this.backBufferContext);
 		
 		// Flip buffers
 		this.screenContext.drawImage(this.backBuffer, 0, 0);

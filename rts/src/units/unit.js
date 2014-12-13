@@ -16,4 +16,5 @@ var Unit = function(x, y, health, faction) {
 	this.targetx = 0;
 	this.targety = 0;
 	this.targetunit = null;
+	this.actions = [];
 }
