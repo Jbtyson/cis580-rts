@@ -72,6 +72,7 @@ Input.prototype = {
 				if(game.gameOver) {
 					// reset game
 					game.gameOver = false;
+					game.activePlayers = game.numPlayers;
 				}
 				break;
 		}

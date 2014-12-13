@@ -39,6 +39,7 @@ var Game = function (canvasId) {
 	this.factions = [];
 	this.numPlayers = 2;
 	this.factionColors = ["#FF0000","#0000FF"];
+	this.activePlayers = this.numPlayers;
 	
 	Tilemap.load(tilemapData, {
 		onload: function(c) {
@@ -340,16 +341,23 @@ Game.prototype = {
 		// We only want to render once
 		if(!self.gameOver) {
 			self.render(this.elapsedTime);
-		}
 		
-		// ***TODO:Check victory conditions
-		if( self.units.length <= 40 ) {
-			self.gameOver = true;
-			self.started = false;
-			self.screenContext.drawImage(Resource.gui.img.splash,0,0);
-			self.units = [];
-			self.factions = [];
-			self.placeLevelObjects();
+			// Check which players are still active
+			self.factions.forEach( function(faction) {
+				if( faction.units.length == 0 && faction.units.length == 0 ) {
+					self.activePlayers--;
+				}
+			});
+		
+			// ***TODO:Check victory conditions
+			if( self.activePlayers == 0 ) {
+				self.gameOver = true;
+				self.started = false;
+				self.screenContext.drawImage(Resource.gui.img.splash,0,0);
+				self.factions = [];
+				self.placeLevelObjects();
+			}
+		
 		}
 		
 		if (this.paused || this.gameOver || !this.started) {
