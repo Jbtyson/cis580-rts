@@ -1,26 +1,22 @@
-// max erdwien
-//Edited by Ryan Woodburn
-//Building variables and method by 
 var Villager = function(x, y, faction) {
 	this.maxhealth = 60;
 	this.__proto__ = new Unit(x, y, this.maxhealth, faction);
 	
-	this.radius = 8;
-	this.range = 0;
+	this.radius = 16;
 	this.borderwidth = 6;
-	this.maxWeight = 50;
-	this.resources = 0;
 	// in pixels per second
 	this.maxvel = 200;
 	// in health per second
-	this.damage = 3;
+	this.damage = 6;
 	
 	this.Villagerbuildingspeed = 1.0;
-	
+
 	this.render = VillagerRender;
 	this.update = VillagerUpdate;
 	this.getHitbox = VillagerGetHitbox;
 	this.move = VillagerMove;
+
+
 }
 
 VillagerRender = function(ctx) {
@@ -71,15 +67,6 @@ VillagerUpdate = function(elapsedTime) {
 		}
 	}
 	
-	else if (this.mode == "attack" && game.cd.detect(this.targetunit, this)) {
-		this.targetunit.health -= this.damage*secs;
-		//console.log(this.targetunit.health);
-		if (this.targetunit.health <= 0) {
-			this.mode = "idle";
-			this.targetunit = null;
-		}
-	}
-	
 	else if (this.mode == "idle") {
 		for (var i = 0; i <  game.units.length; i++) {
 			if (game.units[i].faction != this.faction &&
@@ -96,15 +83,6 @@ VillagerGetHitbox = function() {
 		x: this.x,
 		y: this.y,
 		radius: this.radius
-	};
-}
-
-GetAttackRange = function() {
-	return {
-		type: "circle",
-		x: this.x,
-		y: this.y,
-		radius: this.radius + this.range;
 	};
 }
 
@@ -154,5 +132,3 @@ Villagerbuild = function(bx,by,BuildingHp,resource,elapsedTime) {
 		console.log("Unknow reason for Building stoped");
 	}
 }
-
-
