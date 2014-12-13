@@ -6,6 +6,7 @@ var ResourceBar = function(resources) {
 	
 	this.dimensions = { width:WIDTH, height:32 }
 	this.position = { x:0, y:0 }
+	this.hitbox = new Rectangle(this.position.x, this.position.y, this.dimensions.width, this.dimensions.height);
 	this.iconDimensions = { width:16, height:16 }
 	this.textOffset = { x:8, y:13 }
 	

@@ -5,6 +5,7 @@ var UnitBar = function() {
 
 	this.dimensions = { width:320, height:96 }
 	this.position = { x:128, y:HEIGHT - this.dimensions.height }
+	this.hitbox = new Rectangle(this.position.x, this.position.y, this.dimensions.width, this.dimensions.height);
 	
 	this.unitList = [];
 	this.unitThumbnails = []
