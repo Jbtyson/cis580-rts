@@ -20,7 +20,5 @@ Minimap.prototype = {
 		context.strokeStyle = 'green';
 		context.strokeRect(this.position.x + (globalx / 10), this.position.y + (globaly / 10), 64, 64);
 		context.restore();
-		console.log(globalx);
-		console.log(globaly);
 	},
 }
