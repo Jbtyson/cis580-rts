@@ -8,6 +8,8 @@ var CommandPanel = function() {
 	this.dimensions = { width:128, height:128 }
 	this.buttonDimensions = { width:32, height:32 }
 	this.position = { x: WIDTH - this.dimensions.width, y: HEIGHT - this.dimensions.height }
+	this.hitbox = new Rectangle(this.position.x, this.position.y, this.dimensions.width, this.dimensions.height);
+	
 	this.buttonStartPosition = { x:this.position.x + 16, y:this.position.y + 16 }
 	this.maxButtons = 9;
 	this.buttons = [];

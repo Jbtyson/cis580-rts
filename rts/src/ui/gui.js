@@ -9,6 +9,15 @@ var Gui = function(game) {
 	this.unitBar = new UnitBar();
 	this.unitPortrait = new UnitPortrait();
 	this.timer = new Timer();
+	
+	// Add each panel to the list of hitboxes
+	this.hitboxes = [];
+	this.hitboxes.push(this.minimap.hitbox);
+	this.hitboxes.push(this.commandPanel.hitbox);
+	this.hitboxes.push(this.resourceBar.hitbox);
+	this.hitboxes.push(this.unitBar.hitbox);
+	this.hitboxes.push(this.unitPortrait.hitbox);
+	this.hitboxes.push(this.timer.hitbox);
 }
 
 Gui.prototype = {
@@ -52,5 +61,14 @@ Gui.prototype = {
 		
 		//Update the timer
 		this.timer.render(context);
+	},
+	
+	// Returns if the mouse click that just occurred, occured on the ui
+	isClickOnUi: function(mousePos) {
+		this.hitboxes.foreach(function(hitbox) {
+			if(rectangle.contains(mousePos.x, mousePos.y))
+				return true;
+		});
+		return false;
 	},
 }

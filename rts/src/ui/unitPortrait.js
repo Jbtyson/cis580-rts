@@ -5,6 +5,7 @@ var UnitPortrait = function() {
 
 	this.dimensions = { width:64, height:128 }
 	this.position = { x:WIDTH - 128 - this.dimensions.width, y:HEIGHT - this.dimensions.height }
+	this.hitbox = new Rectangle(this.position.x, this.position.y, this.dimensions.width, this.dimensions.height);
 }
 
 UnitPortrait.prototype = {
