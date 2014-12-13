@@ -48,24 +48,42 @@ HopliteUpdate = function(elapsedTime) {
 	if (this.mode == "move" ||
 			(this.mode == "attack" && !game.cd.detect(this.targetunit, this))) {
 		if (this.mode == "attack") {
-			this.move(this.targetunit.x, this.targetunit.y);
+			this.targetx = this.targetunit.x;
+			this.targety = this.targetunit.y;
+			if(Math.floor(this.targetx/64) != this.nextNode.x || Math.floor(this.targety/64) != this.nextNode.y)
+			{
+				this.getPath(this.targetunit.x, this.targetunit.y);
+			}
 			this.mode = "attack";
 		}
-		var deltaxi = this.targetx - this.x;
-		var deltayi = this.targety - this.y;
+		var deltaxi = this.nextx - this.x;
+		var deltayi = this.nexty - this.y;
 		
 		// actually move
 		this.x += secs*this.velx;
 		this.y += secs*this.vely;
 		
-		// stop if target has been reached
+		//update currentNode
+		this.curNode.x = Math.floor(this.x/64);
+		this.curNode.y = Math.floor(this.y/64);
+		
+		// start moving to the next node or stop if target has been reached
 		if (this.mode == "move") {
-			var deltaxf = this.targetx - this.x;
-			var deltayf = this.targety - this.y;
-			if (deltaxi/deltaxf < 0 || deltaxi/deltaxf < 0) {
+			var deltaxf = this.nextx - this.x;
+			var deltayf = this.nexty - this.y;
+			if ((deltaxi/deltaxf < 0 || deltayi/deltayf < 0) || (deltaxf == 0 && deltayf == 0)) {
 				this.velx = 0;
 				this.vely = 0;
-				this.mode = "idle";
+				if(this.nextx != this.targetx && this.nexty != this.targety)
+				{
+					this.getNextDest();
+				}
+				else
+				{
+					this.velx = 0;
+					this.vely = 0;
+					this.mode = "idle";	
+				}
 			}
 		}
 	}
@@ -85,6 +103,10 @@ HopliteUpdate = function(elapsedTime) {
 					game.cd.detect(this, game.units[i])) {
 				this.attack(game.units[i]);
 			}
+			else if (game.units[i].faction == this.faction &&
+					game.cd.detect(this, game.units[i]) && this != game.units[i]) {
+				this.loseStack(game.units[i]);
+			}
 		}
 	}
 }
@@ -100,29 +122,13 @@ HopliteGetHitbox = function() {
 
 HopliteMove = function(x, y) {
 	this.mode = "move";
-	this.targetx = x;
-	this.targety = y;
-	
-	var deltax = x - this.x;
-	var deltay = y - this.y;
-	
-	this.velx = Math.sqrt((this.maxvel*this.maxvel * deltax*deltax) /
-			(deltax*deltax + deltay*deltay));
-	this.vely = Math.sqrt((this.maxvel*this.maxvel * deltay*deltay) /
-			(deltax*deltax + deltay*deltay));
-	if (this.velx/deltax < 0) {
-		this.velx *= -1;
-	}
-	if (this.vely/deltay < 0) {
-		this.vely *= -1;
-	}
+	this.getPath(x, y);
 }
 
 HopliteAttack = function(unit) {
-	// temporarily changes mode to "move"
-	this.move(unit.x, unit.y);
 	this.mode = "attack";
 	this.targetunit = unit;
+	this.getPath(unit.x, unit.y);
 }
 
 
