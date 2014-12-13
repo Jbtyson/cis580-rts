@@ -266,8 +266,6 @@ Game.prototype = {
 		this.startTime = Date.now();
 		
 		// ***StartScreen - Michael Speirs
-		Resource.gui.img.splash = new Image();
-		Resource.gui.img.splash.src = "img/startScreen.png";
 		self.screenContext.drawImage(Resource.gui.img.splash,0,0);
 		
 		var splashloop = setInterval( function() { // wait till user starts game
@@ -349,4 +347,14 @@ Game.prototype = {
 	}
 }
 var game = new Game('game');
-game.start();
+
+// Waits till images are loaded before starting game
+imgLoaded = setInterval( function() {
+	if( Resource.gui.loading > 0) {
+		clearInterval(imgLoaded);
+		console.log("PASS");
+		game.start();
+	} else {
+		console.log("NOPASS");
+	}
+}, 250);
