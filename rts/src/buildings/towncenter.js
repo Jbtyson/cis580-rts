@@ -13,7 +13,6 @@ var Towncenter = function(x,y,health,color, game) {
 	  this.faction = 0;
 	}
 	
-	
 	this.width = 128;
 	this.height = 128;
 	
@@ -23,6 +22,8 @@ var Towncenter = function(x,y,health,color, game) {
 	
 	this.world_x = x;
 	this.world_y = y;
+
+	this.unitQueue = [];
 }
 
 Towncenter.prototype = new Building(0, this.faction, this.game);
@@ -51,9 +52,41 @@ Towncenter.prototype = new Building(0, this.faction, this.game);
 	context.restore();
 }*/
 
-/*Towncenter.prototype.update = function() {
+Towncenter.prototype.update = function(elapsedTime) {
 
-}*/
+	  this.animationTime += elapsedTime;
+	  
+	  //Move the animation frame.
+	  if(this.animationTime >= 50){
+	    this.animationTime = 0;
+	    this.animationFrame = (this.animationFrame + 1) % BUILDING_SPRITE_DATA[this.type].animationFrames;
+	  }
+
+	  //Check if the Towncenter is building a unit.
+	  if(this.unitQueue.length > 0){
+	  	this.unitQueue[0] -= elapsedTime;
+
+	  	this.buildPercent = this.unitQueue[0] / 2500;
+
+	  	if(this.unitQueue[0] <= 0){
+	  		this.unitQueue.shift();
+	  		this.game.factions[this.faction].units.push(new Infantry(this.world_x + 64, this.world_y + 128, this.game.factions[this.faction], this.game));
+	  	}
+	  }
+	  else{
+	  	this.isBuilding = false;
+	  }
+
+},
+
+Towncenter.prototype.buildVillager = function(){
+
+	this.unitQueue.push(2500);
+	this.isBuilding = true;
+
+}
+
+
 
 Towncenter.prototype.getHitbox = function() { // Update to square hitbox
 	var self = this;

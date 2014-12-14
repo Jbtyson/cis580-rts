@@ -186,7 +186,7 @@ Game.prototype = {
 		self.factions.forEach( function(faction) { // create towncenter for each team
 			var playerX = Math.random()*(GLOBAL_WIDTH-2*128) + 128;
 			var playerY = Math.random()*(GLOBAL_HEIGHT-2*128) + 128;
-			faction.buildings.push(new Towncenter(playerX, playerY, 100, faction.color, this));
+			faction.buildings.push(new Towncenter(playerX, playerY, 100, faction.color, self));
 		});
 		
 		self.playerFaction = self.factions[0]; // self
@@ -272,6 +272,12 @@ Game.prototype = {
 				}
 				if(building.color == self.playerFaction.color &&
 						self.cd.detect(self.sb, building)) {
+
+					//REMOVE!!
+					//TEST CODE FOR BUILDING UNIT!
+					building.buildVillager();
+
+
 					building.selected = true;
 					self.selectedBuildings.push(building);
 				}
