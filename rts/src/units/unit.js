@@ -128,9 +128,9 @@ var Unit = function(x, y, health, faction) {
 	*/
 	this.loseStack = function(unit)
 	{
-		var movex = Math.random() * this.radius + Math.random() * -this.radius;
-		var movey = Math.random() * this.radius + Math.random() * -this.radius;
+		var xdist = this.x - unit.x;
+		var ydist = this.y - unit.y;
 		this.mode = "move";
-		this.getPath(this.x - movex, this.y - movey);
+		this.getPath(this.x + xdist/3, this.y + ydist/3);
 	}
 }

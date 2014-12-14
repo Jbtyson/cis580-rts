@@ -104,7 +104,7 @@ HopliteUpdate = function(elapsedTime) {
 				this.attack(game.units[i]);
 			}
 			else if (game.units[i].faction == this.faction &&
-					game.cd.detect(this, game.units[i]) && this != game.units[i]) {
+					game.cd.detect(this, game.units[i]) && this != game.units[i] &&game.units[i].mode == "idle") {
 				this.loseStack(game.units[i]);
 			}
 		}
