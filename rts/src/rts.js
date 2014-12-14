@@ -387,7 +387,7 @@ Game.prototype = {
 				clearInterval(splashloop);
 				window.requestNextAnimationFrame(
 					function(time) {
-						self.playlist[self.currentTrack].play();
+						//self.playlist[self.currentTrack].play();
 						self.loop.call(self, time);
 					}
 				);
