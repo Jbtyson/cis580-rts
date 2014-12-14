@@ -59,67 +59,47 @@ Hoplite.prototype.update = function(elapsedTime) {
 	var self = this;
 
 	var secs = elapsedTime / 1000;
-<<<<<<< HEAD
-	if (this.mode == "move" ||
-			(this.mode == "attack" && !game.cd.detect(this.targetunit, this))) {
-		if (this.mode == "attack") {
-			this.targetx = this.targetunit.x;
-			this.targety = this.targetunit.y;
-			if(Math.floor(this.targetx/64) != this.nextNode.x || Math.floor(this.targety/64) != this.nextNode.y)
-			{
-				this.getPath(this.targetunit.x, this.targetunit.y);
-			}
-			this.mode = "attack";
-		}
-		var deltaxi = this.nextx - this.x;
-		var deltayi = this.nexty - this.y;
-=======
+
 	if (self.mode == "move" ||
-			(self.mode == "attack" && !self.game.cd.detect(self.targetunit, self))) {
+			(self.mode == "attack" && !game.cd.detect(self.targetunit, self))) {
 		if (self.mode == "attack") {
-			self.move(self.targetunit.x, self.targetunit.y);
+			self.targetx = self.targetunit.x;
+			self.targety = self.targetunit.y;
+			if(Math.floor(self.targetx/64) != self.nextNode.x || Math.floor(self.targety/64) != self.nextNode.y)
+			{
+				self.getPath(self.targetunit.x, self.targetunit.y);
+			}
 			self.mode = "attack";
 		}
-		var deltaxi = self.targetx - self.x;
-		var deltayi = self.targety - self.y;
->>>>>>> ba09a871b5f838b28a88d8ade19df390e164aa1b
+		var deltaxi = self.nextx - self.x;
+		var deltayi = self.nexty - self.y;
+
 		
 		// actually move
 		self.x += secs*self.velx;
 		self.y += secs*self.vely;
 		
-<<<<<<< HEAD
 		//update currentNode
-		this.curNode.x = Math.floor(this.x/64);
-		this.curNode.y = Math.floor(this.y/64);
+		self.curNode.x = Math.floor(self.x/64);
+		self.curNode.y = Math.floor(self.y/64);
 		
 		// start moving to the next node or stop if target has been reached
-		if (this.mode == "move") {
-			var deltaxf = this.nextx - this.x;
-			var deltayf = this.nexty - this.y;
+		if (self.mode == "move") {
+			var deltaxf = self.nextx - self.x;
+			var deltayf = self.nexty - self.y;
 			if ((deltaxi/deltaxf < 0 || deltayi/deltayf < 0) || (deltaxf == 0 && deltayf == 0)) {
-				this.velx = 0;
-				this.vely = 0;
-				if(this.nextx != this.targetx && this.nexty != this.targety)
+				self.velx = 0;
+				self.vely = 0;
+				if(self.nextx != self.targetx && self.nexty != self.targety)
 				{
-					this.getNextDest();
+					self.getNextDest();
 				}
 				else
 				{
-					this.velx = 0;
-					this.vely = 0;
-					this.mode = "idle";	
+					self.velx = 0;
+					self.vely = 0;
+					self.mode = "idle";	
 				}
-=======
-		// stop if target has been reached
-		if (self.mode == "move") {
-			var deltaxf = self.targetx - self.x;
-			var deltayf = self.targety - self.y;
-			if (deltaxi/deltaxf < 0 || deltaxi/deltaxf < 0) {
-				self.velx = 0;
-				self.vely = 0;
-				self.mode = "idle";
->>>>>>> ba09a871b5f838b28a88d8ade19df390e164aa1b
 			}
 		}
 	}
@@ -139,18 +119,14 @@ Hoplite.prototype.update = function(elapsedTime) {
 				if (faction.units[i].color != self.color &&
 						self.game.cd.detect(self, faction.units[i])) {
 					self.attack(faction.units[i]);
+				}			
+				else if (game.units[i].faction == self.faction &&
+						game.cd.detect(self, game.units[i]) && self != game.units[i] &&game.units[i].mode == "idle") {
+					self.loseStack(game.units[i]);
 				}
 			}
-<<<<<<< HEAD
-			else if (game.units[i].faction == this.faction &&
-					game.cd.detect(this, game.units[i]) && this != game.units[i] &&game.units[i].mode == "idle") {
-				this.loseStack(game.units[i]);
-			}
 		}
-=======
-		});
->>>>>>> ba09a871b5f838b28a88d8ade19df390e164aa1b
-	}
+	});
 }
 
 Hoplite.prototype.getHitbox = function() {
@@ -164,17 +140,17 @@ Hoplite.prototype.getHitbox = function() {
 	};
 }
 
-<<<<<<< HEAD
-HopliteMove = function(x, y) {
+Hoplite.prototype.move = function(x, y) {
 	this.mode = "move";
 	this.getPath(x, y);
 }
 
-HopliteAttack = function(unit) {
+Hoplite.prototype.attack = function(unit) {
 	this.mode = "attack";
 	this.targetunit = unit;
 	this.getPath(unit.x, unit.y);
-=======
+}
+
 Hoplite.prototype.getAttackRange = function() {
 	var self = this;
 
@@ -185,40 +161,6 @@ Hoplite.prototype.getAttackRange = function() {
 		radius: self.radius + self.range
 	};
 }
-
-Hoplite.prototype.move = function(x, y) {
-	var self = this;
-
-	self.mode = "move";
-	self.targetx = x;
-	self.targety = y;
-	
-	var deltax = x - self.x;
-	var deltay = y - self.y;
-	
-	self.velx = Math.sqrt((self.maxvel*self.maxvel * deltax*deltax) /
-			(deltax*deltax + deltay*deltay));
-	self.vely = Math.sqrt((self.maxvel*self.maxvel * deltay*deltay) /
-			(deltax*deltax + deltay*deltay));
-	if (self.velx/deltax < 0) {
-		self.velx *= -1;
-	}
-	if (self.vely/deltay < 0) {
-		self.vely *= -1;
-	}
-}
-
-Hoplite.prototype.attack = function(unit) {
-	var self = this;
-
-	// temporarily changes mode to "move"
-	self.move(unit.x, unit.y);
-	self.mode = "attack";
-	self.targetunit = unit;
->>>>>>> ba09a871b5f838b28a88d8ade19df390e164aa1b
-}
-
-
 
 
 
