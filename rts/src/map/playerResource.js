@@ -1,9 +1,10 @@
-var PlayerResource = function(amount, maxAmount) {
-	this.amount = amount;
-	this.maxAmount = maxAmount;
+var PlayerResource = function() {
 }
 
 PlayerResource.prototype = {
+	amount: 0,
+	maxAmount: 0,
+	
 	render: function() {
 	
 	},
