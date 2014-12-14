@@ -4,6 +4,11 @@ UNIT_SPRITE_DATA = [ {x:0, y: 0, width: 32, height: 32, animationFrames: 12} ];
 
 // max erdwien
 // modified by: C.J. Dopheide
+
+// Aaron - resource variables
+var MINING_RATE = 5;	// amount of minerals added each 'tick'
+var MINING_TIMER = 2000;	// time per mining 'tick' (milliseconds)
+
 var Unit = function(x, y, health, faction) {
 	this.x = x;
 	this.y = y;
