@@ -123,7 +123,7 @@ Hoplite.prototype.getAttackRange = function() {
 		type: "circle",
 		x: self.x,
 		y: self.y,
-		radius: self.radius + self.range;
+		radius: self.radius + self.range
 	};
 }
 
