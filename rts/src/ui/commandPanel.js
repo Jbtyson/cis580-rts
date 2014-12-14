@@ -16,10 +16,15 @@ var CommandPanel = function() {
 }
 
 CommandPanel.prototype = {
-	update: function(gameTime, unit) {
+	update: function(gameTime, unit, building) {
 		if(typeof(unit) == "undefined") {
 			this.unit = unit;
-			this.buttons = [];
+		}
+		if(typeof(building) == "undefined"){
+		  this.building = building;
+		}
+		if(typeof(unit) == "undefined" && typeof(building) == "undefined"){
+		  this.buttons = [];
 		}
 		
 		if(this.unit != unit) {
@@ -38,8 +43,25 @@ CommandPanel.prototype = {
 				else if(i < 6)
 					this.buttons[i].position.y = this.buttonStartPosition.y + this.buttonDimensions.height;
 				else
-					this.buttons[i].position.y = this.buttonStartPosition.y + 2*this.buttonDimensions.height;	
+					this.buttons[i].position.y = this.buttonStartPosition.y + 2*this.buttonDimensions.height;
 			}
+		}
+		
+		if(this.building != building){
+		  this.building = building;
+		  this.buttons = [];
+		  for(i = 0; i < this.maxButtons; i++){
+		    this.buttons[i] = {};
+		    this.buttons[i].image = new Image();
+		    this.buttons[i].position = {};
+				this.buttons[i].position.x = this.buttonStartPosition.x + i%3 * this.buttonDimensions.width;
+				if(i < 3)
+					this.buttons[i].position.y = this.buttonStartPosition.y;
+				else if(i < 6)
+					this.buttons[i].position.y = this.buttonStartPosition.y + this.buttonDimensions.height;
+				else
+					this.buttons[i].position.y = this.buttonStartPosition.y + 2*this.buttonDimensions.height;
+		  }
 		}
 	},
 	
@@ -50,11 +72,31 @@ CommandPanel.prototype = {
 		
 		// Render all of the buttons
 		for(i = 0; i < this.buttons.length; i++) {
+		  
+		  if(typeof(this.building) != "undefined" && i == 0){
+		    
+		    switch(this.building.type){
+		      
+		      case 0:
+            // Render background for buttons
+			      context.drawImage(Resource.gui.img.villagerCommandButton, this.buttons[i].position.x, this.buttons[i].position.y);
+		        break;
+		      default:
+		        // Render background for buttons
+			      context.drawImage(this.buttonImage, this.buttons[i].position.x, this.buttons[i].position.y);
+		      }
+		    }
+		    else{
+		      // Render background for buttons
+		  	  context.drawImage(this.buttonImage, this.buttons[i].position.x, this.buttons[i].position.y);
+		    }
+		  }
+		  
 			// Render background for buttons
-			context.drawImage(this.buttonImage, this.buttons[i].position.x, this.buttons[i].position.y);
+			//context.drawImage(this.buttonImage, this.buttons[i].position.x, this.buttons[i].position.y);
 			// Render button images
 			//context.drawImage(this.buttons[i].image, this.buttons[i].position.x, this.buttons[i].position.y);
-		}
+		
 		
 		context.restore();
 	},
