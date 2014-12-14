@@ -55,9 +55,6 @@ var Unit = function(x, y, health, faction) {
 }
 
 Unit.prototype = {
-  
-
-  
 	render: function(context) {
 		//draw unit
 		context.drawImage(Resource.units.img.villager[this.faction],
@@ -91,12 +88,6 @@ Unit.prototype = {
 	  }
 	},
 
-}
-
-
-Unit.prototype = {
-render: function() {
-},
 update: function(elapsedTime) {
 		var secs = elapsedTime / 1000;
 		if (this.mode == "move" ||
