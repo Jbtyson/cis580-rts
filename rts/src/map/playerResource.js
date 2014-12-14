@@ -1,3 +1,7 @@
+//playerResource.js
+//Aaron Schmidt
+//Resource prototype
+
 var PlayerResource = function() {
 }
 

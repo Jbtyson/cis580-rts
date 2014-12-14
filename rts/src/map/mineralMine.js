@@ -1,3 +1,7 @@
+//mineralMine.js
+//Aaron Schmidt
+//Mineral mine to place on map, inherits PlayerResource
+
 var MineralMine = function(x, y, amount) {
 	this.x = x;
 	this.y = y;
@@ -10,7 +14,7 @@ var MineralMine = function(x, y, amount) {
 	// or radius = 16;
 }
 
-MineralMine.prototype = new PlayerResource(this.amount, this.amount);
+MineralMine.prototype = new PlayerResource();
 
 MineralMine.prototype.render = function(context) {
 	context.save();

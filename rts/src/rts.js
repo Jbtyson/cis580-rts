@@ -230,7 +230,7 @@ Game.prototype = {
 		}
 		
 		// Add some resources
-		self.resources.push(new Metal(255,255,50));
+		self.resources.push(new MineralMine(50,50,100));
 		self.resources.push(new Metal(555,155,50));
 		self.resources.push(new Metal(955,355,50));
 		self.resources.push(new Metal(355,555,50));
