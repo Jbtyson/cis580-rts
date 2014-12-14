@@ -1,22 +1,15 @@
-var Towncenter = function(x,y,health,color, game) {
+var Towncenter = function(x, y, health, factionIndex, game) {
 	this.x = x;
 	this.y = y;
 	this.health = health;
-	this.color = color;
 	
 	this.game = game;
 	
-	if(this.color == "#FF0000"){
-	  this.faction = 1;
-	}
-	else{
-	  this.faction = 0;
-	}
+	this.factionIndex = factionIndex;
+	this.faction = game.factions[this.factionIndex];
 	
 	this.width = 128;
 	this.height = 128;
-	
-	this.radius = 64; // needs to update to square hitbox
 	
 	this.borderwidth = 6;
 	
@@ -26,7 +19,7 @@ var Towncenter = function(x,y,health,color, game) {
 	this.unitQueue = [];
 }
 
-Towncenter.prototype = new Building(0, this.faction, this.game);
+Towncenter.prototype = new Building(0, this.factionIndex, this.game);
 
 /*Towncenter.prototype.render = function(context) {
 	var self = this;
@@ -70,7 +63,7 @@ Towncenter.prototype.update = function(elapsedTime) {
 
 	  	if(this.unitQueue[0] <= 0){
 	  		this.unitQueue.shift();
-	  		this.game.factions[this.faction].units.push(new Infantry(this.world_x + 64, this.world_y + 128, "#FF0000", this.game));
+	  		this.faction.units.push(new Infantry(this.world_x + 64, this.world_y + 128, "#FF0000", this.game));
 	  	}
 	  }
 	  else{
@@ -99,7 +92,7 @@ Towncenter.prototype.getHitbox = function() { // Update to square hitbox
 		type: "rect",
 		x:self.x,
 		y:self.y,
-		h:128,
-		w:128,
+		h:this.height,
+		w:this.width,
 	};
 }
