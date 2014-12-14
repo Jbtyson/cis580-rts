@@ -11,6 +11,9 @@ var Building = function(x, y, health, color){
 	this.health = health;
 	this.color = color;
 	
+	this.width;
+	this.height;
+	
 	this.type;
 	this.buildTime;
 	this.state;

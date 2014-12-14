@@ -170,7 +170,18 @@ Game.prototype = {
 			self.factions.push(new Faction(self.factionColors[i]));
 		}
 		
+		self.factions.forEach( function(faction) { // create towncenter for each team
+			var playerX = Math.random()*(GLOBAL_WIDTH-2*128) + 128;
+			var playerY = Math.random()*(GLOBAL_HEIGHT-2*128) + 128;
+			faction.buildings.push(new Towncenter(playerX,playerY,100,faction.color));
+		});
+		
 		self.playerFaction = self.factions[0]; // self
+		
+		// start centered on town center
+		var tc = self.playerFaction.buildings[0];
+		globalx = tc.x + 0.5*tc.width - 0.5*WIDTH;
+		globaly = tc.y + 0.5*tc.height - 0.5*HEIGHT;
 		
 		var spawnlots = true;
 		if (spawnlots) {
@@ -268,9 +279,12 @@ Game.prototype = {
 		
 		// render units
 		self.factions.forEach( function(faction) {
-			for (var i = 0; i < faction.units.length; i++) {
+			for (var i = 0; i < faction.units.length; i++) { // render units
 				faction.units[i].render(self.backBufferContext);
 			}
+			faction.buildings.forEach( function(building) { // render buildings
+				building.render(self.backBufferContext);
+			});
 		});
 		
 		// render selection box
