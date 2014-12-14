@@ -41,6 +41,8 @@ var Game = function (canvasId) {
 	this.factionColors = ["#FF0000","#0000FF"];
 	this.activePlayers = this.numPlayers;
 	
+	this.resources = [];
+	
 	Tilemap.load(tilemapData, {
 		onload: function(c) {
 			// Tilemap.render(c); // Is this necessary?
@@ -185,6 +187,14 @@ Game.prototype = {
 			self.factions[0].units.push(new Hoplite(500, 500, self.factions[0].color, self));
 			self.factions[1].units.push(new Hoplite(100, 30, self.factions[1].color, self));
 		}
+		
+		// Add some resources
+		self.resources.push(new Metal(255,255,50));
+		self.resources.push(new Metal(555,155,50));
+		self.resources.push(new Metal(955,355,50));
+		self.resources.push(new Metal(355,555,50));
+		self.resources.push(new Metal(255,955,50));
+		self.resources.push(new Metal(755,755,50));
 	},
 	
 	startSelectBox: function(x, y) {
@@ -266,6 +276,11 @@ Game.prototype = {
 		//self.backBufferContext.translate(-70, 0);
 		Tilemap.render(self.backBufferContext);
 		
+		// render resources
+		self.resources.forEach( function(resource) {
+			resource.render(self.backBufferContext);
+		});
+
 		// render units
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
