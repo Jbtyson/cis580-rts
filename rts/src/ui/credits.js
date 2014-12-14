@@ -18,7 +18,13 @@ var Credits = function() {
 						"",
 						"Soundtrack",
 						"",
-						"",
+						"Manîthil by Algorythm",
+						"Summer Soon by Martin Oakson",
+						"Sad Candy by Neä",
+						"Now by Outsider",
+						"L'éther d'Afrique by Philippe Mangold",
+						"Camels Breath by Wayne Robinson",
+						"Sempre davanti a l'ochji by Sta a Sente",
 					];
 	this.x = WIDTH/2 - 200;
 	this.y = HEIGHT;
@@ -46,7 +52,7 @@ Credits.prototype = {
 		context.fillStyle = "#000000";
 		context.fillRect(0,0,WIDTH,HEIGHT);
 		
-		context.font = "40px Arial";
+		context.font = "30px Arial";
 		context.fillStyle = "#FFFFFF";
 		// Draw text
 		this.creditText.forEach( function(line,i) {
