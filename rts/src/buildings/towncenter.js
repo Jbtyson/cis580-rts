@@ -5,17 +5,8 @@ var Towncenter = function(x, y, health, factionIndex, game) {
 	
 	this.game = game;
 	
-<<<<<<< HEAD
-	if(this.color == "#FF0000"){
-	  this.faction = 0;
-	}
-	else{
-	  this.faction = 1;
-	}
-=======
 	this.factionIndex = factionIndex;
 	this.faction = game.factions[this.factionIndex];
->>>>>>> origin/master
 	
 	this.width = 128;
 	this.height = 128;
@@ -74,11 +65,7 @@ Towncenter.prototype.update = function(elapsedTime) {
 
 	  	if(this.unitQueue[0] <= 0){
 	  		this.unitQueue.shift();
-<<<<<<< HEAD
-	  		this.game.factions[this.faction].units.push(new Infantry(this.world_x + 64, this.world_y + 128, this.faction, this.game));
-=======
 	  		this.faction.units.push(new Infantry(this.world_x + 64, this.world_y + 128, "#FF0000", this.game));
->>>>>>> origin/master
 	  	}
 	  }
 	  else{

@@ -98,7 +98,7 @@ Hoplite.prototype.update = function(elapsedTime) {
 				{
 					self.velx = 0;
 					self.vely = 0;
-					self.mode = "idle";	
+					self.mode = "idle";
 				}
 			}
 		}
@@ -119,14 +119,14 @@ Hoplite.prototype.update = function(elapsedTime) {
 				if (faction.units[i].color != self.color &&
 						self.game.cd.detect(self, faction.units[i])) {
 					self.attack(faction.units[i]);
-				}			
+				}
 				else if (game.units[i].faction == self.faction &&
 						game.cd.detect(self, game.units[i]) && self != game.units[i] &&game.units[i].mode == "idle") {
 					self.loseStack(game.units[i]);
 				}
 			}
-		}
-	});
+		});
+	}
 }
 
 Hoplite.prototype.getHitbox = function() {

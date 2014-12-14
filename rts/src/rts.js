@@ -241,24 +241,9 @@ Game.prototype = {
 		self.selectedUnits = [];
 		self.selectedBuildings = [];
 		
-<<<<<<< HEAD
-		self.factions.forEach( function(faction) {
-			for (var i = 0; i < faction.units.length; i++) {
-				if (!e.ctrlKey && !e.shiftKey) {
-					faction.units[i].selected = false;
-				}
-				if (faction.units[i].faction == 0 &&
-						self.cd.detect(self.sb, faction.units[i])) {
-					faction.units[i].selected = true;
-					console.log(faction.units[i]);
-					// Add the selected unit into the array of selected units (James)
-					self.selectedUnits.push(faction.units[i]);
-				}
-=======
 		for (var i = 0; i < this.playerFaction.units.length; i++) {
 			if (!e.ctrlKey && !e.shiftKey) {
 				this.playerFaction.units[i].selected = false;
->>>>>>> origin/master
 			}
 			if (self.cd.detect(self.sb, this.playerFaction.units[i])) {
 				this.playerFaction.units[i].selected = true;
