@@ -70,7 +70,7 @@ Towncenter.prototype.update = function(elapsedTime) {
 
 	  	if(this.unitQueue[0] <= 0){
 	  		this.unitQueue.shift();
-	  		this.game.factions[this.faction].units.push(new Infantry(this.world_x + 64, this.world_y + 128, this.game.factions[this.faction], this.game));
+	  		this.game.factions[this.faction].units.push(new Infantry(this.world_x + 64, this.world_y + 128, "#FF0000", this.game));
 	  	}
 	  }
 	  else{
@@ -80,6 +80,10 @@ Towncenter.prototype.update = function(elapsedTime) {
 },
 
 Towncenter.prototype.buildVillager = function(){
+
+	//TODO: Check if the player has enough resources.
+
+	//TODO: Remove the necessary resources to build the unit.
 
 	this.unitQueue.push(2500);
 	this.isBuilding = true;
