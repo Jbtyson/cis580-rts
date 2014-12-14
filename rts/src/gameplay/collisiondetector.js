@@ -12,6 +12,7 @@ CollisionDetector.prototype = {
 		var collision = false;
 		if (a.type == "circle") {
 			if (b.type == "circle") {
+				b = q.getAttackRange();
 				collision = this.twoCircles(a, b);
 			} else if (b.type == "rect") {
 				collision = this.circleRect(a, b);
