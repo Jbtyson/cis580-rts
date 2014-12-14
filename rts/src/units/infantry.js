@@ -18,12 +18,27 @@ var Infantry = function(x, y, color, game) {
 	this.y = y;
 	this.color = color;
 	
+	
 	//this.render = Render;
 	//this.update = Update;
 	//this.getHitbox = GetHitbox;
 	//this.getAttackRange = GetAttackRange;
 	//this.move = Move;
 	//this.attack = Attack;
+	
+	// -------------------James wrote this for gui stuff --------------------------
+	// -------It is necessary for gui to work, so make sure all units have it------
+	// Unit icon for the unit bar
+	this.thumbnail = Resource.gui.img.villagerCommandButton;
+	// Declare action functions here
+	this.testAction = function() {
+		console.log("test action performed");
+	};
+	// Declare array of actions here
+	this.actions = [
+		{ thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.testAction }
+	];
+	// -----------------------------------------------------------------------------
 }
 
 Infantry.prototype = new Unit(100,100,60,"#000000");

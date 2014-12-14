@@ -20,16 +20,19 @@ UnitBar.prototype = {
 		// Check for a new list
 		if(this.unitList != unitList) {
 			this.unitList = unitList;
+			this.unit = unitList[0];
 			// Clear the thumbnails and create the new ones
 			this.buttons = [];
 			for(i = 0; i < this.maxUnitsDisplayed && i < this.unitList.length; i++) {
 				this.buttons[i] = new Button();
-				this.buttons[i].image = new Image();
-				//this.buttons[i].image.src = "img/common_unit"; //this.unitList[i].thumbPath;
+				this.buttons[i].image = this.unitList[i].thumbnail;
 				this.buttons[i].position = {};
 				this.buttons[i].position.x = this.unitStartPosition.x + i%8 * this.unitDimensions.width;
 				this.buttons[i].position.y = (i < this.maxUnitsInRow) ? this.unitStartPosition.y : this.unitStartPosition.y + this.unitDimensions.height;
+				
 				this.buttons[i].id = i;
+				this.buttons[i].dimensions = this.unitDimensions;
+				this.buttons[i].updateHitbox(); // this is a bandaid, remove later if time
 			}
 		}
 	},

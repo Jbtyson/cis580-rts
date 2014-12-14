@@ -91,7 +91,6 @@ Gui.prototype = {
 				button = b;
 		});
 		if(typeof(button) !== "undefined") {
-			console.log(button.id + " on the command panel was clicked");
 			return button.id;
 		}
 		

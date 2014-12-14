@@ -37,6 +37,7 @@ CommandPanel.prototype = {
 					this.buttons[i].position.y = this.buttonStartPosition.y + this.buttonDimensions.height;
 				else
 					this.buttons[i].position.y = this.buttonStartPosition.y + 2*this.buttonDimensions.height;
+				
 				this.buttons[i].id = i;
 				this.buttons[i].dimensions = this.buttonDimensions;
 				this.buttons[i].updateHitbox(); // this is a bandaid, remove later if time

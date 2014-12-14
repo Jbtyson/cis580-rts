@@ -258,9 +258,8 @@ Game.prototype = {
 			}
 			if(self.cd.detect(self.sb, building)) {
 
-				//REMOVE!!
-				//TEST CODE FOR BUILDING UNIT!
-				building.buildVillager();
+				
+				
 
 
 				building.selected = true;
@@ -327,9 +326,30 @@ Game.prototype = {
 	// Selects a unit from the array of selected units
 	// James Tyson
 	selectUnit: function(id) {
-		var unit = this.selectedUnits[id];
-		this.selectedUnits = [];
-		this.selectedUnits.push(unit);
+		if(this.selectedUnits.length > 0) {
+			// Store the selected unit
+			var unit = this.selectedUnits[id];
+			// Deselect and remove all units
+			this.selectedUnits.forEach(function(unit) {
+				unit.selected = false;
+			});
+			selectedUnits = [];
+			// Reselect and add selected unit
+			unit.selected = true;
+			this.selectedUnits.push(unit);
+		}
+		else if(this.selectedBuildings.length > 0) {
+			// Store the selected building
+			var building = this.selectedBuildings[id];
+			// Deselect all remove all buildings
+			this.selectedBuildings.forEach(function(building) {
+				building.selected = false;
+			});
+			selectedBuildings = [];
+			// Reselect and add selectd building
+			building.selected = true;
+			this.selectedBuildings.push(unit);
+		}
 	},
 	
 	render: function(elapsedTime) {
