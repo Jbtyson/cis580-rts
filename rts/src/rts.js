@@ -33,7 +33,7 @@ var Game = function (canvasId) {
 	this.input = new Input(this.screen, window, myself);
 	
 	// Necessary for gui making - James
-	this.resources = { minerals:0, gas:100, supply:10, supplyMax:200 };
+	this.playerResources = new FactionResources();
 	this.selectedUnits = [];
 	this.selectedBuildings = [];
 	this.gui = new Gui(this);
@@ -48,7 +48,7 @@ var Game = function (canvasId) {
 	this.playlist = [];
 	this.currentTrack = 0;
 
-	this.resources = [];
+	this.mapMinerals = [];
 	
 	Tilemap.load(tilemapData, {
 		onload: function(c) {
@@ -166,6 +166,10 @@ Game.prototype = {
 				}
 				faction.units[i].update(elapsedTime);
 			}
+			
+			for(i = 0; i < faction.buildings.length; i++){
+			  faction.buildings[i].update(elapsedTime);
+			}
 		});
 		
 		// Update the GUI
@@ -175,15 +179,17 @@ Game.prototype = {
 	placeLevelObjects: function() {
 		var self = this;
 		
-		for( i = 0; i < self.numPlayers; i++) { // create players and assign colors
+		for(var i = 0; i < self.numPlayers; i++) { // create players and assign colors
 			self.factions.push(new Faction(self.factionColors[i]));
 		}
 		
-		self.factions.forEach( function(faction) { // create towncenter for each team
-			var playerX = Math.random()*(GLOBAL_WIDTH-2*128) + 128;
-			var playerY = Math.random()*(GLOBAL_HEIGHT-2*128) + 128;
-			faction.buildings.push(new Towncenter(playerX,playerY,100,faction.color));
-		});
+		// create towncenter for each team
+		for (var i = 0; i < self.factions.length; i++) {
+			var playerX = 64*4 + 64*7*i;
+			var playerY = 64*4 + 64*7*i;
+			self.factions[i].buildings.push(new Towncenter(playerX, playerY, 100, i, self));
+		}
+		
 		
 		self.playerFaction = self.factions[0]; // self
 		
@@ -205,37 +211,23 @@ Game.prototype = {
 				}
 			}
 		} else {
-	
+
 			self.factions.forEach( function(faction) {
 				tc = faction.buildings[0];
 				faction.units.push(new Infantry(tc.x+32-64,tc.y-40-64,faction.color,self));
 				faction.units.push(new Infantry(tc.x+64-64,tc.y-40-64,faction.color,self));
 				faction.units.push(new Infantry(tc.x+96-64,tc.y-40-64,faction.color,self));
 			});
-	
-			/*self.factions.forEach( function(faction) {
-				tc = faction.buildings[0];
-				faction.units.push(new Hoplite(tc.x+32-64,tc.y-40-64,faction.color,self));
-				faction.units.push(new Hoplite(tc.x+64-64,tc.y-40-64,faction.color,self));
-				faction.units.push(new Hoplite(tc.x+96-64,tc.y-40-64,faction.color,self));
-			});*/
-			
-			//self.factions[0].units.push(new Hoplite(30, 30, self.factions[0].color, self));
-			//self.factions[0].units.push(new Hoplite(500, 500, self.factions[0].color, self));
-			//self.factions[1].units.push(new Hoplite(100, 30, self.factions[1].color, self
-			
-			//self.factions[0].units.push(new Infantry(30, 30, self.factions[0].color, self));
-			//self.factions[0].units.push(new Infantry(500, 500, self.factions[0].color, self));
-			//self.factions[1].units.push(new Infantry(100, 30, self.factions[1].color, self));
+
 		}
 		
-		// Add some resources
-		self.resources.push(new Metal(255,255,50));
-		self.resources.push(new Metal(555,155,50));
-		self.resources.push(new Metal(955,355,50));
-		self.resources.push(new Metal(355,555,50));
-		self.resources.push(new Metal(255,955,50));
-		self.resources.push(new Metal(755,755,50));
+		// Add Map mineral Mines
+		self.mapMinerals.push(new MineralMine(55,55,50));
+		self.mapMinerals.push(new MineralMine(555,155,50));
+		self.mapMinerals.push(new MineralMine(955,355,50));
+		self.mapMinerals.push(new MineralMine(355,555,50));
+		self.mapMinerals.push(new MineralMine(255,955,50));
+		self.mapMinerals.push(new MineralMine(755,755,50));
 	},
 	
 	startSelectBox: function(x, y) {
@@ -249,29 +241,31 @@ Game.prototype = {
 		self.selectedUnits = [];
 		self.selectedBuildings = [];
 		
-		self.factions.forEach( function(faction) {
-			for (var i = 0; i < faction.units.length; i++) {
-				if (!e.ctrlKey && !e.shiftKey) {
-					faction.units[i].selected = false;
-				}
-				if (faction.units[i].color == self.playerFaction.color &&
-						self.cd.detect(self.sb, faction.units[i])) {
-					faction.units[i].selected = true;
-					console.log(faction.units[i]);
-					// Add the selected unit into the array of selected units (James)
-					self.selectedUnits.push(faction.units[i]);
-				}
+		for (var i = 0; i < this.playerFaction.units.length; i++) {
+			if (!e.ctrlKey && !e.shiftKey) {
+				this.playerFaction.units[i].selected = false;
 			}
-			faction.buildings.forEach( function(building) {
-				if (!e.ctrlKey && !e.shiftKey) {
-					building.selected = false;
-				}
-				if(building.color == self.playerFaction.color &&
-						self.cd.detect(self.sb, building)) {
-					building.selected = true;
-					self.selectedBuildings.push(building);
-				}
-			});
+			if (self.cd.detect(self.sb, this.playerFaction.units[i])) {
+				this.playerFaction.units[i].selected = true;
+				console.log(this.playerFaction.units[i]);
+				// Add the selected unit into the array of selected units (James)
+				self.selectedUnits.push(this.playerFaction.units[i]);
+			}
+		}
+		this.playerFaction.buildings.forEach( function(building) {
+			if (!e.ctrlKey && !e.shiftKey) {
+				building.selected = false;
+			}
+			if(self.cd.detect(self.sb, building)) {
+
+				//REMOVE!!
+				//TEST CODE FOR BUILDING UNIT!
+				building.buildVillager();
+
+
+				building.selected = true;
+				self.selectedBuildings.push(building);
+			}
 		});
 
 		self.sb = null;
@@ -344,9 +338,9 @@ Game.prototype = {
 		//self.backBufferContext.translate(-70, 0);
 		Tilemap.render(self.backBufferContext);
 		
-		// render resources
-		self.resources.forEach( function(resource) {
-			resource.render(self.backBufferContext);
+		// render mapMinerals
+		self.mapMinerals.forEach( function(mineralMine) {
+			mineralMine.render(self.backBufferContext);
 		});
 
 		// render units
@@ -377,7 +371,7 @@ Game.prototype = {
 		this.startTime = Date.now();
 		
 		// Create soundtrack playlist
-		self.playlist = Resource.soundtrack.shuffle();		
+		self.playlist = Resource.soundtrack.shuffle();
 		
 		// ***StartScreen - Michael Speirs
 		self.screenContext.drawImage(Resource.gui.img.splash,0,0);
@@ -408,33 +402,33 @@ Game.prototype = {
 	loop: function(time) {
 		var self = this;
 		
-		// Don't advance the clock if the game is paused		
+		// Don't advance the clock if the game is paused
 		if (this.gameOver || this.paused) {
 			this.lastTime = time;
 		}
 		
 		// Calculate additional elapsed time, keeping any
 		// unused time from previous frame
-		this.elapsedTime += time - this.lastTime; 
+		this.elapsedTime += time - this.lastTime;
 		this.lastTime = time;
 		
 		// The first timestep (and occasionally later ones) are too large
 		// causing our processing to take too long (and run into the next
-		// frame).  We can clamp to a max of 4 frames to keep that from 
+		// frame).  We can clamp to a max of 4 frames to keep that from
 		// happening
 		this.elapsedTime = Math.min(this.elapsedTime, 4 * TIME_STEP);
 		
 		if(!self.gameOver) {
-		// We want a fixed game loop of 1/60th a second, so if necessary run multiple
-		// updates during each rendering pass
-		// Invariant: We have unprocessed time in excess of TIME_STEP
-		while (this.elapsedTime >= TIME_STEP) {
-			self.update(TIME_STEP);
-			this.elapsedTime -= TIME_STEP;
-			
-			// add the TIME_STEP to gameTime
-			this.gameTime += TIME_STEP;
-		}
+			// We want a fixed game loop of 1/60th a second, so if necessary run multiple
+			// updates during each rendering pass
+			// Invariant: We have unprocessed time in excess of TIME_STEP
+			while (this.elapsedTime >= TIME_STEP) {
+				self.update(TIME_STEP);
+				this.elapsedTime -= TIME_STEP;
+				
+				// add the TIME_STEP to gameTime
+				this.gameTime += TIME_STEP;
+			}
 		
 			// Manage soundtrack
 			if( self.playlist[self.currentTrack].ended ) {
@@ -445,7 +439,7 @@ Game.prototype = {
 				self.playlist[self.currentTrack].play();
 			}
 			
-			// We only want to render once		
+			// We only want to render once
 			self.render(this.elapsedTime);
 		
 			// Check which players are still active
