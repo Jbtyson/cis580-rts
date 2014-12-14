@@ -1,4 +1,9 @@
 // max erdwien
+
+// Aaron - resource variables
+var MINING_RATE = 5;	// amount of minerals added each 'tick'
+var MINING_TIMER = 2000;	// time per mining 'tick' (milliseconds)
+
 var Unit = function(x, y, health, color) {
 	this.x = x;
 	this.y = y;
