@@ -1,10 +1,6 @@
 // max erdwien
-<<<<<<< HEAD
 // modified by: C.J. Dopheide
 var Unit = function(x, y, health, faction) {
-=======
-var Unit = function(x, y, health, color) {
->>>>>>> ba09a871b5f838b28a88d8ade19df390e164aa1b
 	this.x = x;
 	this.y = y;
 	this.curNode = {
@@ -16,7 +12,7 @@ var Unit = function(x, y, health, color) {
 	this.curNode.x = Math.floor(x/64);
 	this.curNode.y = Math.floor(y/64);
 	this.health = health;
-	this.color = color;
+	this.faction = faction;
 	// mode is basically an enumeration. its values are:
 	// idle
 	// move
@@ -39,7 +35,95 @@ var Unit = function(x, y, health, color) {
 		y: 0,
 	}
 	this.targetunit = null;
-<<<<<<< HEAD
+	
+	Update = function(elapsedTime) {
+		var secs = elapsedTime / 1000;
+		if (this.mode == "move" ||
+				(this.mode == "attack" && !game.cd.detect(this.targetunit, this))) {
+			if (this.mode == "attack") {
+				this.targetx = this.targetunit.x;
+				this.targety = this.targetunit.y;
+				if(Math.floor(this.targetx/64) != this.nextNode.x || Math.floor(this.targety/64) != this.nextNode.y)
+				{
+					this.getPath(this.targetunit.x, this.targetunit.y);
+				}
+				this.mode = "attack";
+			}
+			var deltaxi = this.nextx - this.x;
+			var deltayi = this.nexty - this.y;
+			
+			// actually move
+			this.x += secs*this.velx;
+			this.y += secs*this.vely;
+			
+			//update currentNode
+			this.curNode.x = Math.floor(this.x/64);
+			this.curNode.y = Math.floor(this.y/64);
+			
+			// start moving to the next node or stop if target has been reached
+			if (this.mode == "move") {
+				var deltaxf = this.nextx - this.x;
+				var deltayf = this.nexty - this.y;
+				if ((deltaxi/deltaxf < 0 || deltayi/deltayf < 0) || (deltaxf == 0 && deltayf == 0)) {
+					this.velx = 0;
+					this.vely = 0;
+					if(this.nextx != this.targetx && this.nexty != this.targety)
+					{
+						this.getNextDest();
+					}
+					else
+					{
+						this.velx = 0;
+						this.vely = 0;
+						this.mode = "idle";	
+					}
+				}
+			}
+		}
+		
+		else if (this.mode == "attack" && game.cd.detect(this.targetunit, this)) {
+			this.targetunit.health -= this.damage*secs;
+			//console.log(this.targetunit.health);
+			if (this.targetunit.health <= 0) {
+				this.mode = "idle";
+				this.targetunit = null;
+			}
+		}
+		
+		else if (this.mode == "idle") {
+			for (var i = 0; i <  game.units.length; i++) {
+				if (game.units[i].faction != this.faction &&
+						game.cd.detect(this, game.units[i])) {
+					this.attack(game.units[i]);
+				}
+				else if (game.units[i].faction == this.faction &&
+						game.cd.detect(this, game.units[i]) && this != game.units[i] &&game.units[i].mode == "idle") {
+					this.loseStack(game.units[i]);
+				}
+			}
+		}
+	}
+
+	GetHitbox = function() {
+		return {
+			type: "circle",
+			x: this.x,
+			y: this.y,
+			radius: this.radius
+		};
+	}
+
+	Move = function(x, y) {
+		this.mode = "move";
+		this.getPath(x, y);
+	}
+
+	Attack = function(unit) {
+		this.mode = "attack";
+		this.targetunit = unit;
+		this.getPath(unit.x, unit.y);
+	}
+
 	
 	/* C.J. Dopheide
 	This takes in an x y coordinate and uses an A* search to get a path to those coordinates.
@@ -139,33 +223,3 @@ var Unit = function(x, y, health, color) {
 		this.getPath(this.x + xdist/3, this.y + ydist/3);
 	}
 }
-=======
-	this.actions = [];
-}
-
-Unit.prototype = {
-	render: function() {
-
-	},
-
-	update: function() {
-
-	},
-
-	getHitbox: function() {
-
-	},
-	
-	getAttackRange: function() {
-	
-	},
-
-	move: function() {
-	
-	},
-
-	attack: function() {
-
-	}
-}
->>>>>>> ba09a871b5f838b28a88d8ade19df390e164aa1b
