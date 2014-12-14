@@ -156,7 +156,8 @@ Input.prototype = {
 		 */
 		if (e.button == 0) {
 			if(self.game.gui.isClickOnUi(self.mousex+globalx, self.mousey+globaly)) {
-				console.log("ui was clicked");
+				var result = self.game.gui.getButtonClicked(self.mousex+globalx, self.mousey+globaly);
+				console.log(result);
 			}
 			else
 				self.game.startSelectBox(self.mousex+globalx, self.mousey+globaly);

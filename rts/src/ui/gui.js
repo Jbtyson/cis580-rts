@@ -28,15 +28,13 @@ Gui.prototype = {
 		// Update the minimap
 		this.minimap.update(gameTime);
 		
+		// Update the commandPanel
 		if(this.game.selectedUnits.length !== 0){
 		  this.commandPanel.update(gameTime, this.game.selectedUnits[0]);
 		}
 		else if(this.game.selectedBuildings.length !== 0){
 		  this.commandPanel.update(gameTime, this.game.selectedBuildings[0]);
-		}
-		
-		// Update the commandPanel
-		
+		}	
 		
 		// Update the resourceBar
 		this.resourceBar.update(gameTime);
@@ -85,22 +83,30 @@ Gui.prototype = {
 	},
 	
 	getButtonClicked: function(mousePosX, mousePosY) {
-		var button = this.commandPanel.buttons.forEach(function(b) {
+		console.log(mousePosX);
+		console.log(mousePosY);
+		var button;
+		
+		// Return the number of the action if the click was on a command panel button
+		this.commandPanel.buttons.forEach(function(b) {
 			if(b.hitbox.contains(mousePosX, mousePosY))
-				return b;
+				button = b;
 		});
 		if(typeof(button) != "undefined") {
 			console.log(button.id + " on the command panel was clicked");
 			return button.id;
 		}
 		
-		button = this.unitBar.buttons.forEach(function(b) {
-			if(b.hitbox.contains(mousePos.x, mousePos.y))
-				return b;
+		// Change the selected unit 
+		this.unitBar.buttons.forEach(function(b) {
+			if(b.hitbox.contains(mousePosX, mousePosY))
+				button = b;
 		});
 		if(typeof(button) != "undefined") {
 			console.log(button.id + " on the unit bar was clicked");
 			game.selectUnit(button.id);	
+			return null;
 		}
+		
 	},
 }

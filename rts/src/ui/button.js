@@ -10,11 +10,15 @@ var Button = function() {
 };
 
 Button.prototype = {
-	update: function() {
+	update: function(gameTime) {
 	
 	},
 	
 	render: function(context) {
 		context.drawImage(this.image, this.position.x, this.position.y);
+	},
+	
+	updateHitbox: function() {
+		this.hitbox = new Rectangle(this.position.x, this.position.y, this.dimensions.width, this.dimensions.height);
 	},
 };
