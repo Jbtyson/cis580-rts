@@ -26,7 +26,7 @@ PlayerResource.prototype = {
 	},
 	
 	canAdd: function(amount) {
-		return (this.amount + amount) < this.maxAmount;
+		return (this.amount + amount) <= this.maxAmount;
 	},
 	
 	subtract: function(amount) {
@@ -38,6 +38,6 @@ PlayerResource.prototype = {
 	},
 	
 	canSubtract: function(amount) {
-		return (this.amount - amount) > 0;
+		return (this.amount - amount) >= 0;
 	}
 }

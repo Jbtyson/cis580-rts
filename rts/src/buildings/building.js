@@ -34,7 +34,6 @@ var Building = function(type, factionIndex, game){
 
 	this.buildPercent;
 
-
 	this.buildTime;
 	this.state;
 	this.world_x;

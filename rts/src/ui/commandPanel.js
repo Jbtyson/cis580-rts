@@ -17,6 +17,7 @@ var CommandPanel = function() {
 
 CommandPanel.prototype = {
 	update: function(gameTime, unit) {
+		
 		if(typeof(unit) == "undefined") {
 			this.unit = unit;
 			this.buttons = [];
@@ -25,7 +26,7 @@ CommandPanel.prototype = {
 		if(this.unit != unit) {
 			this.unit = unit;
 			this.buttons = [];
-			this.unit.actions.length = 9;
+			//this.unit.actions.length = 9;
 			for(i = 0; i < this.maxButtons && i < this.unit.actions.length; i++) {
 				this.buttons[i] = {};
 				this.buttons[i].image = new Image();
@@ -38,9 +39,10 @@ CommandPanel.prototype = {
 				else if(i < 6)
 					this.buttons[i].position.y = this.buttonStartPosition.y + this.buttonDimensions.height;
 				else
-					this.buttons[i].position.y = this.buttonStartPosition.y + 2*this.buttonDimensions.height;	
+					this.buttons[i].position.y = this.buttonStartPosition.y + 2*this.buttonDimensions.height;
 			}
 		}
+
 	},
 	
 	render: function(context) {
@@ -50,11 +52,22 @@ CommandPanel.prototype = {
 		
 		// Render all of the buttons
 		for(i = 0; i < this.buttons.length; i++) {
+		  
+	        if(i < this.unit.actions.length){
+	          // Render background for buttons
+		  	    context.drawImage(this.unit.actions[i].thumbnail, this.buttons[i].position.x, this.buttons[i].position.y);
+	        }
+	        else{
+	          // Render background for buttons
+		  	    context.drawImage(this.buttonImage, this.buttons[i].position.x, this.buttons[i].position.y);
+	        }
+		  }
+		  
 			// Render background for buttons
-			context.drawImage(this.buttonImage, this.buttons[i].position.x, this.buttons[i].position.y);
+			//context.drawImage(this.buttonImage, this.buttons[i].position.x, this.buttons[i].position.y);
 			// Render button images
 			//context.drawImage(this.buttons[i].image, this.buttons[i].position.x, this.buttons[i].position.y);
-		}
+		
 		
 		context.restore();
 	},
