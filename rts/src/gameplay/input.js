@@ -155,9 +155,15 @@ Input.prototype = {
 		 * 2 = right click
 		 */
 		if (e.button == 0) {
+			// Perform the clicked action on the first unit in either selected buildings or units
 			if(self.game.gui.isClickOnUi(self.mousex+globalx, self.mousey+globaly)) {
-				var result = self.game.gui.getButtonClicked(self.mousex+globalx, self.mousey+globaly);
-				console.log(result);
+				var actionNum = self.game.gui.getButtonClicked(self.mousex+globalx, self.mousey+globaly);
+				if(actionNum !== -1) {
+					if(self.game.selectedBuildings.length > 0)
+					self.game.selectedBuildings[0].actions[actionNum].onClick();
+				else
+					self.game.selectedUnits[0].actions[actionNum].onClick();
+				}
 			}
 			else
 				self.game.startSelectBox(self.mousex+globalx, self.mousey+globaly);
@@ -172,7 +178,11 @@ Input.prototype = {
 		var self = this;
 
 		if (e.button == 0) {
-			self.game.endSelectBox(e);
+			if(self.game.gui.isClickOnUi(self.mousex+globalx, self.mousey+globaly)) {
+				// do nothing for now
+			}
+			else
+				self.game.endSelectBox(e);
 		} else if (e.button == 2) {
 			self.game.unitOrder(this.mousex+globalx, this.mousey+globaly);
 		}

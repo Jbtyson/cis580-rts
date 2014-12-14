@@ -18,7 +18,7 @@ var Towncenter = function(x, y, health, factionIndex, game) {
 
 	this.unitQueue = [];
 	
-	this.actions = [{thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.buildVillager()}];
+	this.actions = [{thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.buildVillager}];
 }
 
 Towncenter.prototype = new Building(0, this.factionIndex, this.game);

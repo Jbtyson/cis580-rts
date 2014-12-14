@@ -83,8 +83,6 @@ Gui.prototype = {
 	},
 	
 	getButtonClicked: function(mousePosX, mousePosY) {
-		console.log(mousePosX);
-		console.log(mousePosY);
 		var button;
 		
 		// Return the number of the action if the click was on a command panel button
@@ -92,7 +90,7 @@ Gui.prototype = {
 			if(b.hitbox.contains(mousePosX, mousePosY))
 				button = b;
 		});
-		if(typeof(button) != "undefined") {
+		if(typeof(button) !== "undefined") {
 			console.log(button.id + " on the command panel was clicked");
 			return button.id;
 		}
@@ -102,11 +100,11 @@ Gui.prototype = {
 			if(b.hitbox.contains(mousePosX, mousePosY))
 				button = b;
 		});
-		if(typeof(button) != "undefined") {
+		if(typeof(button) !== "undefined") {
 			console.log(button.id + " on the unit bar was clicked");
 			game.selectUnit(button.id);	
-			return null;
+			return -1;
 		}
-		
+		return -1;
 	},
 }
