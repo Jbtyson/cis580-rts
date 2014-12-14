@@ -33,7 +33,6 @@ var Game = function (canvasId) {
 	this.input = new Input(this.screen, window, myself);
 	
 	// Necessary for gui making - James
-	//this.resources = { minerals:0, gas:100, supply:10, supplyMax:200 };
 	this.playerResources = new FactionResources();
 	this.selectedUnits = [];
 	this.selectedBuildings = [];
@@ -50,7 +49,6 @@ var Game = function (canvasId) {
 	this.currentTrack = 0;
 
 	this.mapMinerals = [];
-	//this.resources = [];
 	
 	Tilemap.load(tilemapData, {
 		onload: function(c) {
@@ -211,36 +209,16 @@ Game.prototype = {
 				}
 			}
 		} else {
-	
+
 			self.factions.forEach( function(faction) {
 				tc = faction.buildings[0];
 				faction.units.push(new Infantry(tc.x+32-64,tc.y-40-64,faction.color,self));
 				faction.units.push(new Infantry(tc.x+64-64,tc.y-40-64,faction.color,self));
 				faction.units.push(new Infantry(tc.x+96-64,tc.y-40-64,faction.color,self));
 			});
-	
-			/*self.factions.forEach( function(faction) {
-				tc = faction.buildings[0];
-				faction.units.push(new Hoplite(tc.x+32-64,tc.y-40-64,faction.color,self));
-				faction.units.push(new Hoplite(tc.x+64-64,tc.y-40-64,faction.color,self));
-				faction.units.push(new Hoplite(tc.x+96-64,tc.y-40-64,faction.color,self));
-			});*/
-			
-			//self.factions[0].units.push(new Hoplite(30, 30, self.factions[0].color, self));
-			//self.factions[0].units.push(new Hoplite(500, 500, self.factions[0].color, self));
-			//self.factions[1].units.push(new Hoplite(100, 30, self.factions[1].color, self
-			
-			//self.factions[0].units.push(new Infantry(30, 30, self.factions[0].color, self));
-			//self.factions[0].units.push(new Infantry(500, 500, self.factions[0].color, self));
-			//self.factions[1].units.push(new Infantry(100, 30, self.factions[1].color, self));
+
 		}
 		
-		/* // Add some resources
-		self.resources.push(new Metal(555,155,50));
-		self.resources.push(new Metal(955,355,50));
-		self.resources.push(new Metal(355,555,50));
-		self.resources.push(new Metal(255,955,50));
-		self.resources.push(new Metal(755,755,50)); */
 		// Add Map mineral Mines
 		self.mapMinerals.push(new MineralMine(55,55,50));
 		self.mapMinerals.push(new MineralMine(555,155,50));
@@ -387,7 +365,7 @@ Game.prototype = {
 		this.startTime = Date.now();
 		
 		// Create soundtrack playlist
-		self.playlist = Resource.soundtrack.shuffle();		
+		self.playlist = Resource.soundtrack.shuffle();
 		
 		// ***StartScreen - Michael Speirs
 		self.screenContext.drawImage(Resource.gui.img.splash,0,0);
@@ -455,7 +433,7 @@ Game.prototype = {
 				self.playlist[self.currentTrack].play();
 			}
 			
-			// We only want to render once		
+			// We only want to render once
 			self.render(this.elapsedTime);
 		
 			// Check which players are still active
