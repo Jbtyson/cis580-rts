@@ -46,7 +46,7 @@ Building.prototype = {
 	
 	render: function(context){
 	  
-		//Draw health bar.	
+		//Draw health bar.
 		context.save();
 		context.fillStyle = "#00FF00";
 		context.fillRect(this.world_x - globalx + 10, this.world_y - globaly + 10, this.health, 5);
@@ -54,7 +54,6 @@ Building.prototype = {
 
 		//Draw build progress bar.
 		if(this.isBuilding){
-				
 			context.save();
 			context.fillStyle = "#FFFFFF";
 			context.fillRect(this.world_x - globalx + 10, this.world_y - globaly + 15, Math.floor(this.health * this.buildPercent), 5);
