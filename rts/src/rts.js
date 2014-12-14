@@ -371,7 +371,7 @@ Game.prototype = {
 		
 			// Check which players are still active
 			self.factions.forEach( function(faction) {
-				if( faction.units.length == 0 && faction.units.length == 0 ) {
+				if( faction.units.length == 0 ) {//&& faction.buildings.length == 0 ) { // enable once buildings can be attacked
 					self.activePlayers--;
 				}
 			});
