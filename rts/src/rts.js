@@ -41,6 +41,11 @@ var Game = function (canvasId) {
 	this.factionColors = ["#FF0000","#0000FF"];
 	this.activePlayers = this.numPlayers;
 	
+	this.credits = new Credits();
+
+	this.playlist = [];
+	this.currentTrack = 0;
+	
 	Tilemap.load(tilemapData, {
 		onload: function(c) {
 			// Tilemap.render(c); // Is this necessary?
@@ -172,7 +177,7 @@ Game.prototype = {
 		
 		self.playerFaction = self.factions[0]; // self
 		
-		var spawnlots = true;
+		var spawnlots = false;
 		if (spawnlots) {
 			for (var i = 0; i < 5; i++) {
 				for (var j = 0; j < 5; j++) {
@@ -290,26 +295,30 @@ Game.prototype = {
 		
 		this.startTime = Date.now();
 		
+		// Create soundtrack playlist
+		self.playlist = Resource.soundtrack.shuffle();		
+		
 		// ***StartScreen - Michael Speirs
-		/*self.screenContext.drawImage(Resource.gui.img.splash,0,0);
+		self.screenContext.drawImage(Resource.gui.img.splash,0,0);
 		
 		var splashloop = setInterval( function() { // wait till user starts game
 			if( self.started ) {
 				clearInterval(splashloop);
 				window.requestNextAnimationFrame(
 					function(time) {
+						self.playlist[self.currentTrack].play();
 						self.loop.call(self, time);
 					}
 				);
 			}
-		},200);*/
+		},200);
 		
-		window.requestNextAnimationFrame(
+		/*window.requestNextAnimationFrame(
 			function(time) {
 				self.started = true;
 				self.loop.call(self, time);
 			}
-		);
+		);*/
 
 	},
 	
@@ -334,6 +343,7 @@ Game.prototype = {
 		// happening
 		this.elapsedTime = Math.min(this.elapsedTime, 4 * TIME_STEP);
 		
+		if(!self.gameOver) {
 		// We want a fixed game loop of 1/60th a second, so if necessary run multiple
 		// updates during each rendering pass
 		// Invariant: We have unprocessed time in excess of TIME_STEP
@@ -345,8 +355,16 @@ Game.prototype = {
 			this.gameTime += TIME_STEP;
 		}
 		
-		// We only want to render once
-		if(!self.gameOver) {
+			// Manage soundtrack
+			if( self.playlist[self.currentTrack].ended ) {
+				self.currentTrack++;
+				if(self.currentTrack >= self.playlist.length) {
+					self.currentTrack = 0;
+				}
+				self.playlist[self.currentTrack].play();
+			}
+			
+			// We only want to render once		
 			self.render(this.elapsedTime);
 		
 			// Check which players are still active
@@ -360,14 +378,21 @@ Game.prototype = {
 			if( self.activePlayers == 0 ) {
 				self.gameOver = true;
 				self.started = false;
-				self.screenContext.drawImage(Resource.gui.img.splash,0,0);
 				self.factions = [];
 				self.placeLevelObjects();
+				self.credits.active = true;
 			}
 		
+		} else if(this.gameOver || !this.started) { // render credits
+			if( self.credits.active ) {
+				self.credits.update();
+				self.credits.render(self.screenContext);
+			} else {
+				self.screenContext.drawImage(Resource.gui.img.splash,0,0);
+			}
 		}
 		
-		if (this.paused || this.gameOver || !this.started) {
+		if (this.paused) {
 			 // In PAUSE_TIMEOUT (100) ms, call this method again to see if the game
 			 // is still paused. There's no need to check more frequently.
 			 setTimeout( function () {
