@@ -1,5 +1,6 @@
 // Max Erdwien
 // Screen Size
+//Ryan Woodburn: replaced hoplites with infantry, changed cd.detect method call in UnitOrder
 var WIDTH = 640;
 var HEIGHT = 640;
 
@@ -29,17 +30,29 @@ var Game = function (canvasId) {
 	this.backBuffer.height = this.screen.height;
 	this.backBufferContext = this.backBuffer.getContext('2d');
 	
-	this.input = new Input(this.screen, window);
+	this.input = new Input(this.screen, window, myself);
 	
 	// Necessary for gui making - James
 	this.resources = { minerals:0, gas:100, supply:10, supplyMax:200 };
 	this.selectedUnits = [];
+	this.selectedBuildings = [];
 	this.gui = new Gui(this);
 	
+	this.factions = [];
+	this.numPlayers = 2;
+	this.factionColors = ["#FF0000","#0000FF"];
+	this.activePlayers = this.numPlayers;
+	
+	this.credits = new Credits();
+
+	this.playlist = [];
+	this.currentTrack = 0;
+
+	this.resources = [];
 	
 	Tilemap.load(tilemapData, {
 		onload: function(c) {
-			Tilemap.render(c);
+			// Tilemap.render(c); // Is this necessary?
 		},
 		ctx: this.screenContext
 	});
@@ -90,6 +103,10 @@ var Game = function (canvasId) {
 	this.lastTime = 0;
 	this.gameTime = 0;
 	this.STARTING_FPS = 60;
+	
+	this.started = false;
+	//this.units = [];
+	this.gameOver = false;
 }
 	
 Game.prototype = {
@@ -98,6 +115,7 @@ Game.prototype = {
 	// http://gameprogrammingpatterns.com/update-method.html
 	update: function(elapsedTime) {
 		var self = this;
+		
 		// scootch the map around
 		// check for boundary hits
 		if (globaly >= GLOBAL_HEIGHT-HEIGHT) {
@@ -138,42 +156,86 @@ Game.prototype = {
 		}
 		
 		// update units
-		for (var i = 0; i < this.units.length; i++) {
-			if (this.units[i].health <= 0) {
-				// removes unit from array and ensures no units are skipped
-				this.units.splice(i, 1);
-				i--;
-				continue;
+		self.factions.forEach( function(faction) {
+			for (var i = 0; i < faction.units.length; i++) {
+				if (faction.units[i].health <= 0) {
+					// removes unit from array and ensures no units are skipped
+					faction.units.splice(i, 1);
+					i--;
+					continue;
+				}
+				faction.units[i].update(elapsedTime);
 			}
-			this.units[i].update(elapsedTime);
-		}
+		});
 		
 		// Update the GUI
-		this.gui.update(elapsedTime);
+		self.gui.update(elapsedTime);
 	},
 	
 	placeLevelObjects: function() {
-		this.factions = new Array();
-		this.factions.push(new Faction("#FF0000"));
-		this.factions.push(new Faction("#0000FF"));
+		var self = this;
 		
-		this.playerFaction = this.factions[0];
+		for( i = 0; i < self.numPlayers; i++) { // create players and assign colors
+			self.factions.push(new Faction(self.factionColors[i]));
+		}
 		
-		this.units = new Array();
+		self.factions.forEach( function(faction) { // create towncenter for each team
+			var playerX = Math.random()*(GLOBAL_WIDTH-2*128) + 128;
+			var playerY = Math.random()*(GLOBAL_HEIGHT-2*128) + 128;
+			faction.buildings.push(new Towncenter(playerX,playerY,100,faction.color));
+		});
 		
-		var spawnlots = true;
+		self.playerFaction = self.factions[0]; // self
+		
+		// start centered on town center
+		var tc = self.playerFaction.buildings[0];
+		globalx = tc.x + 0.5*tc.width - 0.5*WIDTH;
+		globaly = tc.y + 0.5*tc.height - 0.5*HEIGHT;
+		
+		var spawnlots = false;
 		if (spawnlots) {
 			for (var i = 0; i < 5; i++) {
 				for (var j = 0; j < 5; j++) {
-					this.units.push(new Hoplite(i*64+32, j*64+32, this.factions[0]));
-					this.units.push(new Hoplite(i*64+32+320, j*64+32+320, this.factions[1]));
+
+					//self.factions[0].units.push(new Hoplite(i*64+32, j*64+32, self.factions[0].color, self));
+					//self.factions[1].units.push(new Hoplite(i*64+32+320, j*64+32+320, self.factions[1].color, self));
+					
+					self.factions[0].units.push(new Infantry(i*64+32, j*64+32, self.factions[0].color, self));
+					self.factions[1].units.push(new Infantry(i*64+32+320, j*64+32+320, self.factions[1].color, self));
 				}
 			}
 		} else {
-			this.units.push(new Hoplite(30, 30, this.factions[0]));
-			this.units.push(new Hoplite(500, 500, this.factions[0]));
-			this.units.push(new Hoplite(100, 30, this.factions[1]));
+	
+			self.factions.forEach( function(faction) {
+				tc = faction.buildings[0];
+				faction.units.push(new Infantry(tc.x+32-64,tc.y-40-64,faction.color,self));
+				faction.units.push(new Infantry(tc.x+64-64,tc.y-40-64,faction.color,self));
+				faction.units.push(new Infantry(tc.x+96-64,tc.y-40-64,faction.color,self));
+			});
+	
+			/*self.factions.forEach( function(faction) {
+				tc = faction.buildings[0];
+				faction.units.push(new Hoplite(tc.x+32-64,tc.y-40-64,faction.color,self));
+				faction.units.push(new Hoplite(tc.x+64-64,tc.y-40-64,faction.color,self));
+				faction.units.push(new Hoplite(tc.x+96-64,tc.y-40-64,faction.color,self));
+			});*/
+			
+			//self.factions[0].units.push(new Hoplite(30, 30, self.factions[0].color, self));
+			//self.factions[0].units.push(new Hoplite(500, 500, self.factions[0].color, self));
+			//self.factions[1].units.push(new Hoplite(100, 30, self.factions[1].color, self
+			
+			//self.factions[0].units.push(new Infantry(30, 30, self.factions[0].color, self));
+			//self.factions[0].units.push(new Infantry(500, 500, self.factions[0].color, self));
+			//self.factions[1].units.push(new Infantry(100, 30, self.factions[1].color, self));
 		}
+		
+		// Add some resources
+		self.resources.push(new Metal(255,255,50));
+		self.resources.push(new Metal(555,155,50));
+		self.resources.push(new Metal(955,355,50));
+		self.resources.push(new Metal(355,555,50));
+		self.resources.push(new Metal(255,955,50));
+		self.resources.push(new Metal(755,755,50));
 	},
 	
 	startSelectBox: function(x, y) {
@@ -181,25 +243,43 @@ Game.prototype = {
 	},
 	
 	endSelectBox: function(e) {
+		var self = this;
+	
 		// Clear the selected units (James)
-		this.selectedUnits = [];
+		self.selectedUnits = [];
+		self.selectedBuildings = [];
 		
-		for (var i = 0; i < this.units.length; i++) {
-			if (!e.ctrlKey && !e.shiftKey) {
-				this.units[i].selected = false;
+		self.factions.forEach( function(faction) {
+			for (var i = 0; i < faction.units.length; i++) {
+				if (!e.ctrlKey && !e.shiftKey) {
+					faction.units[i].selected = false;
+				}
+				if (faction.units[i].color == self.playerFaction.color &&
+						self.cd.detect(self.sb, faction.units[i])) {
+					faction.units[i].selected = true;
+					console.log(faction.units[i]);
+					// Add the selected unit into the array of selected units (James)
+					self.selectedUnits.push(faction.units[i]);
+				}
 			}
-			if (this.units[i].faction == this.playerFaction &&
-					this.cd.detect(this.sb, this.units[i])) {
-				this.units[i].selected = true;
-				console.log(this.units[i]);
-				// Add the selected unit into the array of selected units (James)
-				this.selectedUnits.push(this.units[i]);
-			}
-		}
-		this.sb = null;
+			faction.buildings.forEach( function(building) {
+				if (!e.ctrlKey && !e.shiftKey) {
+					building.selected = false;
+				}
+				if(building.color == self.playerFaction.color &&
+						self.cd.detect(self.sb, building)) {
+					building.selected = true;
+					self.selectedBuildings.push(building);
+				}
+			});
+		});
+
+		self.sb = null;
 	},
 	
 	unitOrder: function(x, y) {
+		var self = this;
+		
 		var mousebox = {
 			getHitbox: function() {
 				return {
@@ -208,30 +288,46 @@ Game.prototype = {
 					y:y,
 					radius:0
 				};
+			},
+			getAttackRange: function() {
+				return {
+					type:"circle",
+					x:x,
+					y:y,
+					radius:0
+				};
 			}
 		};
-		for (var i = 0; i < this.units.length; i++) {
-			if (this.units[i].faction != this.playerFaction &&
-					this.cd.detect(this.units[i], mousebox)) {
-				for (var j = 0; j < this.units.length; j++) {
-					if (this.units[j].selected) {
-						this.units[j].attack(this.units[i]);
+
+		self.factions.forEach( function(faction) {
+			for (var i = 0; i < faction.units.length; i++) {
+				if (faction.units[i].color != self.playerFaction &&
+						self.cd.detect(faction.units[i], mousebox)) {
+					for (var j = 0; j < faction.units.length; j++) {
+						if (faction.units[j].selected) {
+							faction.units[j].attack(faction.units[i]);
+						}
 					}
+					return;
 				}
-				return;
 			}
-		}
-		this.moveUnit(x, y);
+		});
+
+		self.moveUnit(x, y);
 	},
 	
 	moveUnit: function(x, y) {
+		var self = this;
+		
 		// more efficient to have a seperate array of selected units
 		// instead of searching the whole thing; fix later, if necessary
-		for (var i = 0; i < this.units.length; i++) {
-			if (this.units[i].selected) {
-				this.units[i].move(x, y);
+		self.factions.forEach( function(faction) {
+			for (var i = 0; i < faction.units.length; i++) {
+				if (faction.units[i].selected) {
+					faction.units[i].move(x, y);
+				}
 			}
-		}
+		});
 	},
 	
 	// Selects a unit from the array of selected units
@@ -244,24 +340,35 @@ Game.prototype = {
 	
 	render: function(elapsedTime) {
 		var self = this;
-		//this.backBufferContext.translate(-70, 0);
-		Tilemap.render(this.backBufferContext);
 		
+		//self.backBufferContext.translate(-70, 0);
+		Tilemap.render(self.backBufferContext);
+		
+		// render resources
+		self.resources.forEach( function(resource) {
+			resource.render(self.backBufferContext);
+		});
+
 		// render units
-		for (var i = 0; i < this.units.length; i++) {
-			this.units[i].render(this.backBufferContext);
-		}
+		self.factions.forEach( function(faction) {
+			for (var i = 0; i < faction.units.length; i++) { // render units
+				faction.units[i].render(self.backBufferContext);
+			}
+			faction.buildings.forEach( function(building) { // render buildings
+				building.render(self.backBufferContext);
+			});
+		});
 		
 		// render selection box
-		if (this.sb != null) {
-			this.sb.render(this.backBufferContext);
+		if (self.sb != null) {
+			self.sb.render(self.backBufferContext);
 		}
 		
 		// Render the GUI
-		this.gui.render(this.backBufferContext);
+		self.gui.render(self.backBufferContext);
 		
 		// Flip buffers
-		this.screenContext.drawImage(this.backBuffer, 0, 0);
+		self.screenContext.drawImage(self.backBuffer, 0, 0);
 	},
 	
 	start: function() {
@@ -269,11 +376,31 @@ Game.prototype = {
 		
 		this.startTime = Date.now();
 		
-		window.requestNextAnimationFrame(
+		// Create soundtrack playlist
+		self.playlist = Resource.soundtrack.shuffle();		
+		
+		// ***StartScreen - Michael Speirs
+		self.screenContext.drawImage(Resource.gui.img.splash,0,0);
+		
+		var splashloop = setInterval( function() { // wait till user starts game
+			if( self.started ) {
+				clearInterval(splashloop);
+				window.requestNextAnimationFrame(
+					function(time) {
+						self.playlist[self.currentTrack].play();
+						self.loop.call(self, time);
+					}
+				);
+			}
+		},200);
+		
+		/*window.requestNextAnimationFrame(
 			function(time) {
+				self.started = true;
 				self.loop.call(self, time);
 			}
-		);
+		);*/
+
 	},
 	
 	// The game loop.  See
@@ -297,6 +424,7 @@ Game.prototype = {
 		// happening
 		this.elapsedTime = Math.min(this.elapsedTime, 4 * TIME_STEP);
 		
+		if(!self.gameOver) {
 		// We want a fixed game loop of 1/60th a second, so if necessary run multiple
 		// updates during each rendering pass
 		// Invariant: We have unprocessed time in excess of TIME_STEP
@@ -308,16 +436,70 @@ Game.prototype = {
 			this.gameTime += TIME_STEP;
 		}
 		
-		// We only want to render once
-		self.render(this.elapsedTime);
-		
-		// Repeat the game loop
-		window.requestNextAnimationFrame(
-			function(time) {
-				self.loop.call(self, time);
+			// Manage soundtrack
+			if( self.playlist[self.currentTrack].ended ) {
+				self.currentTrack++;
+				if(self.currentTrack >= self.playlist.length) {
+					self.currentTrack = 0;
+				}
+				self.playlist[self.currentTrack].play();
 			}
-		);
+			
+			// We only want to render once		
+			self.render(this.elapsedTime);
+		
+			// Check which players are still active
+			self.factions.forEach( function(faction) {
+				if( faction.units.length == 0 ) {//&& faction.buildings.length == 0 ) { // enable once buildings can be attacked
+					self.activePlayers--;
+				}
+			});
+		
+			// ***TODO:Check victory conditions
+			if( self.activePlayers == 0 ) {
+				self.gameOver = true;
+				self.started = false;
+				self.factions = [];
+				self.placeLevelObjects();
+				self.credits.active = true;
+			}
+		
+		} else if(this.gameOver || !this.started) { // render credits
+			if( self.credits.active ) {
+				self.credits.update();
+				self.credits.render(self.screenContext);
+			} else {
+				self.screenContext.drawImage(Resource.gui.img.splash,0,0);
+			}
+		}
+		
+		if (this.paused) {
+			 // In PAUSE_TIMEOUT (100) ms, call this method again to see if the game
+			 // is still paused. There's no need to check more frequently.
+			 setTimeout( function () {
+					window.requestNextAnimationFrame(
+						 function (time) {
+								self.loop.call(self, time);
+						 });
+			 }, 200);
+             
+		} else {
+			// Repeat the game loop
+			window.requestNextAnimationFrame( function(time) {
+					self.loop.call(self, time);
+			});
+		}
 	}
 }
 var game = new Game('game');
-game.start();
+
+// Waits till images are loaded before starting game
+imgLoaded = setInterval( function() {
+	if( Resource.gui.loading > 0) {
+		clearInterval(imgLoaded);
+		console.log("PASS");
+		game.start();
+	} else {
+		console.log("NOPASS");
+	}
+}, 250);

@@ -2,7 +2,7 @@
 // James Tyson
 //----------------------------------
 GuiResources = function() {
-	this.loading = 0;
+	this.loading = 8;
 	
 	this.img = {
 		// Minimap
@@ -24,6 +24,9 @@ GuiResources = function() {
 		minerals: new Image(),
 		gas: new Image(),
 		supply: new Image(),
+		
+		// Splash Screen
+		splash: new Image()
 	};
 	this.sfx = {
 		// Need some button click sounds
@@ -52,6 +55,9 @@ GuiResources.prototype = {
 		// Resource Bar
 		this.img.resourceBar.onload = onload;
 		this.img.resourceBar.src = "img/ui/resourceBar.png";
+		// Splash Screen
+		this.img.splash.onload = onload;
+		this.img.splash.src = "img/startScreen.png";
 	
 		// this.sfx.audio.onload = this.onload;
 		// this.sfx.audio.src = "gjr.wav";
