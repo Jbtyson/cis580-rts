@@ -183,7 +183,7 @@ Game.prototype = {
 		globalx = tc.x + 0.5*tc.width - 0.5*WIDTH;
 		globaly = tc.y + 0.5*tc.height - 0.5*HEIGHT;
 		
-		var spawnlots = true;
+		var spawnlots = false;
 		if (spawnlots) {
 			for (var i = 0; i < 5; i++) {
 				for (var j = 0; j < 5; j++) {
@@ -192,9 +192,15 @@ Game.prototype = {
 				}
 			}
 		} else {
-			self.factions[0].units.push(new Hoplite(30, 30, self.factions[0].color, self));
-			self.factions[0].units.push(new Hoplite(500, 500, self.factions[0].color, self));
-			self.factions[1].units.push(new Hoplite(100, 30, self.factions[1].color, self));
+			self.factions.forEach( function(faction) {
+				tc = faction.buildings[0];
+				faction.units.push(new Hoplite(tc.x+32,tc.y-40,faction.color,self));
+				faction.units.push(new Hoplite(tc.x+64,tc.y-40,faction.color,self));
+				faction.units.push(new Hoplite(tc.x+96,tc.y-40,faction.color,self));
+			});
+			//self.factions[0].units.push(new Hoplite(30, 30, self.factions[0].color, self));
+			//self.factions[0].units.push(new Hoplite(500, 500, self.factions[0].color, self));
+			//self.factions[1].units.push(new Hoplite(100, 30, self.factions[1].color, self));
 		}
 	},
 	

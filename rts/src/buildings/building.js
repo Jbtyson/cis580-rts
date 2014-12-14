@@ -5,20 +5,23 @@
 
 
 
-var Building = function(x, y, health, color){
-	this.x = x;
-	this.y = y;
-	this.health = health;
-	this.color = color;
+var Building = function(){
+	// Default values
+	this.x = 100;
+	this.y = 100;
+	this.health = 100;
+	this.color = "#000000";
 	
-	this.width;
-	this.height;
+	this.width = 64;
+	this.height = 64;
+	
+	this.gatherPoint = {x:100,y:100};
 	
 	this.type;
 	this.buildTime;
 	this.state;
-	this.world_x = x;
-	this.world_y = y;
+	this.world_x = 100;
+	this.world_y = 100;
 }
 
 Building.prototype = {

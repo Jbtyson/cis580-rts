@@ -8,7 +8,7 @@ var Towncenter = function(x,y,health,color) {
 	this.height = 128;
 }
 
-Towncenter.prototype = new Building(100,100,100,"#000000");
+Towncenter.prototype = new Building();
 
 Towncenter.prototype.render = function(context) {
 	var self = this;
