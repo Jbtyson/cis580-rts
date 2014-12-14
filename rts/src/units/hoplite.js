@@ -125,8 +125,8 @@ Hoplite.prototype.update = function(elapsedTime) {
 					self.loseStack(game.units[i]);
 				}
 			}
-		}
-	});
+		});
+	}
 }
 
 Hoplite.prototype.getHitbox = function() {

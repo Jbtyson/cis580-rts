@@ -61,18 +61,12 @@ CommandPanel.prototype = {
 	          // Render background for buttons
 		  	    context.drawImage(this.buttonImage, this.buttons[i].position.x, this.buttons[i].position.y);
 	        }
-		  }
 		  
 			// Render background for buttons
-			//context.drawImage(this.buttonImage, this.buttons[i].position.x, this.buttons[i].position.y);
+			context.drawImage(this.buttonImage, this.buttons[i].position.x, this.buttons[i].position.y);
 			// Render button images
-<<<<<<< HEAD
 			this.buttons[i].render(context);
 		}
-=======
-			//context.drawImage(this.buttons[i].image, this.buttons[i].position.x, this.buttons[i].position.y);
-		
->>>>>>> 2b0bd478d4027d16808e1c0f45f63bf547752807
 		
 		context.restore();
 	},
