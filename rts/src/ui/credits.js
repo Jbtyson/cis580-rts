@@ -14,7 +14,7 @@ var Credits = function() {
 						"Yi Wang",
 						"Ryan Woodburn",
 						"Li Yuenyang",
-						"Chris Delpire"
+						"Chris Delpire",
 						"",
 						"",
 						"Soundtrack",

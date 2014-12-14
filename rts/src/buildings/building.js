@@ -42,17 +42,24 @@ Building.prototype = {
 	
 	render: function(context){
 	  
-	  //Draw building selection box;
-	  if(this.selected){
-	    context.drawImage(this.game.Resource.buildings.img.towncenterSelection,
+		//Draw health bar.	
+		context.save();
+		context.fillStyle = "#00FF00";
+		context.fillRect(this.world_x - globalx + 10, this.world_y - globaly + 10, this.health, 5);
+		context.restore();
+
+
+		//Draw building selection box.
+		if(this.selected){
+		context.drawImage(this.game.Resource.buildings.img.towncenterSelection,
 							BUILDING_SPRITE_DATA[this.type].x, BUILDING_SPRITE_DATA[this.type].y,
 							BUILDING_SPRITE_DATA[this.type].width, BUILDING_SPRITE_DATA[this.type].height,
 							this.world_x - globalx, this.world_y - globaly,
 							BUILDING_SPRITE_DATA[this.type].width, BUILDING_SPRITE_DATA[this.type].height);
-	    
-	  }
-	  
-	  //Draw building.
+
+		}
+
+		//Draw building.
 		context.drawImage(this.game.Resource.buildings.img.towncenter[this.faction],
 							BUILDING_SPRITE_DATA[this.type].x + BUILDING_SPRITE_DATA[this.type].width * this.animationFrame, BUILDING_SPRITE_DATA[this.type].y,
 							BUILDING_SPRITE_DATA[this.type].width, BUILDING_SPRITE_DATA[this.type].height,
@@ -70,6 +77,14 @@ Building.prototype = {
 	    this.animationTime = 0;
 	    this.animationFrame = (this.animationFrame + 1) % BUILDING_SPRITE_DATA[this.type].animationFrames;
 	  }
+	},
+
+	takeDamage: function(damage){
+		this.damage -= damage;
+
+		if(damage <= 0){
+		//Destroy building.
+		}
 	},
 	
 	getHitbox: function() {

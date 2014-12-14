@@ -60,8 +60,8 @@ Towncenter.prototype.getHitbox = function() { // Update to square hitbox
 
 	return {
 		type: "circle",
-		x: self.x,
-		y: self.y,
+		x: self.x + 64,
+		y: self.y + 64,
 		radius: self.radius
 	};
 }
