@@ -84,9 +84,19 @@ Towncenter.prototype.update = function(elapsedTime) {
 Towncenter.prototype.buildVillager = function(){
 
 	//TODO: Check if the player has enough resources.
+  if(!this.game.playerResources.minerals.canSubtract(50)){
+    return;
+  }
+  
+  if(!this.game.playerResources.supply.canAdd(1)){
+    return;
+  }
+  
+  this.game.playerResources.minerals.subtract(50);
+  this.game.playerResources.supply.add(1);
 
 	//TODO: Remove the necessary resources to build the unit.
-
+  
 	this.unitQueue.push(2500);
 	this.isBuilding = true;
 
