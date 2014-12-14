@@ -1,13 +1,13 @@
 // max erdwien
 //Edited by Ryan Woodburn
-//Building variables and method by 
+//Building variables and method by Yi Wang
 var Villager = function(x, y, color, game) {
 	this.game = game;
 
 	this.maxhealth = 60;
 	//this.__proto__ = new Unit(x, y, this.maxhealth, color);
 	
-	this.radius = 8;
+	this.radius = 32;
 	this.range = 0;
 	this.borderwidth = 6;
 	this.maxWeight = 50;

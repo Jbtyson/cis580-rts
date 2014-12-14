@@ -6,13 +6,13 @@ var Infantry = function(x, y, color, game) {
 	this.maxhealth = 30;
 	//this.__proto__ = new Unit(x, y, this.maxhealth, faction);
 	
-	this.radius = 8;
+	this.radius = 32;
 	this.borderwidth = 3;
 	// in pixels per second
 	this.maxvel = 100;
 	// in health per second
 	this.damage = 6;
-	this.range = 8;
+	this.range = 60;
 	
 	this.x = x;
 	this.y = y;
@@ -28,7 +28,7 @@ var Infantry = function(x, y, color, game) {
 
 Infantry.prototype = new Unit(100,100,60,"#000000");
 
-Infantry.prototype.render = function(ctx) {
+/*Infantry.prototype.render = function(ctx) {
 	var self = this;
 
 	ctx.save();
@@ -54,7 +54,7 @@ Infantry.prototype.render = function(ctx) {
 	ctx.rect(self.x-(maxbarlength/2)-globalx, self.y-(barheight/2)-globaly,	barlength, barheight);
 	ctx.fill();
 	ctx.restore();
-}
+}*/
 
 Infantry.prototype.update = function(elapsedTime) {
 	var self = this;
@@ -66,6 +66,7 @@ Infantry.prototype.update = function(elapsedTime) {
 			self.move(self.targetunit.x, self.targetunit.y);
 			self.mode = "attack";
 		}
+		
 		var deltaxi = self.targetx - self.x;
 		var deltayi = self.targety - self.y;
 		
@@ -77,11 +78,18 @@ Infantry.prototype.update = function(elapsedTime) {
 		if (self.mode == "move") {
 			var deltaxf = self.targetx - self.x;
 			var deltayf = self.targety - self.y;
-			var deltayf = self.targety - self.y;
+			//var deltayf = self.targety - self.y;
 			if (deltaxi/deltaxf < 0 || deltaxi/deltaxf < 0) {
 				self.velx = 0;
 				self.vely = 0;
 				self.mode = "idle";
+			}
+			
+			this.animationTime += elapsedTime;
+	  
+			if(this.animationTime >= 50){
+				this.animationTime = 0;
+				this.animationFrame = (this.animationFrame + 1) % UNIT_SPRITE_DATA[0].animationFrames;
 			}
 		}
 	}
@@ -93,18 +101,22 @@ Infantry.prototype.update = function(elapsedTime) {
 			self.mode = "idle";
 			self.targetunit = null;
 		}
+		this.animationTime += elapsedTime;
+		this.animationFrame = 0;
 	}
 	
-	else if (self.mode == "idle") {
-		self.game.factions.forEach( function(faction) {
-			for (var i = 0; i <  faction.units.length; i++) {
-				if (faction.units[i].color != self.color &&
-						self.game.cd.detect(self, faction.units[i])) {
-					self.attack(faction.units[i]);
-				}
-			}
-		});
+	else {
+		this.animationTime += elapsedTime;
+		this.animationFrame = 0;
 	}
+	self.game.factions.forEach( function(faction) {
+		for (var i = 0; i <  faction.units.length; i++) {
+			if (faction.units[i].color != self.color &&
+					self.game.cd.detect(self, faction.units[i])) {
+				self.attack(faction.units[i]);
+			}
+		}
+	});
 }
 
 Infantry.prototype.getHitbox = function() {
