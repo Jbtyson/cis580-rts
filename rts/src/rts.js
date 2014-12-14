@@ -35,6 +35,7 @@ var Game = function (canvasId) {
 	// Necessary for gui making - James
 	this.resources = { minerals:0, gas:100, supply:10, supplyMax:200 };
 	this.selectedUnits = [];
+	this.selectedBuildings = [];
 	this.gui = new Gui(this);
 	
 	this.factions = [];
@@ -171,9 +172,20 @@ Game.prototype = {
 			self.factions.push(new Faction(self.factionColors[i]));
 		}
 		
+		self.factions.forEach( function(faction) { // create towncenter for each team
+			var playerX = Math.random()*(GLOBAL_WIDTH-2*128) + 128;
+			var playerY = Math.random()*(GLOBAL_HEIGHT-2*128) + 128;
+			faction.buildings.push(new Towncenter(playerX,playerY,100,faction.color));
+		});
+		
 		self.playerFaction = self.factions[0]; // self
 		
-		var spawnlots = true;
+		// start centered on town center
+		var tc = self.playerFaction.buildings[0];
+		globalx = tc.x + 0.5*tc.width - 0.5*WIDTH;
+		globaly = tc.y + 0.5*tc.height - 0.5*HEIGHT;
+		
+		var spawnlots = false;
 		if (spawnlots) {
 			for (var i = 0; i < 5; i++) {
 				for (var j = 0; j < 5; j++) {
@@ -186,14 +198,28 @@ Game.prototype = {
 				}
 			}
 		} else {
+	
+			self.factions.forEach( function(faction) {
+				tc = faction.buildings[0];
+				faction.units.push(new Infantry(tc.x+32-64,tc.y-40-64,faction.color,self));
+				faction.units.push(new Infantry(tc.x+64-64,tc.y-40-64,faction.color,self));
+				faction.units.push(new Infantry(tc.x+96-64,tc.y-40-64,faction.color,self));
+			});
+	
+			/*self.factions.forEach( function(faction) {
+				tc = faction.buildings[0];
+				faction.units.push(new Hoplite(tc.x+32-64,tc.y-40-64,faction.color,self));
+				faction.units.push(new Hoplite(tc.x+64-64,tc.y-40-64,faction.color,self));
+				faction.units.push(new Hoplite(tc.x+96-64,tc.y-40-64,faction.color,self));
+			});*/
+			
 			//self.factions[0].units.push(new Hoplite(30, 30, self.factions[0].color, self));
 			//self.factions[0].units.push(new Hoplite(500, 500, self.factions[0].color, self));
-			//self.factions[1].units.push(new Hoplite(100, 30, self.factions[1].color, self));
+			//self.factions[1].units.push(new Hoplite(100, 30, self.factions[1].color, self
 			
-			self.factions[0].units.push(new Infantry(30, 30, self.factions[0].color, self));
-			self.factions[0].units.push(new Infantry(500, 500, self.factions[0].color, self));
-			self.factions[1].units.push(new Infantry(100, 30, self.factions[1].color, self));
-
+			//self.factions[0].units.push(new Infantry(30, 30, self.factions[0].color, self));
+			//self.factions[0].units.push(new Infantry(500, 500, self.factions[0].color, self));
+			//self.factions[1].units.push(new Infantry(100, 30, self.factions[1].color, self));
 		}
 	},
 	
@@ -206,6 +232,7 @@ Game.prototype = {
 	
 		// Clear the selected units (James)
 		self.selectedUnits = [];
+		self.selectedBuildings = [];
 		
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
@@ -220,6 +247,16 @@ Game.prototype = {
 					self.selectedUnits.push(faction.units[i]);
 				}
 			}
+			faction.buildings.forEach( function(building) {
+				if (!e.ctrlKey && !e.shiftKey) {
+					building.selected = false;
+				}
+				if(building.color == self.playerFaction.color &&
+						self.cd.detect(self.sb, building)) {
+					building.selected = true;
+					self.selectedBuildings.push(building);
+				}
+			});
 		});
 
 		self.sb = null;
@@ -286,9 +323,12 @@ Game.prototype = {
 		
 		// render units
 		self.factions.forEach( function(faction) {
-			for (var i = 0; i < faction.units.length; i++) {
+			for (var i = 0; i < faction.units.length; i++) { // render units
 				faction.units[i].render(self.backBufferContext);
 			}
+			faction.buildings.forEach( function(building) { // render buildings
+				building.render(self.backBufferContext);
+			});
 		});
 		
 		// render selection box
@@ -369,7 +409,7 @@ Game.prototype = {
 		
 			// Check which players are still active
 			self.factions.forEach( function(faction) {
-				if( faction.units.length == 0 && faction.units.length == 0 ) {
+				if( faction.units.length == 0 ) {//&& faction.buildings.length == 0 ) { // enable once buildings can be attacked
 					self.activePlayers--;
 				}
 			});
