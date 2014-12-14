@@ -1,5 +1,7 @@
 // max erdwien
-var Input = function(screen, window) {
+var Input = function(screen, window, game) {
+	this.game = game;
+
 	var rect = screen.getBoundingClientRect();
 	this.xoffset = rect.left;
 	this.yoffset = rect.top;
@@ -27,8 +29,11 @@ var Input = function(screen, window) {
 	};
 	this.mousescroll = false;
 }
+
 Input.prototype = {	
 	keyDown: function(e) {
+		var self = this;
+
 		switch(e.keyCode) {
 			case 65: // a
 			case 37: // left
@@ -58,7 +63,17 @@ Input.prototype = {
 				break;
 			case 80: // p; pause
 			case 32: // spacebar
-				game.paused = !game.paused;
+				self.game.paused = !self.game.paused;
+				break;
+			case 13: // enter; start new game
+				if( !game.started ) {
+					game.started = true;
+				}
+				if(game.gameOver) {
+					// reset game
+					game.gameOver = false;
+					game.activePlayers = game.numPlayers;
+				}
 				break;
 		}
 	},
@@ -85,13 +100,15 @@ Input.prototype = {
 	},
 	
 	mousemove: function(e) {
+		var self = this;
+
 		this.mousex = e.clientX - this.xoffset;
 		this.mousey = e.clientY - this.yoffset;
 		
 		// update selection box
-		if (game.sb != null) {
-			game.sb.x = this.mousex+globalx;
-			game.sb.y = this.mousey+globaly;
+		if (self.game.sb != null) {
+			self.game.sb.x = this.mousex+globalx;
+			self.game.sb.y = this.mousey+globaly;
 		}
 		
 		// check for scrolling
@@ -130,13 +147,15 @@ Input.prototype = {
 	},
 	
 	mousedown: function(e) {
+		var self = this;
+
 		/* mouse buttons:
 		 * 0 = left click
 		 * 1 = middle click
 		 * 2 = right click
 		 */
 		if (e.button == 0) {
-			game.startSelectBox(this.mousex+globalx, this.mousey+globaly);
+			self.game.startSelectBox(this.mousex+globalx, this.mousey+globaly);
 		} else if (e.button == 2) {
 			
 		} else if (e.button == 1) {
@@ -145,17 +164,19 @@ Input.prototype = {
 	},
 	
 	mouseup: function(e) {
+		var self = this;
+
 		if (e.button == 0) {
-			game.endSelectBox(e);
+			self.game.endSelectBox(e);
 		} else if (e.button == 2) {
-			game.unitOrder(this.mousex+globalx, this.mousey+globaly);
+			self.game.unitOrder(this.mousex+globalx, this.mousey+globaly);
 		}
 	},
 	
 	// todo: implement double click to select all of one unit type
 	dblclick: function(e) {
 		if (e.button == 0) {
-			//game.selectAll();
+			//self.game.selectAll();
 		}
 	}
 }

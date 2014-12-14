@@ -1,6 +1,10 @@
 // max erdwien
+<<<<<<< HEAD
 // modified by: C.J. Dopheide
 var Unit = function(x, y, health, faction) {
+=======
+var Unit = function(x, y, health, color) {
+>>>>>>> ba09a871b5f838b28a88d8ade19df390e164aa1b
 	this.x = x;
 	this.y = y;
 	this.curNode = {
@@ -12,7 +16,7 @@ var Unit = function(x, y, health, faction) {
 	this.curNode.x = Math.floor(x/64);
 	this.curNode.y = Math.floor(y/64);
 	this.health = health;
-	this.faction = faction;
+	this.color = color;
 	// mode is basically an enumeration. its values are:
 	// idle
 	// move
@@ -35,6 +39,7 @@ var Unit = function(x, y, health, faction) {
 		y: 0,
 	}
 	this.targetunit = null;
+<<<<<<< HEAD
 	
 	/* C.J. Dopheide
 	This takes in an x y coordinate and uses an A* search to get a path to those coordinates.
@@ -134,3 +139,33 @@ var Unit = function(x, y, health, faction) {
 		this.getPath(this.x + xdist/3, this.y + ydist/3);
 	}
 }
+=======
+	this.actions = [];
+}
+
+Unit.prototype = {
+	render: function() {
+
+	},
+
+	update: function() {
+
+	},
+
+	getHitbox: function() {
+
+	},
+	
+	getAttackRange: function() {
+	
+	},
+
+	move: function() {
+	
+	},
+
+	attack: function() {
+
+	}
+}
+>>>>>>> ba09a871b5f838b28a88d8ade19df390e164aa1b

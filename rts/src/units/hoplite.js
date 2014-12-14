@@ -1,7 +1,10 @@
 // max erdwien
-var Hoplite = function(x, y, faction) {
+//Ryan Woodburn: Added a range of 0, added GetAttackRange() method
+var Hoplite = function(x, y, color, game) {
+	this.game = game;
+
 	this.maxhealth = 60;
-	this.__proto__ = new Unit(x, y, this.maxhealth, faction);
+	//this.__proto__ = new Unit(x, y, this.maxhealth, color);
 	
 	this.radius = 16;
 	this.borderwidth = 6;
@@ -9,42 +12,54 @@ var Hoplite = function(x, y, faction) {
 	this.maxvel = 200;
 	// in health per second
 	this.damage = 6;
+	this.range = 0;
 	
-	this.render = HopliteRender;
-	this.update = HopliteUpdate;
-	this.getHitbox = HopliteGetHitbox;
-	this.move = HopliteMove;
-	this.attack = HopliteAttack;
+	this.x = x;
+	this.y = y;
+	this.color = color;
+	
+	//this.render = HopliteRender;
+	//this.update = HopliteUpdate;
+	//this.getHitbox = HopliteGetHitbox;
+	//this.move = HopliteMove;
+	//this.attack = HopliteAttack;
 }
 
-HopliteRender = function(ctx) {
+Hoplite.prototype = new Unit(100,100,60,"#000000");
+
+Hoplite.prototype.render = function(ctx) {
+	var self = this;
+
 	ctx.save();
 	ctx.beginPath();
-	if (this.selected) {
+	if (self.selected) {
 		ctx.strokeStyle = "#00FF00";
 	} else {
 		ctx.strokeStyle = "#000000";
 	}
-	ctx.lineWidth = this.borderwidth;
-	ctx.fillStyle = this.faction.color;
+	ctx.lineWidth = self.borderwidth;
+	ctx.fillStyle = self.color;
 	ctx.beginPath();
-	ctx.arc(this.x-globalx, this.y-globaly, this.radius-(this.borderwidth/2), 0, 2*Math.PI, false);
+	ctx.arc(self.x-globalx, self.y-globaly, self.radius-(self.borderwidth/2), 0, 2*Math.PI, false);
 	ctx.fill();
 	ctx.stroke();
 	
 	// draw health bar
 	var maxbarlength = 16;
 	var barheight = 4;
-	var barlength = maxbarlength * (this.health/this.maxhealth);
+	var barlength = maxbarlength * (self.health/self.maxhealth);
 	ctx.fillStyle = "#00FF00";
 	ctx.beginPath();
-	ctx.rect(this.x-(maxbarlength/2)-globalx, this.y-(barheight/2)-globaly,	barlength, barheight);
+	ctx.rect(self.x-(maxbarlength/2)-globalx, self.y-(barheight/2)-globaly,	barlength, barheight);
 	ctx.fill();
 	ctx.restore();
 }
 
-HopliteUpdate = function(elapsedTime) {
+Hoplite.prototype.update = function(elapsedTime) {
+	var self = this;
+
 	var secs = elapsedTime / 1000;
+<<<<<<< HEAD
 	if (this.mode == "move" ||
 			(this.mode == "attack" && !game.cd.detect(this.targetunit, this))) {
 		if (this.mode == "attack") {
@@ -58,11 +73,22 @@ HopliteUpdate = function(elapsedTime) {
 		}
 		var deltaxi = this.nextx - this.x;
 		var deltayi = this.nexty - this.y;
+=======
+	if (self.mode == "move" ||
+			(self.mode == "attack" && !self.game.cd.detect(self.targetunit, self))) {
+		if (self.mode == "attack") {
+			self.move(self.targetunit.x, self.targetunit.y);
+			self.mode = "attack";
+		}
+		var deltaxi = self.targetx - self.x;
+		var deltayi = self.targety - self.y;
+>>>>>>> ba09a871b5f838b28a88d8ade19df390e164aa1b
 		
 		// actually move
-		this.x += secs*this.velx;
-		this.y += secs*this.vely;
+		self.x += secs*self.velx;
+		self.y += secs*self.vely;
 		
+<<<<<<< HEAD
 		//update currentNode
 		this.curNode.x = Math.floor(this.x/64);
 		this.curNode.y = Math.floor(this.y/64);
@@ -84,42 +110,61 @@ HopliteUpdate = function(elapsedTime) {
 					this.vely = 0;
 					this.mode = "idle";	
 				}
+=======
+		// stop if target has been reached
+		if (self.mode == "move") {
+			var deltaxf = self.targetx - self.x;
+			var deltayf = self.targety - self.y;
+			if (deltaxi/deltaxf < 0 || deltaxi/deltaxf < 0) {
+				self.velx = 0;
+				self.vely = 0;
+				self.mode = "idle";
+>>>>>>> ba09a871b5f838b28a88d8ade19df390e164aa1b
 			}
 		}
 	}
 	
-	else if (this.mode == "attack" && game.cd.detect(this.targetunit, this)) {
-		this.targetunit.health -= this.damage*secs;
-		//console.log(this.targetunit.health);
-		if (this.targetunit.health <= 0) {
-			this.mode = "idle";
-			this.targetunit = null;
+	else if (self.mode == "attack" && self.game.cd.detect(self.targetunit, self)) {
+		self.targetunit.health -= self.damage*secs;
+		//console.log(self.targetunit.health);
+		if (self.targetunit.health <= 0) {
+			self.mode = "idle";
+			self.targetunit = null;
 		}
 	}
 	
-	else if (this.mode == "idle") {
-		for (var i = 0; i <  game.units.length; i++) {
-			if (game.units[i].faction != this.faction &&
-					game.cd.detect(this, game.units[i])) {
-				this.attack(game.units[i]);
+	else if (self.mode == "idle") {
+		self.game.factions.forEach( function(faction) {
+			for (var i = 0; i <  faction.units.length; i++) {
+				if (faction.units[i].color != self.color &&
+						self.game.cd.detect(self, faction.units[i])) {
+					self.attack(faction.units[i]);
+				}
 			}
+<<<<<<< HEAD
 			else if (game.units[i].faction == this.faction &&
 					game.cd.detect(this, game.units[i]) && this != game.units[i] &&game.units[i].mode == "idle") {
 				this.loseStack(game.units[i]);
 			}
 		}
+=======
+		});
+>>>>>>> ba09a871b5f838b28a88d8ade19df390e164aa1b
 	}
 }
 
-HopliteGetHitbox = function() {
+Hoplite.prototype.getHitbox = function() {
+	var self = this;
+
 	return {
 		type: "circle",
-		x: this.x,
-		y: this.y,
-		radius: this.radius
+		x: self.x,
+		y: self.y,
+		radius: self.radius
 	};
 }
 
+<<<<<<< HEAD
 HopliteMove = function(x, y) {
 	this.mode = "move";
 	this.getPath(x, y);
@@ -129,6 +174,48 @@ HopliteAttack = function(unit) {
 	this.mode = "attack";
 	this.targetunit = unit;
 	this.getPath(unit.x, unit.y);
+=======
+Hoplite.prototype.getAttackRange = function() {
+	var self = this;
+
+	return {
+		type: "circle",
+		x: self.x,
+		y: self.y,
+		radius: self.radius + self.range
+	};
+}
+
+Hoplite.prototype.move = function(x, y) {
+	var self = this;
+
+	self.mode = "move";
+	self.targetx = x;
+	self.targety = y;
+	
+	var deltax = x - self.x;
+	var deltay = y - self.y;
+	
+	self.velx = Math.sqrt((self.maxvel*self.maxvel * deltax*deltax) /
+			(deltax*deltax + deltay*deltay));
+	self.vely = Math.sqrt((self.maxvel*self.maxvel * deltay*deltay) /
+			(deltax*deltax + deltay*deltay));
+	if (self.velx/deltax < 0) {
+		self.velx *= -1;
+	}
+	if (self.vely/deltay < 0) {
+		self.vely *= -1;
+	}
+}
+
+Hoplite.prototype.attack = function(unit) {
+	var self = this;
+
+	// temporarily changes mode to "move"
+	self.move(unit.x, unit.y);
+	self.mode = "attack";
+	self.targetunit = unit;
+>>>>>>> ba09a871b5f838b28a88d8ade19df390e164aa1b
 }
 
 
