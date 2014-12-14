@@ -2,7 +2,7 @@
 // James Tyson
 //----------------------------------
 GuiResources = function() {
-	this.loading = 8;
+	this.loading = 10;
 	
 	this.img = {
 		// Minimap
@@ -17,6 +17,8 @@ GuiResources = function() {
 		
 		// Command Panel
 		commandPanel: new Image(),
+		villagerCommandButton: new Image(),
+		towncenterCommandButton: new Image(),
 		commandButton: new Image(),
 		
 		// Resource Bar
@@ -58,6 +60,12 @@ GuiResources.prototype = {
 		// Splash Screen
 		this.img.splash.onload = onload;
 		this.img.splash.src = "img/startScreen.png";
+		
+		this.img.villagerCommandButton.onload = onload;
+		this.img.villagerCommandButton.src = "img/ui/villagerCommandButton.png";
+		
+		this.img.towncenterCommandButton.onload = onload;
+		this.img.towncenterCommandButton.src = "img/ui/towncenterCommandButton.png";
 	
 		// this.sfx.audio.onload = this.onload;
 		// this.sfx.audio.src = "gjr.wav";
