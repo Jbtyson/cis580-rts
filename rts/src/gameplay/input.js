@@ -136,7 +136,11 @@ Input.prototype = {
 		 * 2 = right click
 		 */
 		if (e.button == 0) {
-			game.startSelectBox(this.mousex+globalx, this.mousey+globaly);
+			if(game.gui.isClickOnUi(this.mousex+globalx, this.mousey+globaly)) {
+				console.log("ui was clicked");
+			}
+			else
+				game.startSelectBox(this.mousex+globalx, this.mousey+globaly);
 		} else if (e.button == 2) {
 			
 		} else if (e.button == 1) {

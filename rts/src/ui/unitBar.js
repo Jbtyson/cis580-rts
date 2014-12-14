@@ -8,7 +8,7 @@ var UnitBar = function() {
 	this.hitbox = new Rectangle(this.position.x, this.position.y, this.dimensions.width, this.dimensions.height);
 	
 	this.unitList = [];
-	this.unitThumbnails = []
+	this.buttons = []
 	this.unitDimensions = { width:32, height:32 }
 	this.unitStartPosition = { x:this.position.x + 32, y:this.position.y + 16 }
 	this.maxUnitsDisplayed = ((this.dimensions.width / 32) - 2) * 2;
@@ -21,14 +21,15 @@ UnitBar.prototype = {
 		if(this.unitList != unitList) {
 			this.unitList = unitList;
 			// Clear the thumbnails and create the new ones
-			this.unitThumbnails = [];
+			this.buttons = [];
 			for(i = 0; i < this.maxUnitsDisplayed && i < this.unitList.length; i++) {
-				this.unitThumbnails[i] = {};
-				this.unitThumbnails[i].image = new Image();
-				//this.unitThumbnails[i].image.src = "img/common_unit"; //this.unitList[i].thumbPath;
-				this.unitThumbnails[i].position = {};
-				this.unitThumbnails[i].position.x = this.unitStartPosition.x + i%8 * this.unitDimensions.width;
-				this.unitThumbnails[i].position.y = (i < this.maxUnitsInRow) ? this.unitStartPosition.y : this.unitStartPosition.y + this.unitDimensions.height;
+				this.buttons[i] = new Button();
+				this.buttons[i].image = new Image();
+				//this.buttons[i].image.src = "img/common_unit"; //this.unitList[i].thumbPath;
+				this.buttons[i].position = {};
+				this.buttons[i].position.x = this.unitStartPosition.x + i%8 * this.unitDimensions.width;
+				this.buttons[i].position.y = (i < this.maxUnitsInRow) ? this.unitStartPosition.y : this.unitStartPosition.y + this.unitDimensions.height;
+				this.buttons[i].id = i;
 			}
 		}
 	},
@@ -39,11 +40,11 @@ UnitBar.prototype = {
 		context.drawImage(this.panelImage,this.position.x, this.position.y);
 		
 		// Render the unit thumbnails
-		for(i = 0; i < this.unitThumbnails.length; i++) {
+		for(i = 0; i < this.buttons.length; i++) {
 			// Render background for thumbnails
-			context.drawImage(this.unitBackgroundImage, this.unitThumbnails[i].position.x, this.unitThumbnails[i].position.y);
+			context.drawImage(this.unitBackgroundImage, this.buttons[i].position.x, this.buttons[i].position.y);
 			// Render thumbnail images
-			context.drawImage(this.unitThumbnails[i].image, this.unitThumbnails[i].position.x, this.unitThumbnails[i].position.y);
+			this.buttons[i].render(context);
 		}
 		context.restore();
 	},

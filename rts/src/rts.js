@@ -234,6 +234,14 @@ Game.prototype = {
 		}
 	},
 	
+	// Selects a unit from the array of selected units
+	// James Tyson
+	selectUnit: function(id) {
+		var unit = this.selectedUnits[id];
+		this.selectedUnits = [];
+		this.selectedUnits.push(unit);
+	},
+	
 	render: function(elapsedTime) {
 		var self = this;
 		//this.backBufferContext.translate(-70, 0);

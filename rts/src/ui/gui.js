@@ -10,7 +10,7 @@ var Gui = function(game) {
 	this.unitPortrait = new UnitPortrait();
 	this.timer = new Timer();
 	
-	// Add each panel to the list of hitboxes
+	// Add each static panel to the list of hitboxes
 	this.hitboxes = [];
 	this.hitboxes.push(this.minimap.hitbox);
 	this.hitboxes.push(this.commandPanel.hitbox);
@@ -49,7 +49,7 @@ Gui.prototype = {
 		
 		// Update the commandPanel
 		this.commandPanel.render(context);
-		
+
 		// Update the resourceBar
 		this.resourceBar.render(context);
 		
@@ -64,11 +64,34 @@ Gui.prototype = {
 	},
 	
 	// Returns if the mouse click that just occurred, occured on the ui
-	isClickOnUi: function(mousePos) {
-		this.hitboxes.foreach(function(hitbox) {
-			if(rectangle.contains(mousePos.x, mousePos.y))
-				return true;
+	isClickOnUi: function(mousePosX, mousePosY) {
+		var onUi = false;
+		this.hitboxes.forEach(function(hitbox) {
+			if(hitbox.contains(mousePosX, mousePosY)) {
+				onUi = true;
+				return;
+			}	
 		});
-		return false;
+		return onUi;
+	},
+	
+	getButtonClicked: function(mousePosX, mousePosY) {
+		var button = this.commandPanel.buttons.forEach(function(b) {
+			if(b.hitbox.contains(mousePosX, mousePosY))
+				return b;
+		});
+		if(typeof(button) != "undefined") {
+			console.log(button.id + " on the command panel was clicked");
+			return button.id;
+		}
+		
+		button = this.unitBar.buttons.forEach(function(b) {
+			if(b.hitbox.contains(mousePos.x, mousePos.y))
+				return b;
+		});
+		if(typeof(button) != "undefined") {
+			console.log(button.id + " on the unit bar was clicked");
+			game.selectUnit(button.id);	
+		}
 	},
 }
