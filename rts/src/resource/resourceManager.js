@@ -19,6 +19,6 @@ ResourceManager.prototype = {
 		this.gui.load();
 		this.soundtrack.load();
 		
-		console.log("successfully loaded");
+		
 	},
 }

@@ -1,22 +1,15 @@
-var Towncenter = function(x,y,health,color, game) {
+var Towncenter = function(x, y, health, factionIndex, game) {
 	this.x = x;
 	this.y = y;
 	this.health = health;
-	this.color = color;
 	
 	this.game = game;
 	
-	if(this.color == "#FF0000"){
-	  this.faction = 1;
-	}
-	else{
-	  this.faction = 0;
-	}
+	this.factionIndex = factionIndex;
+	this.faction = game.factions[this.factionIndex];
 	
 	this.width = 128;
 	this.height = 128;
-	
-	this.radius = 64; // needs to update to square hitbox
 	
 	this.borderwidth = 6;
 	
@@ -24,9 +17,11 @@ var Towncenter = function(x,y,health,color, game) {
 	this.world_y = y;
 
 	this.unitQueue = [];
+	
+	this.actions = [{thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.buildVillager()}];
 }
 
-Towncenter.prototype = new Building(0, this.faction, this.game);
+Towncenter.prototype = new Building(0, this.factionIndex, this.game);
 
 /*Towncenter.prototype.render = function(context) {
 	var self = this;
@@ -70,7 +65,7 @@ Towncenter.prototype.update = function(elapsedTime) {
 
 	  	if(this.unitQueue[0] <= 0){
 	  		this.unitQueue.shift();
-	  		this.game.factions[this.faction].units.push(new Infantry(this.world_x + 64, this.world_y + 128, "#FF0000", this.game));
+	  		this.faction.units.push(new Infantry(this.world_x + 64, this.world_y + 128, "#FF0000", this.game));
 	  	}
 	  }
 	  else{
@@ -82,9 +77,19 @@ Towncenter.prototype.update = function(elapsedTime) {
 Towncenter.prototype.buildVillager = function(){
 
 	//TODO: Check if the player has enough resources.
+  if(!this.game.playerResources.minerals.canSubtract(50)){
+    return;
+  }
+  
+  if(!this.game.playerResources.supply.canAdd(1)){
+    return;
+  }
+  
+  this.game.playerResources.minerals.subtract(50);
+  this.game.playerResources.supply.add(1);
 
 	//TODO: Remove the necessary resources to build the unit.
-
+  
 	this.unitQueue.push(2500);
 	this.isBuilding = true;
 
@@ -99,7 +104,7 @@ Towncenter.prototype.getHitbox = function() { // Update to square hitbox
 		type: "rect",
 		x:self.x,
 		y:self.y,
-		h:128,
-		w:128,
+		h:this.height,
+		w:this.width,
 	};
 }
