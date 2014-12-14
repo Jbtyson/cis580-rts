@@ -18,11 +18,19 @@ BuildingResources = function() {
 BuildingResources.prototype = {
 	load: function() {
 	  
+<<<<<<< HEAD
 	  this.img.towncenter[1].onload = this.onload;
 	  this.img.towncenter[1].src = "img/buildings/Blue_Towncenter_Sprite.png";
 	  
 	  this.img.towncenter[0].onload = this.onload;
     this.img.towncenter[0].src = "img/buildings/Red_Towncenter_Sprite.png";
+=======
+	  this.img.towncenter[0].onload = this.onload;
+	  this.img.towncenter[0].src = "img/buildings/Red_Towncenter_Sprite.png";
+	  
+	  this.img.towncenter[1].onload = this.onload;
+    this.img.towncenter[1].src = "img/buildings/Blue_Towncenter_Sprite.png";
+>>>>>>> origin/master
     
     this.img.towncenterSelection.onload = this.onload;
     this.img.towncenterSelection.src = "img/buildings/Towncenter_Select.png"

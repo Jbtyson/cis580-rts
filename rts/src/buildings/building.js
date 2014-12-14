@@ -6,7 +6,7 @@ BUILDING_SPRITE_DATA = [ {x:0, y: 0, width: 128, height: 128, animationFrames: 1
 BUILDING_RESOURCE = []
 
 //Building Class created by Chris Delpire.
-var Building = function(type, faction, game){
+var Building = function(type, factionIndex, game){
 	// Default values
 	this.x = 100;
 	this.y = 100;
@@ -17,7 +17,7 @@ var Building = function(type, faction, game){
 	
 	this.game = game;
 	
-	this.faction = faction;
+	this.factionIndex = factionIndex;
 	
 	this.width = 64;
 	this.height = 64;
@@ -33,7 +33,6 @@ var Building = function(type, faction, game){
 	this.isBuilding = false;
 
 	this.buildPercent;
-
 
 	this.buildTime;
 	this.state;
@@ -70,9 +69,9 @@ Building.prototype = {
 							BUILDING_SPRITE_DATA[this.type].width, BUILDING_SPRITE_DATA[this.type].height);
 
 		}
-
+		//console.log(this.factionIndex);
 		//Draw building.
-		context.drawImage(Resource.buildings.img.towncenter[this.faction],
+		context.drawImage(Resource.buildings.img.towncenter[this.factionIndex],
 							BUILDING_SPRITE_DATA[this.type].x + BUILDING_SPRITE_DATA[this.type].width * this.animationFrame, BUILDING_SPRITE_DATA[this.type].y,
 							BUILDING_SPRITE_DATA[this.type].width, BUILDING_SPRITE_DATA[this.type].height,
 							this.world_x - globalx, this.world_y - globaly,
