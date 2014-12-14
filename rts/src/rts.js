@@ -42,6 +42,9 @@ var Game = function (canvasId) {
 	this.activePlayers = this.numPlayers;
 	
 	this.credits = new Credits();
+
+	this.playlist = [];
+	this.currentTrack = 0;
 	
 	Tilemap.load(tilemapData, {
 		onload: function(c) {
@@ -292,6 +295,9 @@ Game.prototype = {
 		
 		this.startTime = Date.now();
 		
+		// Create soundtrack playlist
+		self.playlist = Resource.soundtrack.shuffle();		
+		
 		// ***StartScreen - Michael Speirs
 		self.screenContext.drawImage(Resource.gui.img.splash,0,0);
 		
@@ -300,6 +306,7 @@ Game.prototype = {
 				clearInterval(splashloop);
 				window.requestNextAnimationFrame(
 					function(time) {
+						self.playlist[self.currentTrack].play();
 						self.loop.call(self, time);
 					}
 				);
@@ -348,7 +355,16 @@ Game.prototype = {
 			this.gameTime += TIME_STEP;
 		}
 		
-			// We only want to render once
+			// Manage soundtrack
+			if( self.playlist[self.currentTrack].ended ) {
+				self.currentTrack++;
+				if(self.currentTrack >= self.playlist.length) {
+					self.currentTrack = 0;
+				}
+				self.playlist[self.currentTrack].play();
+			}
+			
+			// We only want to render once		
 			self.render(this.elapsedTime);
 		
 			// Check which players are still active
