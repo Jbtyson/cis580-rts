@@ -1,5 +1,6 @@
 // Max Erdwien
 // Screen Size
+//Ryan Woodburn: replaced hoplites with infantry, changed cd.detect method call in UnitOrder
 var WIDTH = 640;
 var HEIGHT = 640;
 
@@ -195,20 +196,38 @@ Game.prototype = {
 		if (spawnlots) {
 			for (var i = 0; i < 5; i++) {
 				for (var j = 0; j < 5; j++) {
-					self.factions[0].units.push(new Hoplite(i*64+32, j*64+32, self.factions[0].color, self));
-					self.factions[1].units.push(new Hoplite(i*64+32+320, j*64+32+320, self.factions[1].color, self));
+
+					//self.factions[0].units.push(new Hoplite(i*64+32, j*64+32, self.factions[0].color, self));
+					//self.factions[1].units.push(new Hoplite(i*64+32+320, j*64+32+320, self.factions[1].color, self));
+					
+					self.factions[0].units.push(new Infantry(i*64+32, j*64+32, self.factions[0].color, self));
+					self.factions[1].units.push(new Infantry(i*64+32+320, j*64+32+320, self.factions[1].color, self));
 				}
 			}
 		} else {
-			self.factions.forEach( function(faction) {
+
+			/*self.factions.forEach( function(faction) {
 				tc = faction.buildings[0];
 				faction.units.push(new Hoplite(tc.x+32-64,tc.y-40-64,faction.color,self));
 				faction.units.push(new Hoplite(tc.x+64-64,tc.y-40-64,faction.color,self));
 				faction.units.push(new Hoplite(tc.x+96-64,tc.y-40-64,faction.color,self));
+			});*/
+			
+			self.factions.forEach( function(faction) {
+				tc = faction.buildings[0];
+				faction.units.push(new Infantry(tc.x+32-64,tc.y-40-64,faction.color,self));
+				faction.units.push(new Infantry(tc.x+64-64,tc.y-40-64,faction.color,self));
+				faction.units.push(new Infantry(tc.x+96-64,tc.y-40-64,faction.color,self));
 			});
+			
 			//self.factions[0].units.push(new Hoplite(30, 30, self.factions[0].color, self));
 			//self.factions[0].units.push(new Hoplite(500, 500, self.factions[0].color, self));
 			//self.factions[1].units.push(new Hoplite(100, 30, self.factions[1].color, self));
+			
+			//self.factions[0].units.push(new Infantry(30, 30, self.factions[0].color, self));
+			//self.factions[0].units.push(new Infantry(500, 500, self.factions[0].color, self));
+			//self.factions[1].units.push(new Infantry(100, 30, self.factions[1].color, self));
+
 		}
 		
 		// Add some resources
@@ -264,6 +283,14 @@ Game.prototype = {
 		
 		var mousebox = {
 			getHitbox: function() {
+				return {
+					type:"circle",
+					x:x,
+					y:y,
+					radius:0
+				};
+			},
+			getAttackRange: function() {
 				return {
 					type:"circle",
 					x:x,
