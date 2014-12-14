@@ -1,7 +1,7 @@
 // max erdwien
 //Edited by Ryan Woodburn
 //Building variables and method by Yi Wang
-var Villager = function(x, y, color, game) {
+var Villager = function(x, y, faction, game) {
 	this.game = game;
 
 	this.maxhealth = 60;
@@ -10,7 +10,7 @@ var Villager = function(x, y, color, game) {
 	this.radius = 32;
 	this.range = 0;
 	this.borderwidth = 6;
-	this.maxWeight = 50;
+	this.maxResources = 50;
 	this.resources = 0;
 	// in pixels per second
 	this.maxvel = 200;
@@ -21,7 +21,7 @@ var Villager = function(x, y, color, game) {
 	
 	this.x = x;
 	this.y = y;
-	this.color = color;
+	this.faction = faction;
 	
 	//this.render = VillagerRender;
 	//this.update = VillagerUpdate;
@@ -29,7 +29,7 @@ var Villager = function(x, y, color, game) {
 	//this.move = VillagerMove;
 }
 
-Villager.prototype = new Unit(100,100,60,"#000000");
+Villager.prototype = new Unit(100,100,this.maxhealth,this.faction);
 
 Villager.prototype.render = function(ctx) {
 	var self = this;

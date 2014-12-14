@@ -7,10 +7,10 @@ var Towncenter = function(x,y,health,color, game) {
 	this.game = game;
 	
 	if(this.color == "#FF0000"){
-	  this.faction = 1;
+	  this.faction = 0;
 	}
 	else{
-	  this.faction = 0;
+	  this.faction = 1;
 	}
 	
 	this.width = 128;
@@ -70,7 +70,7 @@ Towncenter.prototype.update = function(elapsedTime) {
 
 	  	if(this.unitQueue[0] <= 0){
 	  		this.unitQueue.shift();
-	  		this.game.factions[this.faction].units.push(new Infantry(this.world_x + 64, this.world_y + 128, "#FF0000", this.game));
+	  		this.game.factions[this.faction].units.push(new Infantry(this.world_x + 64, this.world_y + 128, this.faction, this.game));
 	  	}
 	  }
 	  else{

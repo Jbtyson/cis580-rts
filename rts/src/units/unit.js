@@ -5,17 +5,21 @@
 UNIT_NAMES = ["Villager", "Infantry"];
 UNIT_SPRITE_DATA = [ {x:0, y: 0, width: 32, height: 32, animationFrames: 12} ];
 
-var Unit = function(x, y, health, color) {
+var Unit = function(x, y, health, faction) {
 	this.x = x;
 	this.y = y;
 	this.radius;
+	//supply is the population cost for a unit
+	this.supply;
 	this.health = health;
+	this.faction = faction;
 	this.maxhealth;
-	this.color = color;
 	// mode is basically an enumeration. its values are:
 	// idle
 	// move
 	// attack
+	// mine
+	// returningResource
 	this.mode = "idle";
 	
 	this.selected = false;
@@ -34,21 +38,26 @@ var Unit = function(x, y, health, color) {
 Unit.prototype = {
 	render: function(context) {
 		//draw unit
-		context.drawImage(Resource.units.img.villager[0],
+		context.drawImage(Resource.units.img.villager[this.faction],
 			UNIT_SPRITE_DATA[0].x + UNIT_SPRITE_DATA[0].width * this.animationFrame, UNIT_SPRITE_DATA[0].y,
 			UNIT_SPRITE_DATA[0].width, UNIT_SPRITE_DATA[0].height,
-			this.x - globalx, this.y - globaly,
+			this.x - globalx - this.radius, this.y - globaly - this.radius,
 			UNIT_SPRITE_DATA[0].width, UNIT_SPRITE_DATA[0].height);
 			
 		// draw health bar
-		var maxbarlength = this.radius;
+		var maxbarlength = this.radius*2;
 		var barheight = 4;
 		var barlength = maxbarlength * (this.health/this.maxhealth);
 		context.fillStyle = "#00FF00";
 		context.beginPath();
-		context.rect(self.x-(maxbarlength/2)-globalx, self.y-(barheight/2)-globaly,	barlength, barheight);
+		context.rect(this.x -(maxbarlength/2)-globalx, this.y - this.radius/2 - (barheight/2)-globaly,	barlength, barheight);
 		context.fill();
 		context.restore();
+		
+		if(this.selected) {
+			context.drawImage(Resource.units.img.unitSelector,
+				this.x - globalx - this.radius, this.y - globaly - this.radius);
+		}
 	},
 
 	update: function() {

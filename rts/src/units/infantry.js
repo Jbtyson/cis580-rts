@@ -1,12 +1,13 @@
 //Ryan Woodburn
 //Adapted off of hoplite
-var Infantry = function(x, y, color, game) {
+var Infantry = function(x, y, faction, game) {
 	this.game = game;
 	
 	this.maxhealth = 30;
+	this.health = this.maxhealth;
 	//this.__proto__ = new Unit(x, y, this.maxhealth, faction);
 	
-	this.radius = 32;
+	this.radius = 16;
 	this.borderwidth = 3;
 	// in pixels per second
 	this.maxvel = 100;
@@ -16,7 +17,7 @@ var Infantry = function(x, y, color, game) {
 	
 	this.x = x;
 	this.y = y;
-	this.color = color;
+	this.faction = faction;
 	
 	//this.render = Render;
 	//this.update = Update;
@@ -26,7 +27,7 @@ var Infantry = function(x, y, color, game) {
 	//this.attack = Attack;
 }
 
-Infantry.prototype = new Unit(100,100,60,"#000000");
+Infantry.prototype = new Unit(100,100,this.maxhealth,this.faction);
 
 /*Infantry.prototype.render = function(ctx) {
 	var self = this;
@@ -111,7 +112,7 @@ Infantry.prototype.update = function(elapsedTime) {
 	}
 	self.game.factions.forEach( function(faction) {
 		for (var i = 0; i <  faction.units.length; i++) {
-			if (faction.units[i].color != self.color &&
+			if (faction.units[i].faction != self.faction &&
 					self.game.cd.detect(self, faction.units[i])) {
 				self.attack(faction.units[i]);
 			}
