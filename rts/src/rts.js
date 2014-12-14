@@ -33,7 +33,6 @@ var Game = function (canvasId) {
 	this.input = new Input(this.screen, window, myself);
 	
 	// Necessary for gui making - James
-	//this.resources = { minerals:0, gas:100, supply:10, supplyMax:200 };
 	this.playerResources = new FactionResources();
 	this.selectedUnits = [];
 	this.selectedBuildings = [];
@@ -50,7 +49,6 @@ var Game = function (canvasId) {
 	this.currentTrack = 0;
 
 	this.mapMinerals = [];
-	//this.resources = [];
 	
 	Tilemap.load(tilemapData, {
 		onload: function(c) {
@@ -221,12 +219,6 @@ Game.prototype = {
 
 		}
 		
-		/* // Add some resources
-		self.resources.push(new Metal(555,155,50));
-		self.resources.push(new Metal(955,355,50));
-		self.resources.push(new Metal(355,555,50));
-		self.resources.push(new Metal(255,955,50));
-		self.resources.push(new Metal(755,755,50)); */
 		// Add Map mineral Mines
 		self.mapMinerals.push(new MineralMine(55,55,50));
 		self.mapMinerals.push(new MineralMine(555,155,50));
