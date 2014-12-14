@@ -17,6 +17,10 @@ var Building = function(){
 	
 	this.gatherPoint = {x:100,y:100};
 	
+	this.selected = false;
+	
+	this.barricadedUnits = [];
+	
 	this.type;
 	this.buildTime;
 	this.state;
@@ -36,6 +40,10 @@ Building.prototype = {
 	},
 
 	update: function(){
+	},
+	
+	getHitbox: function() {
+
 	},
 
 	collide: function(object){
