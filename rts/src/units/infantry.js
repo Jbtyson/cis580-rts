@@ -1,37 +1,34 @@
-// max erdwien
-//Edited by Ryan Woodburn
-//Building variables and method by 
-var Villager = function(x, y, color, game) {
+//Ryan Woodburn
+//Adapted off of hoplite
+var Infantry = function(x, y, color, game) {
 	this.game = game;
-
-	this.maxhealth = 60;
-	//this.__proto__ = new Unit(x, y, this.maxhealth, color);
+	
+	this.maxhealth = 30;
+	//this.__proto__ = new Unit(x, y, this.maxhealth, faction);
 	
 	this.radius = 8;
-	this.range = 0;
-	this.borderwidth = 6;
-	this.maxWeight = 50;
-	this.resources = 0;
+	this.borderwidth = 3;
 	// in pixels per second
-	this.maxvel = 200;
+	this.maxvel = 100;
 	// in health per second
-	this.damage = 3;
-	
-	this.Villagerbuildingspeed = 1.0;
+	this.damage = 6;
+	this.range = 8;
 	
 	this.x = x;
 	this.y = y;
 	this.color = color;
 	
-	//this.render = VillagerRender;
-	//this.update = VillagerUpdate;
-	//this.getHitbox = VillagerGetHitbox;
-	//this.move = VillagerMove;
+	//this.render = Render;
+	//this.update = Update;
+	//this.getHitbox = GetHitbox;
+	//this.getAttackRange = GetAttackRange;
+	//this.move = Move;
+	//this.attack = Attack;
 }
 
-Villager.prototype = new Unit(100,100,60,"#000000");
+Infantry.prototype = new Unit(100,100,60,"#000000");
 
-Villager.prototype.render = function(ctx) {
+Infantry.prototype.render = function(ctx) {
 	var self = this;
 
 	ctx.save();
@@ -49,7 +46,7 @@ Villager.prototype.render = function(ctx) {
 	ctx.stroke();
 	
 	// draw health bar
-	var maxbarlength = 16;
+	var maxbarlength = self.radius;
 	var barheight = 4;
 	var barlength = maxbarlength * (self.health/self.maxhealth);
 	ctx.fillStyle = "#00FF00";
@@ -59,11 +56,16 @@ Villager.prototype.render = function(ctx) {
 	ctx.restore();
 }
 
-Villager.prototype.update = function(elapsedTime) {
+Infantry.prototype.update = function(elapsedTime) {
 	var self = this;
 
 	var secs = elapsedTime / 1000;
-	if (self.mode == "move") {
+	if (self.mode == "move" ||
+			(self.mode == "attack" && !self.game.cd.detect(self.targetunit, self))) {
+		if (self.mode == "attack") {
+			self.move(self.targetunit.x, self.targetunit.y);
+			self.mode = "attack";
+		}
 		var deltaxi = self.targetx - self.x;
 		var deltayi = self.targety - self.y;
 		
@@ -74,6 +76,7 @@ Villager.prototype.update = function(elapsedTime) {
 		// stop if target has been reached
 		if (self.mode == "move") {
 			var deltaxf = self.targetx - self.x;
+			var deltayf = self.targety - self.y;
 			var deltayf = self.targety - self.y;
 			if (deltaxi/deltaxf < 0 || deltaxi/deltaxf < 0) {
 				self.velx = 0;
@@ -97,16 +100,16 @@ Villager.prototype.update = function(elapsedTime) {
 			for (var i = 0; i <  faction.units.length; i++) {
 				if (faction.units[i].color != self.color &&
 						self.game.cd.detect(self, faction.units[i])) {
-					// todo: run away
+					self.attack(faction.units[i]);
 				}
 			}
 		});
 	}
 }
 
-Villager.prototype.getHitbox = function() {
+Infantry.prototype.getHitbox = function() {
 	var self = this;
-
+	
 	return {
 		type: "circle",
 		x: self.x,
@@ -115,7 +118,7 @@ Villager.prototype.getHitbox = function() {
 	};
 }
 
-Villager.prototype.getAttackRange = function() {
+Infantry.prototype.getAttackRange = function() {
 	var self = this;
 
 	return {
@@ -126,7 +129,7 @@ Villager.prototype.getAttackRange = function() {
 	};
 }
 
-Villager.prototype.move = function(x, y) {
+Infantry.prototype.move = function(x, y) {
 	var self = this;
 
 	self.mode = "move";
@@ -148,33 +151,12 @@ Villager.prototype.move = function(x, y) {
 	}
 }
 
-Villager.prototype.build = function(bx,by,BuildingHp,resource,elapsedTime) {
+Infantry.prototype.attack = function(unit) {
 	var self = this;
 
-	var secs = elapsedTime / 1000;
-	var buildHp = 0;
-	//check resource
-
-	//read in xy position, move to xy position
-	self.move(bx,by); // was villagerMove(bx,by)
-	
-	//buiding start && villegar stay in position
-	while(self.mode == "idle" && self.x ==bx && self.y==by && buildHP != self.BuildingHp){
-		buildHp = self.Villagerbuildingspeed * secs;
-	}
-	//outer the while loop building is stoped, out reason check
-	
-	//villegar have been moved
-	if(self.mode != "idle" || self.x !=bx || self.y != by && buildHP < self.BuildingHp){
-			//store the buildingHp on the x,y position.
-	}
-	//Building complete
-	else if(buildHp==self.BuildingHp){
-		//render Building
-	}
-	else{
-		console.log("Unknow reason for Building stoped");
-	}
+	// temporarily changes mode to "move"
+	self.move(unit.x, unit.y);
+	self.mode = "attack";
+	self.targetunit = unit;
 }
-
 
