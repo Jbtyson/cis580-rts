@@ -24,6 +24,8 @@ var Towncenter = function(x,y,health,color, game) {
 	this.world_y = y;
 
 	this.unitQueue = [];
+	
+	this.actions = [{thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.buildVillager()}];
 }
 
 Towncenter.prototype = new Building(0, this.faction, this.game);

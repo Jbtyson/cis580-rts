@@ -23,11 +23,20 @@ var Gui = function(game) {
 Gui.prototype = {
 	// Update the gui
 	update: function(gameTime) {
+		var self = this;
+		
 		// Update the minimap
 		this.minimap.update(gameTime);
 		
+		if(this.game.selectedUnits.length !== 0){
+		  this.commandPanel.update(gameTime, this.game.selectedUnits[0]);
+		}
+		else if(this.game.selectedBuildings.length !== 0){
+		  this.commandPanel.update(gameTime, this.game.selectedBuildings[0]);
+		}
+		
 		// Update the commandPanel
-		this.commandPanel.update(gameTime, this.game.selectedUnits[0], this.game.selectedBuildings[0]);
+		
 		
 		// Update the resourceBar
 		this.resourceBar.update(gameTime);
