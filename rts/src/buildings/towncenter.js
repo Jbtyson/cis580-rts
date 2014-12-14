@@ -1,8 +1,18 @@
-var Towncenter = function(x,y,health,color) {
+var Towncenter = function(x,y,health,color, game) {
 	this.x = x;
 	this.y = y;
 	this.health = health;
 	this.color = color;
+	
+	this.game = game;
+	
+	if(this.color == "#FF0000"){
+	  this.faction = 1;
+	}
+	else{
+	  this.faction = 0;
+	}
+	
 	
 	this.width = 128;
 	this.height = 128;
@@ -10,11 +20,14 @@ var Towncenter = function(x,y,health,color) {
 	this.radius = 64; // needs to update to square hitbox
 	
 	this.borderwidth = 6;
+	
+	this.world_x = x;
+	this.world_y = y;
 }
 
-Towncenter.prototype = new Building();
+Towncenter.prototype = new Building(0, this.faction, this.game);
 
-Towncenter.prototype.render = function(context) {
+/*Towncenter.prototype.render = function(context) {
 	var self = this;
 	
 	context.save();
@@ -36,11 +49,11 @@ Towncenter.prototype.render = function(context) {
 	context.restore();
 	
 	context.restore();
-}
+}*/
 
-Towncenter.prototype.update = function() {
+/*Towncenter.prototype.update = function() {
 
-}
+}*/
 
 Towncenter.prototype.getHitbox = function() { // Update to square hitbox
 	var self = this;

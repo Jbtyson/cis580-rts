@@ -158,6 +158,10 @@ Game.prototype = {
 				}
 				faction.units[i].update(elapsedTime);
 			}
+			
+			for(i = 0; i < faction.buildings.length; i++){
+			  faction.buildings[i].update(elapsedTime);
+			}
 		});
 		
 		// Update the GUI
@@ -174,7 +178,7 @@ Game.prototype = {
 		self.factions.forEach( function(faction) { // create towncenter for each team
 			var playerX = Math.random()*(GLOBAL_WIDTH-2*128) + 128;
 			var playerY = Math.random()*(GLOBAL_HEIGHT-2*128) + 128;
-			faction.buildings.push(new Towncenter(playerX,playerY,100,faction.color));
+			faction.buildings.push(new Towncenter(playerX, playerY, 100, faction.color, this));
 		});
 		
 		self.playerFaction = self.factions[0]; // self
@@ -350,19 +354,19 @@ Game.prototype = {
 	loop: function(time) {
 		var self = this;
 		
-		// Don't advance the clock if the game is paused		
+		// Don't advance the clock if the game is paused
 		if (this.gameOver || this.paused) {
 			this.lastTime = time;
 		}
 		
 		// Calculate additional elapsed time, keeping any
 		// unused time from previous frame
-		this.elapsedTime += time - this.lastTime; 
+		this.elapsedTime += time - this.lastTime;
 		this.lastTime = time;
 		
 		// The first timestep (and occasionally later ones) are too large
 		// causing our processing to take too long (and run into the next
-		// frame).  We can clamp to a max of 4 frames to keep that from 
+		// frame).  We can clamp to a max of 4 frames to keep that from
 		// happening
 		this.elapsedTime = Math.min(this.elapsedTime, 4 * TIME_STEP);
 		
