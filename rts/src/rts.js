@@ -1,5 +1,6 @@
 // Max Erdwien
 // Screen Size
+//Ryan Woodburn: replaced hoplites with infantry, changed cd.detect method call in UnitOrder
 var WIDTH = 640;
 var HEIGHT = 640;
 
@@ -41,6 +42,13 @@ var Game = function (canvasId) {
 	this.numPlayers = 2;
 	this.factionColors = ["#FF0000","#0000FF"];
 	this.activePlayers = this.numPlayers;
+	
+	this.credits = new Credits();
+
+	this.playlist = [];
+	this.currentTrack = 0;
+
+	this.resources = [];
 	
 	Tilemap.load(tilemapData, {
 		onload: function(c) {
@@ -192,21 +200,46 @@ Game.prototype = {
 		if (spawnlots) {
 			for (var i = 0; i < 5; i++) {
 				for (var j = 0; j < 5; j++) {
-					self.factions[0].units.push(new Hoplite(i*64+32, j*64+32, self.factions[0].color, self));
-					self.factions[1].units.push(new Hoplite(i*64+32+320, j*64+32+320, self.factions[1].color, self));
+
+					//self.factions[0].units.push(new Hoplite(i*64+32, j*64+32, self.factions[0].color, self));
+					//self.factions[1].units.push(new Hoplite(i*64+32+320, j*64+32+320, self.factions[1].color, self));
+					
+					self.factions[0].units.push(new Infantry(i*64+32, j*64+32, self.factions[0].color, self));
+					self.factions[1].units.push(new Infantry(i*64+32+320, j*64+32+320, self.factions[1].color, self));
 				}
 			}
 		} else {
+	
 			self.factions.forEach( function(faction) {
+				tc = faction.buildings[0];
+				faction.units.push(new Infantry(tc.x+32-64,tc.y-40-64,faction.color,self));
+				faction.units.push(new Infantry(tc.x+64-64,tc.y-40-64,faction.color,self));
+				faction.units.push(new Infantry(tc.x+96-64,tc.y-40-64,faction.color,self));
+			});
+	
+			/*self.factions.forEach( function(faction) {
 				tc = faction.buildings[0];
 				faction.units.push(new Hoplite(tc.x+32-64,tc.y-40-64,faction.color,self));
 				faction.units.push(new Hoplite(tc.x+64-64,tc.y-40-64,faction.color,self));
 				faction.units.push(new Hoplite(tc.x+96-64,tc.y-40-64,faction.color,self));
-			});
+			});*/
+			
 			//self.factions[0].units.push(new Hoplite(30, 30, self.factions[0].color, self));
 			//self.factions[0].units.push(new Hoplite(500, 500, self.factions[0].color, self));
-			//self.factions[1].units.push(new Hoplite(100, 30, self.factions[1].color, self));
+			//self.factions[1].units.push(new Hoplite(100, 30, self.factions[1].color, self
+			
+			//self.factions[0].units.push(new Infantry(30, 30, self.factions[0].color, self));
+			//self.factions[0].units.push(new Infantry(500, 500, self.factions[0].color, self));
+			//self.factions[1].units.push(new Infantry(100, 30, self.factions[1].color, self));
 		}
+		
+		// Add some resources
+		self.resources.push(new Metal(255,255,50));
+		self.resources.push(new Metal(555,155,50));
+		self.resources.push(new Metal(955,355,50));
+		self.resources.push(new Metal(355,555,50));
+		self.resources.push(new Metal(255,955,50));
+		self.resources.push(new Metal(755,755,50));
 	},
 	
 	startSelectBox: function(x, y) {
@@ -259,6 +292,14 @@ Game.prototype = {
 					y:y,
 					radius:0
 				};
+			},
+			getAttackRange: function() {
+				return {
+					type:"circle",
+					x:x,
+					y:y,
+					radius:0
+				};
 			}
 		};
 
@@ -299,6 +340,11 @@ Game.prototype = {
 		//self.backBufferContext.translate(-70, 0);
 		Tilemap.render(self.backBufferContext);
 		
+		// render resources
+		self.resources.forEach( function(resource) {
+			resource.render(self.backBufferContext);
+		});
+
 		// render units
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) { // render units
@@ -326,26 +372,30 @@ Game.prototype = {
 		
 		this.startTime = Date.now();
 		
+		// Create soundtrack playlist
+		self.playlist = Resource.soundtrack.shuffle();		
+		
 		// ***StartScreen - Michael Speirs
-		/*self.screenContext.drawImage(Resource.gui.img.splash,0,0);
+		self.screenContext.drawImage(Resource.gui.img.splash,0,0);
 		
 		var splashloop = setInterval( function() { // wait till user starts game
 			if( self.started ) {
 				clearInterval(splashloop);
 				window.requestNextAnimationFrame(
 					function(time) {
+						self.playlist[self.currentTrack].play();
 						self.loop.call(self, time);
 					}
 				);
 			}
-		},200);*/
+		},200);
 		
-		window.requestNextAnimationFrame(
+		/*window.requestNextAnimationFrame(
 			function(time) {
 				self.started = true;
 				self.loop.call(self, time);
 			}
-		);
+		);*/
 
 	},
 	
@@ -370,6 +420,7 @@ Game.prototype = {
 		// happening
 		this.elapsedTime = Math.min(this.elapsedTime, 4 * TIME_STEP);
 		
+		if(!self.gameOver) {
 		// We want a fixed game loop of 1/60th a second, so if necessary run multiple
 		// updates during each rendering pass
 		// Invariant: We have unprocessed time in excess of TIME_STEP
@@ -381,8 +432,16 @@ Game.prototype = {
 			this.gameTime += TIME_STEP;
 		}
 		
-		// We only want to render once
-		if(!self.gameOver) {
+			// Manage soundtrack
+			if( self.playlist[self.currentTrack].ended ) {
+				self.currentTrack++;
+				if(self.currentTrack >= self.playlist.length) {
+					self.currentTrack = 0;
+				}
+				self.playlist[self.currentTrack].play();
+			}
+			
+			// We only want to render once		
 			self.render(this.elapsedTime);
 		
 			// Check which players are still active
@@ -396,14 +455,21 @@ Game.prototype = {
 			if( self.activePlayers == 0 ) {
 				self.gameOver = true;
 				self.started = false;
-				self.screenContext.drawImage(Resource.gui.img.splash,0,0);
 				self.factions = [];
 				self.placeLevelObjects();
+				self.credits.active = true;
 			}
 		
+		} else if(this.gameOver || !this.started) { // render credits
+			if( self.credits.active ) {
+				self.credits.update();
+				self.credits.render(self.screenContext);
+			} else {
+				self.screenContext.drawImage(Resource.gui.img.splash,0,0);
+			}
 		}
 		
-		if (this.paused || this.gameOver || !this.started) {
+		if (this.paused) {
 			 // In PAUSE_TIMEOUT (100) ms, call this method again to see if the game
 			 // is still paused. There's no need to check more frequently.
 			 setTimeout( function () {
