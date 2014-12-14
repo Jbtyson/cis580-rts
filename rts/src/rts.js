@@ -34,6 +34,7 @@ var Game = function (canvasId) {
 	// Necessary for gui making - James
 	this.resources = { minerals:0, gas:100, supply:10, supplyMax:200 };
 	this.selectedUnits = [];
+	this.selectedBuildings = [];
 	this.gui = new Gui(this);
 	
 	this.factions = [];
@@ -194,9 +195,9 @@ Game.prototype = {
 		} else {
 			self.factions.forEach( function(faction) {
 				tc = faction.buildings[0];
-				faction.units.push(new Hoplite(tc.x+32,tc.y-40,faction.color,self));
-				faction.units.push(new Hoplite(tc.x+64,tc.y-40,faction.color,self));
-				faction.units.push(new Hoplite(tc.x+96,tc.y-40,faction.color,self));
+				faction.units.push(new Hoplite(tc.x+32-64,tc.y-40-64,faction.color,self));
+				faction.units.push(new Hoplite(tc.x+64-64,tc.y-40-64,faction.color,self));
+				faction.units.push(new Hoplite(tc.x+96-64,tc.y-40-64,faction.color,self));
 			});
 			//self.factions[0].units.push(new Hoplite(30, 30, self.factions[0].color, self));
 			//self.factions[0].units.push(new Hoplite(500, 500, self.factions[0].color, self));
@@ -213,6 +214,7 @@ Game.prototype = {
 	
 		// Clear the selected units (James)
 		self.selectedUnits = [];
+		self.selectedBuildings = [];
 		
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
@@ -227,6 +229,16 @@ Game.prototype = {
 					self.selectedUnits.push(faction.units[i]);
 				}
 			}
+			faction.buildings.forEach( function(building) {
+				if (!e.ctrlKey && !e.shiftKey) {
+					building.selected = false;
+				}
+				if(building.color == self.playerFaction.color &&
+						self.cd.detect(self.sb, building)) {
+					building.selected = true;
+					self.selectedBuildings.push(building);
+				}
+			});
 		});
 
 		self.sb = null;
