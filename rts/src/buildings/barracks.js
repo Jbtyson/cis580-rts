@@ -1,8 +1,8 @@
-var Barracks = function(x,y,health,color) {
+var Barracks = function(x,y,health,faction) {
 	this.x = x;
 	this.y = y;
 	this.health = health;
-	this.color = color;
+	this.faction = faction;
 	
 	this.width = 64;
 	this.height = 64;
