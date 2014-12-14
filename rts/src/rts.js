@@ -181,15 +181,17 @@ Game.prototype = {
 	placeLevelObjects: function() {
 		var self = this;
 		
-		for( i = 0; i < self.numPlayers; i++) { // create players and assign colors
+		for(var i = 0; i < self.numPlayers; i++) { // create players and assign colors
 			self.factions.push(new Faction(self.factionColors[i]));
 		}
 		
-		self.factions.forEach( function(faction) { // create towncenter for each team
-			var playerX = Math.random()*(GLOBAL_WIDTH-2*128) + 128;
-			var playerY = Math.random()*(GLOBAL_HEIGHT-2*128) + 128;
-			faction.buildings.push(new Towncenter(playerX, playerY, 100, faction.color, self));
-		});
+		// create towncenter for each team
+		for (var i = 0; i < self.factions.length; i++) {
+			var playerX = 64*4 + 64*7*i;
+			var playerY = 64*4 + 64*7*i;
+			self.factions[i].buildings.push(new Towncenter(playerX, playerY, 100, i, self));
+		}
+		
 		
 		self.playerFaction = self.factions[0]; // self
 		
@@ -247,35 +249,31 @@ Game.prototype = {
 		self.selectedUnits = [];
 		self.selectedBuildings = [];
 		
-		self.factions.forEach( function(faction) {
-			for (var i = 0; i < faction.units.length; i++) {
-				if (!e.ctrlKey && !e.shiftKey) {
-					faction.units[i].selected = false;
-				}
-				if (faction.units[i].color == self.playerFaction.color &&
-						self.cd.detect(self.sb, faction.units[i])) {
-					faction.units[i].selected = true;
-					console.log(faction.units[i]);
-					// Add the selected unit into the array of selected units (James)
-					self.selectedUnits.push(faction.units[i]);
-				}
+		for (var i = 0; i < this.playerFaction.units.length; i++) {
+			if (!e.ctrlKey && !e.shiftKey) {
+				this.playerFaction.units[i].selected = false;
 			}
-			faction.buildings.forEach( function(building) {
-				if (!e.ctrlKey && !e.shiftKey) {
-					building.selected = false;
-				}
-				if(building.color == self.playerFaction.color &&
-						self.cd.detect(self.sb, building)) {
+			if (self.cd.detect(self.sb, this.playerFaction.units[i])) {
+				this.playerFaction.units[i].selected = true;
+				console.log(this.playerFaction.units[i]);
+				// Add the selected unit into the array of selected units (James)
+				self.selectedUnits.push(this.playerFaction.units[i]);
+			}
+		}
+		this.playerFaction.buildings.forEach( function(building) {
+			if (!e.ctrlKey && !e.shiftKey) {
+				building.selected = false;
+			}
+			if(self.cd.detect(self.sb, building)) {
 
-					//REMOVE!!
-					//TEST CODE FOR BUILDING UNIT!
-					building.buildVillager();
+				//REMOVE!!
+				//TEST CODE FOR BUILDING UNIT!
+				building.buildVillager();
 
 
-					building.selected = true;
-					self.selectedBuildings.push(building);
-				}
-			});
+				building.selected = true;
+				self.selectedBuildings.push(building);
+			}
 		});
 
 		self.sb = null;
@@ -421,16 +419,16 @@ Game.prototype = {
 		this.elapsedTime = Math.min(this.elapsedTime, 4 * TIME_STEP);
 		
 		if(!self.gameOver) {
-		// We want a fixed game loop of 1/60th a second, so if necessary run multiple
-		// updates during each rendering pass
-		// Invariant: We have unprocessed time in excess of TIME_STEP
-		while (this.elapsedTime >= TIME_STEP) {
-			self.update(TIME_STEP);
-			this.elapsedTime -= TIME_STEP;
-			
-			// add the TIME_STEP to gameTime
-			this.gameTime += TIME_STEP;
-		}
+			// We want a fixed game loop of 1/60th a second, so if necessary run multiple
+			// updates during each rendering pass
+			// Invariant: We have unprocessed time in excess of TIME_STEP
+			while (this.elapsedTime >= TIME_STEP) {
+				self.update(TIME_STEP);
+				this.elapsedTime -= TIME_STEP;
+				
+				// add the TIME_STEP to gameTime
+				this.gameTime += TIME_STEP;
+			}
 		
 			// Manage soundtrack
 			if( self.playlist[self.currentTrack].ended ) {
