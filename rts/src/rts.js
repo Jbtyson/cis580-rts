@@ -33,7 +33,8 @@ var Game = function (canvasId) {
 	this.input = new Input(this.screen, window, myself);
 	
 	// Necessary for gui making - James
-	this.resources = { minerals:0, gas:100, supply:10, supplyMax:200 };
+	//this.resources = { minerals:0, gas:100, supply:10, supplyMax:200 };
+	this.playerResources = new FactionResources();
 	this.selectedUnits = [];
 	this.selectedBuildings = [];
 	this.gui = new Gui(this);
@@ -48,7 +49,8 @@ var Game = function (canvasId) {
 	this.playlist = [];
 	this.currentTrack = 0;
 
-	this.resources = [];
+	this.mapMinerals = [];
+	//this.resources = [];
 	
 	Tilemap.load(tilemapData, {
 		onload: function(c) {
@@ -166,6 +168,10 @@ Game.prototype = {
 				}
 				faction.units[i].update(elapsedTime);
 			}
+			
+			for(i = 0; i < faction.buildings.length; i++){
+			  faction.buildings[i].update(elapsedTime);
+			}
 		});
 		
 		// Update the GUI
@@ -182,7 +188,7 @@ Game.prototype = {
 		self.factions.forEach( function(faction) { // create towncenter for each team
 			var playerX = Math.random()*(GLOBAL_WIDTH-2*128) + 128;
 			var playerY = Math.random()*(GLOBAL_HEIGHT-2*128) + 128;
-			faction.buildings.push(new Towncenter(playerX,playerY,100,faction.color));
+			faction.buildings.push(new Towncenter(playerX, playerY, 100, faction.color, self));
 		});
 		
 		self.playerFaction = self.factions[0]; // self
@@ -205,37 +211,29 @@ Game.prototype = {
 				}
 			}
 		} else {
-	
+
 			self.factions.forEach( function(faction) {
 				tc = faction.buildings[0];
 				faction.units.push(new Infantry(tc.x+32-64,tc.y-40-64,faction.color,self));
 				faction.units.push(new Infantry(tc.x+64-64,tc.y-40-64,faction.color,self));
 				faction.units.push(new Infantry(tc.x+96-64,tc.y-40-64,faction.color,self));
 			});
-	
-			/*self.factions.forEach( function(faction) {
-				tc = faction.buildings[0];
-				faction.units.push(new Hoplite(tc.x+32-64,tc.y-40-64,faction.color,self));
-				faction.units.push(new Hoplite(tc.x+64-64,tc.y-40-64,faction.color,self));
-				faction.units.push(new Hoplite(tc.x+96-64,tc.y-40-64,faction.color,self));
-			});*/
-			
-			//self.factions[0].units.push(new Hoplite(30, 30, self.factions[0].color, self));
-			//self.factions[0].units.push(new Hoplite(500, 500, self.factions[0].color, self));
-			//self.factions[1].units.push(new Hoplite(100, 30, self.factions[1].color, self
-			
-			//self.factions[0].units.push(new Infantry(30, 30, self.factions[0].color, self));
-			//self.factions[0].units.push(new Infantry(500, 500, self.factions[0].color, self));
-			//self.factions[1].units.push(new Infantry(100, 30, self.factions[1].color, self));
+
 		}
 		
-		// Add some resources
-		self.resources.push(new Metal(255,255,50));
+		/* // Add some resources
 		self.resources.push(new Metal(555,155,50));
 		self.resources.push(new Metal(955,355,50));
 		self.resources.push(new Metal(355,555,50));
 		self.resources.push(new Metal(255,955,50));
-		self.resources.push(new Metal(755,755,50));
+		self.resources.push(new Metal(755,755,50)); */
+		// Add Map mineral Mines
+		self.mapMinerals.push(new MineralMine(55,55,50));
+		self.mapMinerals.push(new MineralMine(555,155,50));
+		self.mapMinerals.push(new MineralMine(955,355,50));
+		self.mapMinerals.push(new MineralMine(355,555,50));
+		self.mapMinerals.push(new MineralMine(255,955,50));
+		self.mapMinerals.push(new MineralMine(755,755,50));
 	},
 	
 	startSelectBox: function(x, y) {
@@ -268,6 +266,12 @@ Game.prototype = {
 				}
 				if(building.color == self.playerFaction.color &&
 						self.cd.detect(self.sb, building)) {
+
+					//REMOVE!!
+					//TEST CODE FOR BUILDING UNIT!
+					building.buildVillager();
+
+
 					building.selected = true;
 					self.selectedBuildings.push(building);
 				}
@@ -336,9 +340,9 @@ Game.prototype = {
 		//self.backBufferContext.translate(-70, 0);
 		Tilemap.render(self.backBufferContext);
 		
-		// render resources
-		self.resources.forEach( function(resource) {
-			resource.render(self.backBufferContext);
+		// render mapMinerals
+		self.mapMinerals.forEach( function(mineralMine) {
+			mineralMine.render(self.backBufferContext);
 		});
 
 		// render units
@@ -369,7 +373,7 @@ Game.prototype = {
 		this.startTime = Date.now();
 		
 		// Create soundtrack playlist
-		self.playlist = Resource.soundtrack.shuffle();		
+		self.playlist = Resource.soundtrack.shuffle();
 		
 		// ***StartScreen - Michael Speirs
 		self.screenContext.drawImage(Resource.gui.img.splash,0,0);
@@ -400,19 +404,19 @@ Game.prototype = {
 	loop: function(time) {
 		var self = this;
 		
-		// Don't advance the clock if the game is paused		
+		// Don't advance the clock if the game is paused
 		if (this.gameOver || this.paused) {
 			this.lastTime = time;
 		}
 		
 		// Calculate additional elapsed time, keeping any
 		// unused time from previous frame
-		this.elapsedTime += time - this.lastTime; 
+		this.elapsedTime += time - this.lastTime;
 		this.lastTime = time;
 		
 		// The first timestep (and occasionally later ones) are too large
 		// causing our processing to take too long (and run into the next
-		// frame).  We can clamp to a max of 4 frames to keep that from 
+		// frame).  We can clamp to a max of 4 frames to keep that from
 		// happening
 		this.elapsedTime = Math.min(this.elapsedTime, 4 * TIME_STEP);
 		
@@ -437,7 +441,7 @@ Game.prototype = {
 				self.playlist[self.currentTrack].play();
 			}
 			
-			// We only want to render once		
+			// We only want to render once
 			self.render(this.elapsedTime);
 		
 			// Check which players are still active

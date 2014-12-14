@@ -1,5 +1,6 @@
-var Resource = function() {
-	
+var Resource = function(amount, maxAmount) {
+	this.amount = amount;
+	this.maxAmount = maxAmount;
 }
 
 Resource.prototype = {
@@ -11,5 +12,15 @@ Resource.prototype = {
 	
 	},
 	
+	add: function(amount) {
+		this.amount += amount;
+		
+		if (this.amount > this.maxAmount) {
+			this.amount = this.maxAmount;
+		}
+	},
 	
+	canAdd: function(amount) {
+		return (this.amount + amount) < this.maxAmount;
+	}
 }
