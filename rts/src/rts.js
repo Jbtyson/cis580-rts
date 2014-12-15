@@ -252,16 +252,18 @@ Game.prototype = {
 				self.selectedUnits.push(this.playerFaction.units[i]);
 			}
 		}
-		this.playerFaction.buildings.forEach( function(building) {
-			if (!e.ctrlKey && !e.shiftKey) {
-				building.selected = false;
-			}
-			if(self.cd.detect(self.sb, building)) {
-				building.selected = true;
-				self.selectedBuildings.push(building);
-			}
-		});
-
+		// Don't add buildings if units were selected
+		if(this.selectedUnits.length === 0) {
+			this.playerFaction.buildings.forEach( function(building) {
+				if (!e.ctrlKey && !e.shiftKey) {
+					building.selected = false;
+				}
+				if(self.cd.detect(self.sb, building)) {
+					building.selected = true;
+					self.selectedBuildings.push(building);
+				}
+			});
+		}
 		self.sb = null;
 	},
 	
