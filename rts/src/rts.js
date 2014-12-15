@@ -194,24 +194,7 @@ Game.prototype = {
 		var tc = self.playerFaction.buildings[0];
 		globalx = tc.x + 0.5*tc.width - 0.5*WIDTH;
 		globaly = tc.y + 0.5*tc.height - 0.5*HEIGHT;
-<<<<<<< HEAD
 		*/
-
-		self.factions.forEach(function(faction, index) {
-=======
-		
-
-		self.factions.forEach( function(faction, index) {
->>>>>>> 9cb8633dd353967e9e26cff9882b3032b9ef7971
-			tc = faction.buildings[0];
-			faction.units.push(new Infantry(tc.x+32-64,tc.y-40-64,index,self));
-			faction.units.push(new Infantry(tc.x+64-64,tc.y-40-64,index,self));
-			faction.units.push(new Infantry(tc.x+96-64,tc.y-40-64,index,self));
-		});
-<<<<<<< HEAD
-=======
-
->>>>>>> 9cb8633dd353967e9e26cff9882b3032b9ef7971
 		
 		// Add Map mineral Mines
 		self.mapMinerals.push(new MineralMine(64*1,64*3,50000));
