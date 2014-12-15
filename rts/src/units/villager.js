@@ -93,8 +93,8 @@ Villager.prototype.update = function(elapsedTime) {
 		}
 	}
 	
-	else if(self.mode == "build"){
-		buildingunit.buildingHp = self.Villagerbuildingspeed * secs;
+	else if(self.mode == "build" && self.x = buildingunit.x + self.radius && self.y = buildingunit.y + self.radius){
+		buildingunit.buildingHp += self.Villagerbuildingspeed * secs;
 		if(buildingunit.buildingHp >= buildingunit.health){
 			self.mode = "idle";	
 		}
@@ -185,7 +185,7 @@ Villager.prototype.build = function(Building) {
 	self.move(Building.x,Building.y); 
 	self.mode = "build";
 	self.buildingunit = Building;
-	this.game.fraction[0].buildingunit.add(Building);
+	this.game.factions[0].buildings.push(Building);
 }
 
 Villager.prototype.attack = function(unit) {
