@@ -58,7 +58,7 @@ Villager.prototype.render = function(ctx) {
 	ctx.fill();
 	ctx.restore();
 }
-
+/*
 Villager.prototype.update = function(elapsedTime) {
 	var self = this;
 
@@ -185,7 +185,7 @@ Villager.prototype.attack = function(unit) {
 	self.mode = "attack";
 	self.targetunit = unit;
 }
-
+*/
 Villager.prototype.startMine = function(mine) {
 	var self = this;
 
