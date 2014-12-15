@@ -2,7 +2,7 @@ var Towncenter = function(x, y, health, factionIndex, game) {
 	this.x = x;
 	this.y = y;
 	this.health = health;
-	this.buildinghp = 1;
+	
 	this.game = game;
 	
 	this.factionIndex = factionIndex;
@@ -17,8 +17,11 @@ var Towncenter = function(x, y, health, factionIndex, game) {
 	this.world_y = y;
 
 	this.unitQueue = [];
+	this.unitTypeQueue = [];
 	
-	this.actions = [{thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.buildVillager()}];
+	this.actions = [{thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.buildVillager},
+					{thumbnail:Resource.gui.img.hopliteCommandButton, onClick:this.buildHoplite},
+					{thumbnail:Resource.gui.img.infantryCommandButton, onClick:this.buildInfantry}];
 }
 
 Towncenter.prototype = new Building(0, this.factionIndex, this.game);
@@ -49,49 +52,102 @@ Towncenter.prototype = new Building(0, this.factionIndex, this.game);
 
 Towncenter.prototype.update = function(elapsedTime) {
 
-	  this.animationTime += elapsedTime;
-	  
-	  //Move the animation frame.
-	  if(this.animationTime >= 50){
-	    this.animationTime = 0;
-	    this.animationFrame = (this.animationFrame + 1) % BUILDING_SPRITE_DATA[this.type].animationFrames;
-	  }
+	this.animationTime += elapsedTime;
 
-	  //Check if the Towncenter is building a unit.
-	  if(this.unitQueue.length > 0){
-	  	this.unitQueue[0] -= elapsedTime;
+	//Move the animation frame.
+	if(this.animationTime >= 50){
+		this.animationTime = 0;
+		this.animationFrame = (this.animationFrame + 1) % BUILDING_SPRITE_DATA[this.type].animationFrames;
+	}
 
-	  	this.buildPercent = this.unitQueue[0] / 2500;
+	//Check if the Towncenter is building a unit.
+	if(this.unitQueue.length > 0){
+		this.unitQueue[0] -= elapsedTime;
 
-	  	if(this.unitQueue[0] <= 0){
-	  		this.unitQueue.shift();
-	  		this.faction.units.push(new Hoplite(this.world_x + 64, this.world_y + 128, this.factionIndex, this.game));
-	  	}
-	  }
-	  else{
-	  	this.isBuilding = false;
-	  }
+		this.buildPercent = this.unitQueue[0] / 2500;
 
-},
+		if(this.unitQueue[0] <= 0){
+			this.unitQueue.shift();
+			var unitType = this.unitTypeQueue.shift();
+			switch (unitType) {
+				case "villager":
+					this.faction.units.push(new Villager(this.world_x + 64, this.world_y + 128, this.factionIndex, this.game));
+					break;
+				case "hoplite":
+					this.faction.units.push(new Villager(this.world_x + 64, this.world_y + 128, this.factionIndex, this.game));
+					break;
+				case "infantry":
+					this.faction.units.push(new Infantry(this.world_x + 64, this.world_y + 128, this.factionIndex, this.game));
+					break;
+				default:
+					console.log("error; invalid unit");
+					return;
+			}
+			
+		}
+	} else {
+		this.isBuilding = false;
+	}
 
-Towncenter.prototype.buildVillager = function(){
+}
+
+Towncenter.prototype.buildVillager = function(building){
 
 	//TODO: Check if the player has enough resources.
-  if(!this.faction.playerResources.minerals.canSubtract(50)){
-    return;
-  }
-  
-  if(!this.faction.playerResources.supply.canAdd(1)){
-    return;
-  }
-  
-  this.faction.playerResources.minerals.subtract(50);
-  this.faction.playerResources.supply.add(1);
+	if (!building.game.playerResources.minerals.canSubtract(50)) {
+		return;
+	}
 
-	//TODO: Remove the necessary resources to build the unit.
-  
-	this.unitQueue.push(2500);
-	this.isBuilding = true;
+	if (!building.game.playerResources.supply.canAdd(1)) {
+		return;
+	}
+
+	building.game.playerResources.minerals.subtract(50);
+	building.game.playerResources.supply.add(1);
+
+	building.unitQueue.push(2500);
+	building.isBuilding = true;
+	building.unitTypeQueue.push("villager");
+
+}
+
+Towncenter.prototype.buildHoplite = function(building){
+
+	//TODO: Check if the player has enough resources.
+	if (!building.game.playerResources.minerals.canSubtract(100)) {
+		return;
+	}
+
+	if (!building.game.playerResources.supply.canAdd(1)) {
+		return;
+	}
+
+	building.game.playerResources.minerals.subtract(100);
+	building.game.playerResources.supply.add(1);
+
+	building.unitQueue.push(2500);
+	building.isBuilding = true;
+	building.unitTypeQueue.push("hoplite");
+
+}
+
+Towncenter.prototype.buildInfantry = function(building){
+
+	//TODO: Check if the player has enough resources.
+	if (!building.game.playerResources.minerals.canSubtract(130)) {
+		return;
+	}
+
+	if (!building.game.playerResources.supply.canAdd(1)) {
+		return;
+	}
+
+	building.game.playerResources.minerals.subtract(130);
+	building.game.playerResources.supply.add(1);
+
+	building.unitQueue.push(2500);
+	building.isBuilding = true;
+	building.unitTypeQueue.push("infantry");
 
 }
 

@@ -183,37 +183,22 @@ Game.prototype = {
 			self.factions.push(new Faction(self.factionColors[i]));
 		}
 		
-		// create towncenter for each team
-		for (var i = 0; i < self.factions.length; i++) {
-			var playerX = 64*4 + 64*7*i;
-			var playerY = 64*4 + 64*7*i;
-			self.factions[i].buildings.push(new Towncenter(playerX, playerY, 100, i, self));
-		}
-		
+		// create towncenter for each team	
+		self.factions[0].buildings.push(new Towncenter(64*3, 64*3, 100, 0, self));
+		self.factions[1].buildings.push(new Towncenter(64*15, 64*15, 100, 1, self));
 		
 		self.playerFaction = self.factions[0]; // self
 		
 		// start centered on town center
+		/*
 		var tc = self.playerFaction.buildings[0];
 		globalx = tc.x + 0.5*tc.width - 0.5*WIDTH;
 		globaly = tc.y + 0.5*tc.height - 0.5*HEIGHT;
-		
-
-		self.factions.forEach( function(faction, index) {
-			tc = faction.buildings[0];
-			faction.units.push(new Infantry(tc.x+32-64,tc.y-40-64,index,self));
-			faction.units.push(new Infantry(tc.x+64-64,tc.y-40-64,index,self));
-			faction.units.push(new Infantry(tc.x+96-64,tc.y-40-64,index,self));
-		});
-
+		*/
 		
 		// Add Map mineral Mines
-		self.mapMinerals.push(new MineralMine(55,55,50));
-		self.mapMinerals.push(new MineralMine(555,155,50));
-		self.mapMinerals.push(new MineralMine(955,355,50));
-		self.mapMinerals.push(new MineralMine(355,555,50));
-		self.mapMinerals.push(new MineralMine(255,955,50));
-		self.mapMinerals.push(new MineralMine(755,755,50));
+		self.mapMinerals.push(new MineralMine(64*1,64*3,50000));
+		self.mapMinerals.push(new MineralMine(64*18,64*16,50000));
 	},
 	
 	startSelectBox: function(x, y) {
@@ -276,6 +261,8 @@ Game.prototype = {
 			}
 		};
 
+		self.moveUnit(x, y);
+		
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
 				if (faction != thisFaction &&
@@ -303,7 +290,6 @@ Game.prototype = {
 			}
 		});
 		
-		//self.moveUnit(x, y);
 	},
 	
 	moveUnit: function(x, y) {
