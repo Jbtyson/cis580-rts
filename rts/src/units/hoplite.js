@@ -20,6 +20,8 @@ var Hoplite = function(x, y, faction, game) {
 	this.y = y;
 	this.faction = faction;
 	
+	this.thumbnail = Resource.gui.img.villagerCommandButton;
+	
 	//this.render = HopliteRender;
 	//this.update = HopliteUpdate;
 	//this.getHitbox = HopliteGetHitbox;
