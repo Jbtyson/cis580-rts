@@ -183,7 +183,7 @@ startMine: function(mine) {
 	var self = this;
 
 	// temporarily changes mode to "move"
-	self.move(unit.x, unit.y);
+	self.move(mine.x, mine.y);
 	self.mode = "goingToMine";
 	self.targetunit = mine;
 },
