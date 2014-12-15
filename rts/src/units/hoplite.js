@@ -136,14 +136,6 @@ Hoplite.prototype.getAttackRange = function() {
 	};
 }
 
-Hoplite.prototype.startMine = function(mine) {
-	var self = this;
-
-	// temporarily changes mode to "move"
-	self.move(unit.x, unit.y);
-	self.mode = "attack";
-	self.targetunit = unit;
-}
 
 
 

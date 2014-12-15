@@ -179,7 +179,14 @@ attack: function(unit) {
 		this.targetunit = unit;
 		this.getPath(unit.x, unit.y);
 	},
+startMine: function(mine) {
+	var self = this;
 
+	// temporarily changes mode to "move"
+	self.move(unit.x, unit.y);
+	self.mode = "goingToMine";
+	self.targetunit = mine;
+},
 	/* C.J. Dopheide
 	This takes in an x y coordinate and uses an A* search to get a path to those coordinates.
 	*/
