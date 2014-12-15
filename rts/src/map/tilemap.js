@@ -1,16 +1,12 @@
 // Tilemap engine defined using the Module pattern
 // See http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html
 // nathan bean
-// Edited by Alex Lesperance
 var Tilemap = (function (){
 	var tiles = [],
 		tilesets = [],
 		layers = [],
 		tileWidth = 0,
 		tileHeight = 0,
-		tileMiniWidth = 0,		//used for the minimap
-		tileMiniHeight = 0, 	//used for the minimap
-		miniMapScale = 10,		//our scale factor for the current map
 		mapWidth = 0,
 		mapHeight = 0,
 		screen,
@@ -27,8 +23,6 @@ var Tilemap = (function (){
 		// Resize the map
 		tileWidth = mapData.tilewidth;
 		tileHeight = mapData.tileheight;
-		tileMiniWidth = mapData.tilewidth / miniMapScale;
-		tileMiniHeight = mapData.tileHeight / miniMapScale;
 		mapWidth = mapData.width;
 		mapHeight = mapData.height;
 
@@ -117,13 +111,6 @@ var Tilemap = (function (){
 								tile.sx, tile.sy, tileWidth, tileHeight, // The portion of image to draw
 								x*tileWidth-globalx, y*tileHeight-globaly, tileWidth, tileHeight // Where to draw the image on-screen
 							);
-							/* Used to draw the minimap
-							screenCtx.drawImage(
-								tile.image,     // The image to draw 
-								tile.sx, tile.sy, tileWidth / 10, tileHeight / 10, // The portion of image to draw
-								x*tileWidth-globalx, y*tileHeight - globaly, tileWidth, tileHeight // Where to draw the image on-screen
-							);
-							*/
 						}
 					}
 
