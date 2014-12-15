@@ -7,7 +7,7 @@ var Timer = function()
 	this.hitbox = new Rectangle(this.position.x, this.position.y, this.dimensions.width, this.dimensions.height);
 	this.runningTime = 0;
 	this.seconds = 0;
-	this.minutes = 9;
+	this.minutes = 0;
 	this.hours = 0.;
 }
 
