@@ -23,6 +23,8 @@ var Villager = function(x, y, faction, game) {
 	this.y = y;
 	this.faction = faction;
 	
+	this.thumbnail = Resource.gui.img.villagerCommandButton;
+	
 	//this.render = VillagerRender;
 	//this.update = VillagerUpdate;
 	//this.getHitbox = VillagerGetHitbox;
