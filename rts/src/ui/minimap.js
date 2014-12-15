@@ -48,7 +48,7 @@ Minimap.prototype = {
 			faction.buildings.forEach( function(building) { 
 				context.fillStyle = building.faction.color;
 				context.beginPath();
-				context.arc(Math.ceil(building.x / 10), 512 + (building.y / 10), 3, 0, 2*Math.PI);
+				context.arc((building.x / 10) + 6.4, (512 + (building.y / 10)) + 6.4, 3, 0, 2*Math.PI);
 				context.fill();
 			});
 		});
