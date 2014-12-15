@@ -298,6 +298,11 @@ startMine: function(mine) {
 	{
 		var xdist = this.x - unit.x;
 		var ydist = this.y - unit.y;
+		if(xdist == 0 && ydist == 0)
+		{
+			xdist = Math.random() * this.radius/3 + Math.random() * -this.radius/3;
+			ydist = Math.random() * this.radius/3 + Math.random() * -this.radius/3;
+		}
 		this.mode = "move";
 		this.getPath(this.x + xdist/3, this.y + ydist/3);
 	}
