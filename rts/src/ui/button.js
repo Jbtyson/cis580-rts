@@ -5,7 +5,7 @@ var Button = function() {
 	this.position = { x:0, y:0 }
 	this.id = -1;
 	this.image = null;
-	this.tooltipText = "error loading text";
+	this.tooltipText = "this text can be near this long to wrap correctly";
 	
 	this.hitbox = new Rectangle(this.position.x, this.position.y, this.dimensions.width, this.dimensions.height);
 };
