@@ -166,7 +166,7 @@ Input.prototype = {
 				}
 			}
 			else
-				self.game.startSelectBox(self.mousex+globalx, self.mousey+globaly);
+				self.game.startSelectBox(this.mousex+globalx, this.mousey+globaly);
 		} else if (e.button == 2) {
 			
 		} else if (e.button == 1) {
@@ -178,10 +178,7 @@ Input.prototype = {
 		var self = this;
 
 		if (e.button == 0) {
-			if(self.game.gui.isClickOnUi(self.mousex+globalx, self.mousey+globaly)) {
-				// do nothing for now
-			}
-			else
+			if(!self.game.gui.isClickOnUi(self.mousex+globalx, self.mousey+globaly))
 				self.game.endSelectBox(e);
 		} else if (e.button == 2) {
 			self.game.unitOrder(this.mousex+globalx, this.mousey+globaly);

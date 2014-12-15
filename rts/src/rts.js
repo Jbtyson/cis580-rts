@@ -56,40 +56,6 @@ var Game = function (canvasId) {
 		},
 		ctx: this.screenContext
 	});
-	
-	/*
-	this.soundsready = 0;
-	this.gup = function() { game.soundsready++; };
-	this.sounds = {
-		music: new AudioFX("sounds/Mining by Moonlight", { formats: ['mp3'], volume: 1.0, loop:true}, this.gup),
-		bullet: new AudioFX("sounds/bullet", { formats: ['mp3'], pool: 20, volume: 0.1}, this.gup),
-		missile: new AudioFX("sounds/missile", { formats: ['mp3'], pool: 10, volume: 0.06, loop: true}, this.gup),
-		powerup: new AudioFX("sounds/powerup", { formats: ['mp3'], pool: 4, volume: 0.1}, this.gup),
-		explosion: new AudioFX("sounds/explosion", {formats: ['mp3'], pool: 10, volume: 0.1}, this.gup)
-	};
-	*/
-	
-	/*
-	this.ready = 0;
-	// the images will tell us when they're loaded
-	this.bgs[0].onload = function() {
-		game.ready++;
-	};
-	this.bgs[1].onload = function() {
-		game.ready++;
-	};
-	this.bgs[2].onload = function() {
-		game.ready++;
-	};
-	*/
-
-	// Game variables
-	//this.gui = new GUI();
-	//this.minimap = new Minimap(20, 440, 760, 24, this.bgs[0], this.bgs[1], this.bgs[2]);
-	
-	//sprite_sheet = new Image();
-	//sprite_sheet.src = "helicopter.png";
-	//this.heli = new Helicopter(200, 200, sprite_sheet);
 
 	this.placeLevelObjects();
 	
@@ -191,44 +157,18 @@ Game.prototype = {
 			self.factions[i].buildings.push(new Towncenter(playerX + 128, playerY, 100, i, self));
 		}
 		
-		
 		self.playerFaction = self.factions[0]; // self
 		
 		// start centered on town center
+		/*
 		var tc = self.playerFaction.buildings[0];
 		globalx = tc.x + 0.5*tc.width - 0.5*WIDTH;
 		globaly = tc.y + 0.5*tc.height - 0.5*HEIGHT;
-		
-		var spawnlots = false;
-		if (spawnlots) {
-			for (var i = 0; i < 5; i++) {
-				for (var j = 0; j < 5; j++) {
-
-					//self.factions[0].units.push(new Hoplite(i*64+32, j*64+32, self.factions[0].color, self));
-					//self.factions[1].units.push(new Hoplite(i*64+32+320, j*64+32+320, self.factions[1].color, self));
-					
-					self.factions[0].units.push(new Infantry(i*64+32, j*64+32, 0, self));
-					self.factions[1].units.push(new Infantry(i*64+32+320, j*64+32+320, 1, self));
-				}
-			}
-		} else {
-
-			self.factions.forEach( function(faction, index) {
-				tc = faction.buildings[0];
-				faction.units.push(new Infantry(tc.x+32-64,tc.y-40-64,index,self));
-				faction.units.push(new Infantry(tc.x+64-64,tc.y-40-64,index,self));
-				faction.units.push(new Infantry(tc.x+96-64,tc.y-40-64,index,self));
-			});
-
-		}
+		*/
 		
 		// Add Map mineral Mines
-		self.mapMinerals.push(new MineralMine(55,55,50));
-		self.mapMinerals.push(new MineralMine(555,155,50));
-		self.mapMinerals.push(new MineralMine(955,355,50));
-		self.mapMinerals.push(new MineralMine(355,555,50));
-		self.mapMinerals.push(new MineralMine(255,955,50));
-		self.mapMinerals.push(new MineralMine(755,755,50));
+		self.mapMinerals.push(new MineralMine(64*1,64*3,50000));
+		self.mapMinerals.push(new MineralMine(64*18,64*16,50000));
 	},
 	
 	startSelectBox: function(x, y) {
@@ -268,8 +208,9 @@ Game.prototype = {
 		self.sb = null;
 	},
 	
-	unitOrder: function(x, y) {
+	unitOrder: function(x, y, faction) {
 		var self = this;
+		var thisFaction = faction;
 		
 		var mousebox = {
 			getHitbox: function() {
@@ -290,13 +231,15 @@ Game.prototype = {
 			}
 		};
 
+		self.moveUnit(x, y);
+		
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
-				if (faction.units[i].color != self.playerFaction &&
+				if (faction != thisFaction &&
 						self.cd.detect(faction.units[i], mousebox)) {
-					for (var j = 0; j < faction.units.length; j++) {
-						if (faction.units[j].selected) {
-							faction.units[j].attack(faction.units[i]);
+					for (var j = 0; j < thisFaction.units.length; j++) {
+						if (thisFaction.units[j].selected) {
+							thisFaction.units[j].attack(faction.units[i]);
 						}
 					}
 					return;
@@ -305,18 +248,18 @@ Game.prototype = {
 		});
 
 		self.mapMinerals.forEach (function(mineral, index) {
-			if (mousebox.x > mineral.x - mineral.width/2 && mousebox.x < mineral.x + mineral.width/2 
-				&& mousebox.y > mineral.y - mineral.height/2 && mousebox.y < mineral.y + mineral.height/2) {
-				for (var j = 0; j < faction.units.length; j++) {
-						if (faction.units[j].selected) {
-							faction.units[j].startMine(mineral);
+			if (self.cd.detect(mineral, mousebox)) {
+				self.factions.forEach( function(faction) {
+					for (var j = 0; j < faction.units.length; j++) {
+							if (faction.units[j].selected) {
+								faction.units[j].startMine(mineral);
+							}
 						}
-					}
-				return;
+					return;
+				});
 			}
 		});
 		
-		self.moveUnit(x, y);
 	},
 	
 	moveUnit: function(x, y) {
@@ -442,13 +385,6 @@ Game.prototype = {
 				);
 			}
 		},200);
-		
-		/*window.requestNextAnimationFrame(
-			function(time) {
-				self.started = true;
-				self.loop.call(self, time);
-			}
-		);*/
 
 	},
 	
@@ -499,7 +435,7 @@ Game.prototype = {
 		
 			// Check which players are still active
 			self.factions.forEach( function(faction) {
-				if( faction.units.length == 0 ) {//&& faction.buildings.length == 0 ) { // enable once buildings can be attacked
+				if( faction.buildings.length == 0 ) {//&& faction.buildings.length == 0 ) { // enable once buildings can be attacked
 					self.activePlayers--;
 				}
 			});
