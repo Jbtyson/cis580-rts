@@ -2,11 +2,12 @@
 // James Tyson
 //----------------------------------
 GuiResources = function() {
-	this.loading = 10;
+	this.loading = 11;
 	
 	this.img = {
 		// Minimap
 		minimap: new Image(),
+		minimap_map: new Image(),
 		
 		// Unit Panel
 		unitPanel: new Image(),
@@ -41,6 +42,8 @@ GuiResources.prototype = {
 		// Minimap
 		this.img.minimap.onload = onload;
 		this.img.minimap.src = "img/ui/minimap.png";
+		this.img.minimap_map.onload = onload;
+		this.img.minimap_map.src = "img/ui/rts_minimap.png";
 		// Unit Panel
 		this.img.unitPanel.onload = onload;
 		this.img.unitPanel.src = "img/ui/unitPanel.png";
