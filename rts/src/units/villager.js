@@ -188,10 +188,10 @@ Villager.prototype.attack = function(unit) {
 
 Villager.prototype.startMine = function(mine) {
 	var self = this;
-
+	console.log("mining");
 	// temporarily changes mode to "move"
 	self.move(unit.x, unit.y);
-	self.mode = "attack";
-	self.targetunit = unit;
+	self.mode = "goingToMine";
+	self.targetunit = mine;
 }
 
