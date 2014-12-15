@@ -54,7 +54,7 @@ Minimap.prototype = {
 		});
 		
 		//our view of the world.
-		context.strokeStyle = 'green';
+		context.strokeStyle = "#83F52C"; //neon green yo
 		context.strokeRect(this.position.x + (globalx / 10), this.position.y + (globaly / 10), 64, 64);
 		
 		
