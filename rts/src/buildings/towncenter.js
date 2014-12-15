@@ -2,7 +2,7 @@ var Towncenter = function(x, y, health, factionIndex, game) {
 	this.x = x;
 	this.y = y;
 	this.health = health;
-	
+	this.buildinghp = 1;
 	this.game = game;
 	
 	this.factionIndex = factionIndex;

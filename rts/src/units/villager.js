@@ -17,8 +17,9 @@ var Villager = function(x, y, faction, game) {
 	// in health per second
 	this.damage = 3;
 	
-	this.Villagerbuildingspeed = 1.0;
-	
+	this.Villagerbuildingspeed = 5;
+	this.buildking
+
 	this.x = x;
 	this.y = y;
 	this.faction = faction;
@@ -82,7 +83,7 @@ Villager.prototype.update = function(elapsedTime) {
 			}
 		}
 	}
-	
+
 	else if (self.mode == "attack" && self.game.cd.detect(self.targetunit, self)) {
 		self.targetunit.health -= self.damage*secs;
 		//console.log(self.targetunit.health);
@@ -92,7 +93,14 @@ Villager.prototype.update = function(elapsedTime) {
 		}
 	}
 	
-	else if (self.mode == "idle") {
+	else if(self.mode == "build"){
+		buildingunit.buildingHp = self.Villagerbuildingspeed * secs;
+		if(buildingunit.buildingHp >= buildingunit.health){
+			self.mode = "idle";	
+		}
+	}
+
+	else if (self.mode == "idle" || self.mode == "build") {
 		self.game.factions.forEach( function(faction) {
 			for (var i = 0; i <  faction.units.length; i++) {
 				if (faction.units[i].color != self.color &&
@@ -148,33 +156,12 @@ Villager.prototype.move = function(x, y) {
 	}
 }
 
-Villager.prototype.build = function(bx,by,BuildingHp,resource,elapsedTime) {
+Villager.prototype.build = function(Building) {
 	var self = this;
-
-	var secs = elapsedTime / 1000;
-	var buildHp = 0;
-	//check resource
-
-	//read in xy position, move to xy position
-	self.move(bx,by); // was villagerMove(bx,by)
-	
-	//buiding start && villegar stay in position
-	while(self.mode == "idle" && self.x ==bx && self.y==by && buildHP != self.BuildingHp){
-		buildHp = self.Villagerbuildingspeed * secs;
-	}
-	//outer the while loop building is stoped, out reason check
-	
-	//villegar have been moved
-	if(self.mode != "idle" || self.x !=bx || self.y != by && buildHP < self.BuildingHp){
-			//store the buildingHp on the x,y position.
-	}
-	//Building complete
-	else if(buildHp==self.BuildingHp){
-		//render Building
-	}
-	else{
-		console.log("Unknow reason for Building stoped");
-	}
+	self.move(Building.x,Building.y); 
+	self.mode = "build";
+	self.buildingunit = Building;
+	this.game.fraction[0].buildingunit.add(Building);
 }
 
 Villager.prototype.attack = function(unit) {
