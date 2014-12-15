@@ -39,21 +39,16 @@ Minimap.prototype = {
 		factions.forEach(function(faction) {
 			for(var k = 0; k < faction.units.length; k++)
 			{
-				console.log(faction.units);
+				context.fillStyle = faction.color;
 				context.beginPath();
+				context.arc(faction.units[k].x / 10, 512 + (faction.units[k].y / 10), 1, 0, 2*Math.PI);
+				context.fill();
 				
 			}
 			faction.buildings.forEach( function(building) { 
-				if(building.faction.color === "#FF0000")
-				{
-					context.fillStyle = 'red';
-				}
-				else
-				{
-					context.fillStyle = 'blue';
-				}
+				context.fillStyle = building.faction.color;
 				context.beginPath();
-				context.arc(Math.ceil(building.x / 10), 512 + building.y / 10, 3, 0, 2*Math.PI);
+				context.arc(Math.ceil(building.x / 10), 512 + (building.y / 10), 3, 0, 2*Math.PI);
 				context.fill();
 			});
 		});
