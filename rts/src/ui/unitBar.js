@@ -1,4 +1,5 @@
 // UnitBar.js
+// James Tyson
 var UnitBar = function() {
 	this.panelImage = Resource.gui.img.unitPanel;
 	this.unitBackgroundImage = Resource.gui.img.unitBackground;
@@ -17,8 +18,11 @@ var UnitBar = function() {
 
 UnitBar.prototype = {
 	update: function(gameTime, unitList) {
+		if(typeof(unitList) == "undefined") {
+			this.buttons = [];
+		}
 		// Check for a new list
-		if(this.unitList != unitList) {
+		else if(this.unitList != unitList) {
 			this.unitList = unitList;
 			this.unit = unitList[0];
 			// Clear the thumbnails and create the new ones

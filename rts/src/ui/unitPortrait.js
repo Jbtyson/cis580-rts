@@ -1,5 +1,5 @@
 // UnitPortrait.js
-// James Tyson, Alex Lesperance
+// James Tyson
 var UnitPortrait = function() {
 	this.image = Resource.gui.img.captain;
 
