@@ -35,7 +35,7 @@ Gui.prototype = {
 		}
 		else if(this.game.selectedBuildings.length !== 0){
 		  this.commandPanel.update(gameTime, this.game.selectedBuildings[0]);
-		  //this.unitBar.update(gameTime, this.game.selectedBuildings);
+		  this.unitBar.update(gameTime, this.game.selectedBuildings);
 		}
 		// If no unit is selected, update with an undefined list to remove previous buttons
 		else {

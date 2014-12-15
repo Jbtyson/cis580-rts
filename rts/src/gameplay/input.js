@@ -159,10 +159,7 @@ Input.prototype = {
 			if(self.game.gui.isClickOnUi(self.mousex+globalx, self.mousey+globaly)) {
 				var actionNum = self.game.gui.getButtonClicked(self.mousex+globalx, self.mousey+globaly);
 				if(actionNum !== -1) {
-					if(self.game.selectedUnits.length > 0)
-						self.game.selectedUnits[0].actions[actionNum].onClick();
-					else
-						self.game.selectedBuildings[0].actions[actionNum].onClick(self.game.selectedBuildings[0]);
+					self.game.performAction(actionNum);
 				}
 			}
 			else
@@ -195,13 +192,3 @@ Input.prototype = {
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
