@@ -13,6 +13,8 @@ var Hoplite = function(x, y, faction, game) {
 	// in health per second
 	this.damage = 6;
 	this.range = 0;
+	this.maxResources = 10;
+	this.resources = 0;
 	
 	this.x = x;
 	this.y = y;
@@ -132,6 +134,15 @@ Hoplite.prototype.getAttackRange = function() {
 		y: self.y,
 		radius: self.radius + self.range
 	};
+}
+
+Hoplite.prototype.startMine = function(mine) {
+	var self = this;
+
+	// temporarily changes mode to "move"
+	self.move(unit.x, unit.y);
+	self.mode = "attack";
+	self.targetunit = unit;
 }
 
 

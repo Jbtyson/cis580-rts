@@ -177,4 +177,21 @@ Villager.prototype.build = function(bx,by,BuildingHp,resource,elapsedTime) {
 	}
 }
 
+Villager.prototype.attack = function(unit) {
+	var self = this;
+
+	// temporarily changes mode to "move"
+	self.move(unit.x, unit.y);
+	self.mode = "attack";
+	self.targetunit = unit;
+}
+
+Villager.prototype.startMine = function(mine) {
+	var self = this;
+
+	// temporarily changes mode to "move"
+	self.move(unit.x, unit.y);
+	self.mode = "attack";
+	self.targetunit = unit;
+}
 
