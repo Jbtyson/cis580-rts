@@ -39,7 +39,11 @@ var Infantry = function(x, y, faction, game) {
 	};
 	// Declare array of actions here
 	this.actions = [
-		{ thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.testAction }
+		{ 
+			thumbnail:Resource.gui.img.villagerCommandButton, 
+			tooltipText:"Sample text to pretend to be a tooltip.", 
+			onClick:this.testAction 
+		},
 	];
 	// -----------------------------------------------------------------------------
 }

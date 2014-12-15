@@ -20,7 +20,7 @@ var Towncenter = function(x, y, health, factionIndex, game) {
 	
 	// ------------------- James wrote this for gui stuff --------------------------
 	// -------It is necessary for gui to work, so make sure all units have it-------
-	// Unit icon for the unit bar
+	// Building icon for the bottom bar
 	this.thumbnail = Resource.gui.img.villagerCommandButton;
 	// Declare action functions here
 	this.testAction = function() {
@@ -28,11 +28,13 @@ var Towncenter = function(x, y, health, factionIndex, game) {
 	};
 	// Declare array of actions here
 	this.actions = [
-		{thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.buildVillager}
+		{ 
+			thumbnail:Resource.gui.img.villagerCommandButton, 
+			tooltipText:"Build 1 villager. 1 supply, 50 minerals.", 
+			onClick:this.buildVillager 
+		},
 	];
 	// -----------------------------------------------------------------------------
-	
-	this.actions = [{thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.buildVillager}];
 }
 
 Towncenter.prototype = new Building(0, this.factionIndex, this.game);
