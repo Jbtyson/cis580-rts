@@ -261,6 +261,8 @@ Game.prototype = {
 			}
 		};
 
+		self.moveUnit(x, y);
+		
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
 				if (faction != thisFaction &&
@@ -287,7 +289,6 @@ Game.prototype = {
 			}
 		});
 		
-		//self.moveUnit(x, y);
 	},
 	
 	moveUnit: function(x, y) {
