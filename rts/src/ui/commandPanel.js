@@ -17,22 +17,17 @@ var CommandPanel = function() {
 
 CommandPanel.prototype = {
 	update: function(gameTime, unit) {
-		
 		if(typeof(unit) == "undefined") {
 			this.unit = unit;
 			this.buttons = [];
 		}
-		
-		if(this.unit != unit) {
+		else if(this.unit != unit) {
 			this.unit = unit;
 			this.buttons = [];
-			//this.unit.actions.length = 9;
 			for(i = 0; i < this.maxButtons && i < this.unit.actions.length; i++) {
-				this.buttons[i] = {};
-				this.buttons[i].image = new Image();
-				//this.buttons[i].image.src = this.unit.actions[i].thumbPath;
+				this.buttons[i] = new Button();
+				this.buttons[i].image = this.unit.actions[i].thumbnail;
 				this.buttons[i].position = {};
-				
 				this.buttons[i].position.x = this.buttonStartPosition.x + i%3 * this.buttonDimensions.width;
 				if(i < 3)
 					this.buttons[i].position.y = this.buttonStartPosition.y;
@@ -40,6 +35,10 @@ CommandPanel.prototype = {
 					this.buttons[i].position.y = this.buttonStartPosition.y + this.buttonDimensions.height;
 				else
 					this.buttons[i].position.y = this.buttonStartPosition.y + 2*this.buttonDimensions.height;
+				
+				this.buttons[i].id = i;
+				this.buttons[i].dimensions = this.buttonDimensions;
+				this.buttons[i].updateHitbox(); // this is a bandaid, remove later if time
 			}
 		}
 
@@ -51,23 +50,12 @@ CommandPanel.prototype = {
 		context.drawImage(this.panelImage, this.position.x, this.position.y);
 		
 		// Render all of the buttons
-		for(i = 0; i < this.buttons.length; i++) {
-		  
-	        if(i < this.unit.actions.length){
-	          // Render background for buttons
-		  	    context.drawImage(this.unit.actions[i].thumbnail, this.buttons[i].position.x, this.buttons[i].position.y);
-	        }
-	        else{
-	          // Render background for buttons
-		  	    context.drawImage(this.buttonImage, this.buttons[i].position.x, this.buttons[i].position.y);
-	        }
-		  }
-		  
+		for(i = 0; i < this.buttons.length; i++) {		  
 			// Render background for buttons
-			//context.drawImage(this.buttonImage, this.buttons[i].position.x, this.buttons[i].position.y);
+			context.drawImage(this.buttonImage, this.buttons[i].position.x, this.buttons[i].position.y);
 			// Render button images
-			//context.drawImage(this.buttons[i].image, this.buttons[i].position.x, this.buttons[i].position.y);
-		
+			this.buttons[i].render(context);
+		}
 		
 		context.restore();
 	},

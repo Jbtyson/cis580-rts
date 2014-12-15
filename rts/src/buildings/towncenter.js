@@ -18,7 +18,7 @@ var Towncenter = function(x, y, health, factionIndex, game) {
 
 	this.unitQueue = [];
 	
-	this.actions = [{thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.buildVillager()}];
+	this.actions = [{thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.buildVillager}];
 }
 
 Towncenter.prototype = new Building(0, this.factionIndex, this.game);
@@ -74,24 +74,24 @@ Towncenter.prototype.update = function(elapsedTime) {
 
 },
 
-Towncenter.prototype.buildVillager = function(){
+Towncenter.prototype.buildVillager = function(building){
 
 	//TODO: Check if the player has enough resources.
-  if(!this.game.playerResources.minerals.canSubtract(50)){
+  if(!building.game.playerResources.minerals.canSubtract(50)){
     return;
   }
   
-  if(!this.game.playerResources.supply.canAdd(1)){
+  if(!building.game.playerResources.supply.canAdd(1)){
     return;
   }
   
-  this.game.playerResources.minerals.subtract(50);
-  this.game.playerResources.supply.add(1);
+  building.game.playerResources.minerals.subtract(50);
+  building.game.playerResources.supply.add(1);
 
 	//TODO: Remove the necessary resources to build the unit.
   
-	this.unitQueue.push(2500);
-	this.isBuilding = true;
+	building.unitQueue.push(2500);
+	building.isBuilding = true;
 
 }
 

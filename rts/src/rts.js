@@ -206,17 +206,17 @@ Game.prototype = {
 					//self.factions[0].units.push(new Hoplite(i*64+32, j*64+32, self.factions[0].color, self));
 					//self.factions[1].units.push(new Hoplite(i*64+32+320, j*64+32+320, self.factions[1].color, self));
 					
-					self.factions[0].units.push(new Infantry(i*64+32, j*64+32, self.factions[0].color, self));
-					self.factions[1].units.push(new Infantry(i*64+32+320, j*64+32+320, self.factions[1].color, self));
+					self.factions[0].units.push(new Infantry(i*64+32, j*64+32, 0, self));
+					self.factions[1].units.push(new Infantry(i*64+32+320, j*64+32+320, 1, self));
 				}
 			}
 		} else {
 
-			self.factions.forEach( function(faction) {
+			self.factions.forEach( function(faction, index) {
 				tc = faction.buildings[0];
-				faction.units.push(new Infantry(tc.x+32-64,tc.y-40-64,faction.color,self));
-				faction.units.push(new Infantry(tc.x+64-64,tc.y-40-64,faction.color,self));
-				faction.units.push(new Infantry(tc.x+96-64,tc.y-40-64,faction.color,self));
+				faction.units.push(new Infantry(tc.x+32-64,tc.y-40-64,index,self));
+				faction.units.push(new Infantry(tc.x+64-64,tc.y-40-64,index,self));
+				faction.units.push(new Infantry(tc.x+96-64,tc.y-40-64,index,self));
 			});
 
 		}
@@ -252,22 +252,18 @@ Game.prototype = {
 				self.selectedUnits.push(this.playerFaction.units[i]);
 			}
 		}
-		this.playerFaction.buildings.forEach( function(building) {
-			if (!e.ctrlKey && !e.shiftKey) {
-				building.selected = false;
-			}
-			if(self.cd.detect(self.sb, building)) {
-
-				//REMOVE!!
-				//TEST CODE FOR BUILDING UNIT!
-				building.buildVillager();
-
-
-				building.selected = true;
-				self.selectedBuildings.push(building);
-			}
-		});
-
+		// Don't add buildings if units were selected
+		if(this.selectedUnits.length === 0) {
+			this.playerFaction.buildings.forEach( function(building) {
+				if (!e.ctrlKey && !e.shiftKey) {
+					building.selected = false;
+				}
+				if(self.cd.detect(self.sb, building)) {
+					building.selected = true;
+					self.selectedBuildings.push(building);
+				}
+			});
+		}
 		self.sb = null;
 	},
 	
@@ -307,6 +303,18 @@ Game.prototype = {
 			}
 		});
 
+		self.mapMinerals.forEach (function(mineral, index) {
+			if (mousebox.x > mineral.x - mineral.width/2 && mousebox.x < mineral.x + mineral.width/2 
+				&& mousebox.y > mineral.y - mineral.height/2 && mousebox.y < mineral.y + mineral.height/2) {
+				for (var j = 0; j < faction.units.length; j++) {
+						if (faction.units[j].selected) {
+							faction.units[j].startMine(mineral);
+						}
+					}
+				return;
+			}
+		});
+		
 		self.moveUnit(x, y);
 	},
 	
@@ -322,6 +330,35 @@ Game.prototype = {
 				}
 			}
 		});
+	},
+	
+	// Selects a unit from the array of selected units
+	// James Tyson
+	selectUnit: function(id) {
+		if(this.selectedUnits.length > 0) {
+			// Store the selected unit
+			var unit = this.selectedUnits[id];
+			// Deselect and remove all units
+			this.selectedUnits.forEach(function(unit) {
+				unit.selected = false;
+			});
+			this.selectedUnits = [];
+			// Reselect and add selected unit
+			unit.selected = true;
+			this.selectedUnits.push(unit);
+		}
+		else if(this.selectedBuildings.length > 0) {
+			// Store the selected building
+			var building = this.selectedBuildings[id];
+			// Deselect all remove all buildings
+			this.selectedBuildings.forEach(function(building) {
+				building.selected = false;
+			});
+			this.selectedBuildings = [];
+			// Reselect and add selectd building
+			building.selected = true;
+			this.selectedBuildings.push(unit);
+		}
 	},
 	
 	render: function(elapsedTime) {
@@ -373,7 +410,7 @@ Game.prototype = {
 				clearInterval(splashloop);
 				window.requestNextAnimationFrame(
 					function(time) {
-						self.playlist[self.currentTrack].play();
+						//self.playlist[self.currentTrack].play();
 						self.loop.call(self, time);
 					}
 				);

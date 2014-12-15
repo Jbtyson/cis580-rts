@@ -37,7 +37,7 @@ GuiResources = function() {
 
 GuiResources.prototype = {
 	load: function() {
-		onload = function() { this.loading -= 1; console.log("got here");}
+		onload = function() { this.loading -= 1;}
 		// Minimap
 		this.img.minimap.onload = onload;
 		this.img.minimap.src = "img/ui/minimap.png";
