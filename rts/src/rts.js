@@ -194,14 +194,24 @@ Game.prototype = {
 		var tc = self.playerFaction.buildings[0];
 		globalx = tc.x + 0.5*tc.width - 0.5*WIDTH;
 		globaly = tc.y + 0.5*tc.height - 0.5*HEIGHT;
+<<<<<<< HEAD
 		*/
 
 		self.factions.forEach(function(faction, index) {
+=======
+		
+
+		self.factions.forEach( function(faction, index) {
+>>>>>>> 9cb8633dd353967e9e26cff9882b3032b9ef7971
 			tc = faction.buildings[0];
 			faction.units.push(new Infantry(tc.x+32-64,tc.y-40-64,index,self));
 			faction.units.push(new Infantry(tc.x+64-64,tc.y-40-64,index,self));
 			faction.units.push(new Infantry(tc.x+96-64,tc.y-40-64,index,self));
 		});
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9cb8633dd353967e9e26cff9882b3032b9ef7971
 		
 		// Add Map mineral Mines
 		self.mapMinerals.push(new MineralMine(64*1,64*3,50000));
@@ -245,8 +255,9 @@ Game.prototype = {
 		self.sb = null;
 	},
 	
-	unitOrder: function(x, y) {
+	unitOrder: function(x, y, faction) {
 		var self = this;
+		var thisFaction = faction;
 		
 		var mousebox = {
 			getHitbox: function() {
@@ -269,11 +280,11 @@ Game.prototype = {
 
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
-				if (faction.units[i].color != self.playerFaction &&
+				if (faction != thisFaction &&
 						self.cd.detect(faction.units[i], mousebox)) {
-					for (var j = 0; j < faction.units.length; j++) {
-						if (faction.units[j].selected) {
-							faction.units[j].attack(faction.units[i]);
+					for (var j = 0; j < thisFaction.units.length; j++) {
+						if (thisFaction.units[j].selected) {
+							thisFaction.units[j].attack(faction.units[i]);
 						}
 					}
 					return;
@@ -293,7 +304,7 @@ Game.prototype = {
 			}
 		});
 		
-		self.moveUnit(x, y);
+		//self.moveUnit(x, y);
 	},
 	
 	moveUnit: function(x, y) {
@@ -388,7 +399,7 @@ Game.prototype = {
 				clearInterval(splashloop);
 				window.requestNextAnimationFrame(
 					function(time) {
-						self.playlist[self.currentTrack].play();
+						//self.playlist[self.currentTrack].play();
 						self.loop.call(self, time);
 					}
 				);
