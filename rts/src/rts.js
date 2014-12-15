@@ -33,7 +33,7 @@ var Game = function (canvasId) {
 	this.input = new Input(this.screen, window, myself);
 	
 	// Necessary for gui making - James
-	this.playerResources = new FactionResources();
+	// this.playerResources = new FactionResources();
 	this.selectedUnits = [];
 	this.selectedBuildings = [];
 	this.gui = new Gui(this);
@@ -159,6 +159,10 @@ Game.prototype = {
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
 				if (faction.units[i].health <= 0) {
+					// TO DO:
+					// remove supply from faction supply
+					
+				
 					// removes unit from array and ensures no units are skipped
 					faction.units.splice(i, 1);
 					i--;
