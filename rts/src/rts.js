@@ -257,11 +257,6 @@ Game.prototype = {
 				building.selected = false;
 			}
 			if(self.cd.detect(self.sb, building)) {
-
-				
-				
-
-
 				building.selected = true;
 				self.selectedBuildings.push(building);
 			}
@@ -333,7 +328,7 @@ Game.prototype = {
 			this.selectedUnits.forEach(function(unit) {
 				unit.selected = false;
 			});
-			selectedUnits = [];
+			this.selectedUnits = [];
 			// Reselect and add selected unit
 			unit.selected = true;
 			this.selectedUnits.push(unit);
@@ -345,7 +340,7 @@ Game.prototype = {
 			this.selectedBuildings.forEach(function(building) {
 				building.selected = false;
 			});
-			selectedBuildings = [];
+			this.selectedBuildings = [];
 			// Reselect and add selectd building
 			building.selected = true;
 			this.selectedBuildings.push(unit);

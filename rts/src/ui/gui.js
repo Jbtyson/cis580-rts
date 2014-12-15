@@ -28,19 +28,18 @@ Gui.prototype = {
 		// Update the minimap
 		this.minimap.update(gameTime);
 		
-		// Update the commandPanel
+		// Update the commandPanel and unit bar based on what type is selected
 		if(this.game.selectedUnits.length !== 0){
 		  this.commandPanel.update(gameTime, this.game.selectedUnits[0]);
+		  this.unitBar.update(gameTime, this.game.selectedUnits);
 		}
 		else if(this.game.selectedBuildings.length !== 0){
 		  this.commandPanel.update(gameTime, this.game.selectedBuildings[0]);
+		  //this.unitBar.update(gameTime, this.game.selectedBuildings);
 		}	
 		
 		// Update the resourceBar
 		this.resourceBar.update(gameTime);
-		
-		// Update the unitBar
-		this.unitBar.update(gameTime, this.game.selectedUnits);
 		
 		// Update the unitPortrait
 		this.unitPortrait.update(gameTime);

@@ -26,8 +26,8 @@ var Infantry = function(x, y, color, game) {
 	//this.move = Move;
 	//this.attack = Attack;
 	
-	// -------------------James wrote this for gui stuff --------------------------
-	// -------It is necessary for gui to work, so make sure all units have it------
+	// ------------------- James wrote this for gui stuff --------------------------
+	// -------It is necessary for gui to work, so make sure all units have it-------
 	// Unit icon for the unit bar
 	this.thumbnail = Resource.gui.img.villagerCommandButton;
 	// Declare action functions here
