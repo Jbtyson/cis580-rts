@@ -95,16 +95,17 @@ Unit.prototype = {
 
 update: function(elapsedTime) {
 		var secs = elapsedTime / 1000;
+		console.log(this.mode);
 		if (this.mode == "move" ||
-				(this.mode == "attack" && !game.cd.detect(this.targetunit, this))) {
-			if (this.mode == "attack") {
+				(this.mode == "attack" && !game.cd.detect(this.targetunit, this)) ||
+				(this.mode == "goingToMine" && !game.cd.detect(this.targetunit, this))) {
+			if (this.mode == "attack" || this.mode == "goingToMine") {
 				this.targetx = this.targetunit.x;
 				this.targety = this.targetunit.y;
 				if(Math.floor(this.targetx/64) != this.nextNode.x || Math.floor(this.targety/64) != this.nextNode.y)
 				{
 					this.getPath(this.targetunit.x, this.targetunit.y);
 				}
-				this.mode = "attack";
 			}
 			var deltaxi = this.nextx - this.x;
 			var deltayi = this.nexty - this.y;
@@ -159,6 +160,10 @@ update: function(elapsedTime) {
 				}
 			}
 		}
+		
+		else if (this.mode == "goingToMine" && game.cd.detect(this.targetunit, this)) {
+		 console.log("mining");
+		}
 },
 getHitbox: function() {
 		return {
@@ -181,9 +186,8 @@ attack: function(unit) {
 	},
 startMine: function(mine) {
 	var self = this;
-
 	// temporarily changes mode to "move"
-	self.move(unit.x, unit.y);
+	self.move(mine.x, mine.y);
 	self.mode = "goingToMine";
 	self.targetunit = mine;
 },

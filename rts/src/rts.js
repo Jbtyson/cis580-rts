@@ -315,13 +315,14 @@ Game.prototype = {
 		});
 		
 		self.mapMinerals.forEach (function(mineral, index) {
-			if (mousebox.x > mineral.x - mineral.width/2 && mousebox.x < mineral.x + mineral.width/2 
-				&& mousebox.y > mineral.y - mineral.height/2 && mousebox.y < mineral.y + mineral.height/2) {
-				for (var j = 0; j < faction.units.length; j++) {
-						if (faction.units[j].selected) {
-							faction.units[j].startMine(mineral);
+			if (self.cd.detect(mineral, mousebox)) {
+				for (var i = 0; i < self.factions.length; i++) {
+					for (var j = 0; j < self.factions[i].units.length; j++) {
+						if (self.factions[i].units[j].selected) {
+							self.factions[i].units[j].startMine(mineral);
 						}
 					}
+				}
 				return;
 			}
 		});

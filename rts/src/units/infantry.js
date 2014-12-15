@@ -64,10 +64,15 @@ Infantry.prototype.update = function(elapsedTime) {
 
 	var secs = elapsedTime / 1000;
 	if (self.mode == "move" ||
-			(self.mode == "attack" && !self.game.cd.detect(self.targetunit, self))) {
+			(self.mode == "attack" && !self.game.cd.detect(self.targetunit, self)) ||
+				(this.mode == "goingToMine" && !self.game.cd.detect(this.targetunit, this))) {
 		if (self.mode == "attack") {
 			self.move(self.targetunit.x, self.targetunit.y);
 			self.mode = "attack";
+		}
+		else if (self.mode == "goingToMine") {
+			self.move(self.targetunit.x, self.targetunit.y);
+			self.mode = "goingToMine";
 		}
 		
 		var deltaxi = self.targetx - self.x;
@@ -95,6 +100,10 @@ Infantry.prototype.update = function(elapsedTime) {
 				this.animationFrame = (this.animationFrame + 1) % UNIT_SPRITE_DATA[0].animationFrames;
 			}
 		}
+	}
+	
+	else if (this.mode == "goingToMine" && self.game.cd.detect(this.targetunit, this)) {
+		 console.log("mining");
 	}
 	
 	else if (self.mode == "attack" && self.game.cd.detect(self.targetunit, self)) {
