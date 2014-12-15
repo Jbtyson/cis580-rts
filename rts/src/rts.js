@@ -33,7 +33,7 @@ var Game = function (canvasId) {
 	this.input = new Input(this.screen, window, myself);
 	
 	// Necessary for gui making - James
-	// this.playerResources = new FactionResources();
+	this.playerResources = new FactionResources();
 	this.selectedUnits = [];
 	this.selectedBuildings = [];
 	this.gui = new Gui(this);
@@ -159,10 +159,6 @@ Game.prototype = {
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
 				if (faction.units[i].health <= 0) {
-					// TO DO:
-					// remove supply from faction supply
-					faction.playerResources.supply.subtract( faction.units[i].supply );
-				
 					// removes unit from array and ensures no units are skipped
 					faction.units.splice(i, 1);
 					i--;
@@ -202,31 +198,14 @@ Game.prototype = {
 		globalx = tc.x + 0.5*tc.width - 0.5*WIDTH;
 		globaly = tc.y + 0.5*tc.height - 0.5*HEIGHT;
 		
-		var spawnlots = false;
-		if (spawnlots) {
-			for (var i = 0; i < 5; i++) {
-				for (var j = 0; j < 5; j++) {
 
-					//self.factions[0].units.push(new Hoplite(i*64+32, j*64+32, self.factions[0].color, self));
-					//self.factions[1].units.push(new Hoplite(i*64+32+320, j*64+32+320, self.factions[1].color, self));
-					
-					self.factions[0].units.push(new Infantry(i*64+32, j*64+32, 0, self));
-					self.factions[1].units.push(new Infantry(i*64+32+320, j*64+32+320, 1, self));
-				}
-			}
-		} else {
+		self.factions.forEach( function(faction, index) {
+			tc = faction.buildings[0];
+			faction.units.push(new Infantry(tc.x+32-64,tc.y-40-64,index,self));
+			faction.units.push(new Infantry(tc.x+64-64,tc.y-40-64,index,self));
+			faction.units.push(new Infantry(tc.x+96-64,tc.y-40-64,index,self));
+		});
 
-			self.factions.forEach( function(faction, index) {
-				tc = faction.buildings[0];
-				faction.units.push(new Infantry(tc.x+32-64,tc.y-40-64,index,self));
-				faction.units.push(new Infantry(tc.x+64-64,tc.y-40-64,index,self));
-				faction.units.push(new Infantry(tc.x+96-64,tc.y-40-64,index,self));
-				
-				// add supply cost of units
-				faction.playerResources.supply.add( 3*faction.units[0].supply );
-			});
-
-		}
 		
 		// Add Map mineral Mines
 		self.mapMinerals.push(new MineralMine(55,55,50));
@@ -259,27 +238,24 @@ Game.prototype = {
 				self.selectedUnits.push(this.playerFaction.units[i]);
 			}
 		}
-		this.playerFaction.buildings.forEach( function(building) {
-			if (!e.ctrlKey && !e.shiftKey) {
-				building.selected = false;
-			}
-			if(self.cd.detect(self.sb, building)) {
-
-				//REMOVE!!
-				//TEST CODE FOR BUILDING UNIT!
-				building.buildVillager();
-
-
-				building.selected = true;
-				self.selectedBuildings.push(building);
-			}
-		});
-
+		// Don't add buildings if units were selected
+		if(this.selectedUnits.length === 0) {
+			this.playerFaction.buildings.forEach( function(building) {
+				if (!e.ctrlKey && !e.shiftKey) {
+					building.selected = false;
+				}
+				if(self.cd.detect(self.sb, building)) {
+					building.selected = true;
+					self.selectedBuildings.push(building);
+				}
+			});
+		}
 		self.sb = null;
 	},
 	
-	unitOrder: function(x, y) {
+	unitOrder: function(x, y, faction) {
 		var self = this;
+		var thisFaction = faction;
 		
 		var mousebox = {
 			getHitbox: function() {
@@ -302,18 +278,18 @@ Game.prototype = {
 
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
-				if (faction.units[i].color != self.playerFaction &&
+				if (faction != thisFaction &&
 						self.cd.detect(faction.units[i], mousebox)) {
-					for (var j = 0; j < faction.units.length; j++) {
-						if (faction.units[j].selected) {
-							faction.units[j].attack(faction.units[i]);
+					for (var j = 0; j < thisFaction.units.length; j++) {
+						if (thisFaction.units[j].selected) {
+							thisFaction.units[j].attack(faction.units[i]);
 						}
 					}
 					return;
 				}
 			}
 		});
-		
+
 		self.mapMinerals.forEach (function(mineral, index) {
 			if (self.cd.detect(mineral, mousebox)) {
 				self.factions.forEach( function(faction) {
@@ -326,8 +302,8 @@ Game.prototype = {
 				});
 			}
 		});
-
-		self.moveUnit(x, y);
+		
+		//self.moveUnit(x, y);
 	},
 	
 	moveUnit: function(x, y) {
@@ -342,6 +318,35 @@ Game.prototype = {
 				}
 			}
 		});
+	},
+	
+	// Selects a unit from the array of selected units
+	// James Tyson
+	selectUnit: function(id) {
+		if(this.selectedUnits.length > 0) {
+			// Store the selected unit
+			var unit = this.selectedUnits[id];
+			// Deselect and remove all units
+			this.selectedUnits.forEach(function(unit) {
+				unit.selected = false;
+			});
+			this.selectedUnits = [];
+			// Reselect and add selected unit
+			unit.selected = true;
+			this.selectedUnits.push(unit);
+		}
+		else if(this.selectedBuildings.length > 0) {
+			// Store the selected building
+			var building = this.selectedBuildings[id];
+			// Deselect all remove all buildings
+			this.selectedBuildings.forEach(function(building) {
+				building.selected = false;
+			});
+			this.selectedBuildings = [];
+			// Reselect and add selectd building
+			building.selected = true;
+			this.selectedBuildings.push(unit);
+		}
 	},
 	
 	render: function(elapsedTime) {
@@ -393,7 +398,7 @@ Game.prototype = {
 				clearInterval(splashloop);
 				window.requestNextAnimationFrame(
 					function(time) {
-						self.playlist[self.currentTrack].play();
+						//self.playlist[self.currentTrack].play();
 						self.loop.call(self, time);
 					}
 				);

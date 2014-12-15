@@ -27,7 +27,7 @@ var Hoplite = function(x, y, faction, game) {
 	//this.attack = HopliteAttack;
 }
 
-Hoplite.prototype = new Unit(100,100,60,"#000000");
+Hoplite.prototype = new Unit(100,100,this.maxhealth,this.faction);
 
 Hoplite.prototype.update = function(elapsedTime) {
 	var self = this;
