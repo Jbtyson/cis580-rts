@@ -18,6 +18,9 @@ var Gui = function(game) {
 	this.hitboxes.push(this.unitBar.hitbox);
 	this.hitboxes.push(this.unitPortrait.hitbox);
 	this.hitboxes.push(this.timer.hitbox);
+	
+	// tool tip things
+	this.tooltip = new Tooltip(this);
 }
 
 Gui.prototype = {
@@ -51,27 +54,35 @@ Gui.prototype = {
 		
 		// Update the timer
 		this.timer.update(gameTime);
+		
+		// Update the tooltip
+		if(this.tooltip !== null)
+			this.tooltip.update(gameTime);
 	},
 	
 	// Render the gui
 	render: function(context) {
-		// Update the minimap
+		// Render the minimap
 		this.minimap.render(context);
 		
-		// Update the commandPanel
+		// Render the commandPanel
 		this.commandPanel.render(context);
 
-		// Update the resourceBar
+		// Render the resourceBar
 		this.resourceBar.render(context);
 		
-		// Update the unitBar
+		// Render the unitBar
 		this.unitBar.render(context);
 		
-		// Update the unitPortrait
+		// Render the unitPortrait
 		this.unitPortrait.render(context);
 		
-		//Update the timer
+		// Render the timer
 		this.timer.render(context);
+		
+		// Render the tooltip
+		if(this.tooltip !== null) 
+			this.tooltip.render(context);
 	},
 	
 	// Returns if the mouse click that just occurred, occured on the ui
@@ -110,4 +121,8 @@ Gui.prototype = {
 		}
 		return -1;
 	},
+	
+	onMouseMove: function(mousePosX, mousePosY) {
+		this.tooltip.updateMousePos(mousePosX, mousePosY);
+	}
 }

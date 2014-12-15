@@ -144,6 +144,9 @@ Input.prototype = {
 			}
 			this.mousescroll = scrollingnow;
 		}
+		
+		// notify the gui that the mouse moved for tooltip displays
+		self.game.gui.onMouseMove(this.mousex+globalx, this.mousey+globaly);
 	},
 	
 	mousedown: function(e) {
