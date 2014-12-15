@@ -308,8 +308,8 @@ Game.prototype = {
 		});
 		
 		self.mapMinerals.forEach (function(mineral, index) {
-			if (mousebox.x > (mineral.x - (mineral.width/2)) && mousebox.x < (mineral.x + (mineral.width/2)) 
-				&& mousebox.y > (mineral.y - (mineral.height/2)) && mousebox.y < (mineral.y + (mineral.height/2))) {
+			if (mousebox.x > mineral.x - mineral.width/2 && mousebox.x < mineral.x + mineral.width/2 
+				&& mousebox.y > mineral.y - mineral.height/2 && mousebox.y < mineral.y + mineral.height/2) {
 				for (var j = 0; j < faction.units.length; j++) {
 						if (faction.units[j].selected) {
 							faction.units[j].startMine(mineral);
