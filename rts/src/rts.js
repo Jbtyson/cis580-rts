@@ -161,7 +161,7 @@ Game.prototype = {
 				if (faction.units[i].health <= 0) {
 					// TO DO:
 					// remove supply from faction supply
-					
+					faction.playerResources.supply.subtract( faction.units[i].supply );
 				
 					// removes unit from array and ensures no units are skipped
 					faction.units.splice(i, 1);
