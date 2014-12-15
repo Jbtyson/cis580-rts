@@ -188,6 +188,7 @@ Game.prototype = {
 			var playerX = 64*4 + 64*7*i;
 			var playerY = 64*4 + 64*7*i;
 			self.factions[i].buildings.push(new Towncenter(playerX, playerY, 100, i, self));
+			self.factions[i].buildings.push(new Towncenter(playerX + 128, playerY, 100, i, self));
 		}
 		
 		
@@ -357,7 +358,32 @@ Game.prototype = {
 			this.selectedBuildings = [];
 			// Reselect and add selectd building
 			building.selected = true;
-			this.selectedBuildings.push(unit);
+			this.selectedBuildings.push(building);
+		}
+	},
+	
+	// Performs an action after based on the click input from the ui
+	performAction: function(actionNum) {
+		// make all units of the original type perform the action
+		if(this.selectedUnits.length > 0) {
+			var type = typeof(this.selectedUnits[0]);
+			this.selectedUnits.forEach(function(unit) {
+				if(type === typeof(unit))
+					unit.actions[actionNum].onClick(unit);
+			});
+		}
+		// make the building with the lowest unitQueue perform the action
+		else if(this.selectedBuildings.length > 0) {
+			var type = typeof(this.selectedBuildings[0]);
+			var lowestIndex = 0;
+			var lowest = this.selectedBuildings[0].unitQueue.length;
+			this.selectedBuildings.forEach(function(building, index) {
+				if(building.unitQueue.length < lowest && type === typeof(building)) {
+					lowestIndex = index;
+					lowest = building.unitQueue.length;
+				}
+			});
+		this.selectedBuildings[lowestIndex].actions[actionNum].onClick(this.selectedBuildings[lowestIndex]);
 		}
 	},
 	

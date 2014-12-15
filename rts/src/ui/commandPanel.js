@@ -17,13 +17,11 @@ var CommandPanel = function() {
 
 CommandPanel.prototype = {
 	update: function(gameTime, unit) {
-		
 		if(typeof(unit) == "undefined") {
 			this.unit = unit;
 			this.buttons = [];
 		}
-		
-		if(this.unit != unit) {
+		else if(this.unit != unit) {
 			this.unit = unit;
 			this.buttons = [];
 			for(i = 0; i < this.maxButtons && i < this.unit.actions.length; i++) {

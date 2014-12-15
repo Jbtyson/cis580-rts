@@ -18,6 +18,20 @@ var Towncenter = function(x, y, health, factionIndex, game) {
 
 	this.unitQueue = [];
 	
+	// ------------------- James wrote this for gui stuff --------------------------
+	// -------It is necessary for gui to work, so make sure all units have it-------
+	// Unit icon for the unit bar
+	this.thumbnail = Resource.gui.img.villagerCommandButton;
+	// Declare action functions here
+	this.testAction = function() {
+		console.log("test action performed");
+	};
+	// Declare array of actions here
+	this.actions = [
+		{thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.buildVillager}
+	];
+	// -----------------------------------------------------------------------------
+	
 	this.actions = [{thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.buildVillager}];
 }
 
