@@ -51,7 +51,7 @@ Gui.prototype = {
 	// Render the gui
 	render: function(context) {
 		// Update the minimap
-		this.minimap.render(context);
+		this.minimap.render(context, this.game.factions);
 		
 		// Update the commandPanel
 		this.commandPanel.render(context);
