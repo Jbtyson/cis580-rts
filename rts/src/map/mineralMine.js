@@ -20,7 +20,7 @@ MineralMine.prototype.render = function(context) {
 	context.save();
 	
 	context.fillStyle = "#404040";
-	context.fillRect(this.x-globalx,this.y-globaly,this.width,this.height);
+	context.fillRect( (this.x - globalx - this.width/2), (this.y - globaly - this.height/2), this.width, this.height);
 	
 	context.restore();
 }
