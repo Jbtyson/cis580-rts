@@ -112,6 +112,30 @@ Villager.prototype.update = function(elapsedTime) {
 	}
 }
 
+Villager.prototype.render = function(context) {
+		//draw unit
+		context.drawImage(Resource.units.img.villager[this.faction],
+			UNIT_SPRITE_DATA[0].x + UNIT_SPRITE_DATA[0].width * this.animationFrame, UNIT_SPRITE_DATA[0].y,
+			UNIT_SPRITE_DATA[0].width, UNIT_SPRITE_DATA[0].height,
+			this.x - globalx - this.radius, this.y - globaly - this.radius,
+			UNIT_SPRITE_DATA[0].width, UNIT_SPRITE_DATA[0].height);
+			
+		// draw health bar
+		var maxbarlength = this.radius*2;
+		var barheight = 4;
+		var barlength = maxbarlength * (this.health/this.maxhealth);
+		context.fillStyle = "#00FF00";
+		context.beginPath();
+		context.rect(this.x -(maxbarlength/2)-globalx, this.y - this.radius/2 - (barheight/2)-globaly,	barlength, barheight);
+		context.fill();
+		context.restore();
+		
+		if(this.selected) {
+			context.drawImage(Resource.units.img.unitSelector,
+				this.x - globalx - this.radius, this.y - globaly - this.radius);
+		}
+	},
+
 Villager.prototype.getHitbox = function() {
 	var self = this;
 
