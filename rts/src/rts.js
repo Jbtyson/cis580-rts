@@ -221,6 +221,9 @@ Game.prototype = {
 				faction.units.push(new Infantry(tc.x+32-64,tc.y-40-64,index,self));
 				faction.units.push(new Infantry(tc.x+64-64,tc.y-40-64,index,self));
 				faction.units.push(new Infantry(tc.x+96-64,tc.y-40-64,index,self));
+				
+				// add supply cost of units
+				faction.playerResources.supply.add( 3*faction.units[0].supply );
 			});
 
 		}
