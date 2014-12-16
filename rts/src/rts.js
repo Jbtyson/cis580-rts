@@ -33,7 +33,6 @@ var Game = function (canvasId) {
 	this.input = new Input(this.screen, window, myself);
 	
 	// Necessary for gui making - James
-	this.playerResources = new FactionResources();
 	this.selectedUnits = [];
 	this.selectedBuildings = [];
 	this.gui = new Gui(this);
@@ -124,6 +123,9 @@ Game.prototype = {
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
 				if (faction.units[i].health <= 0) {
+					// remove supply from faction supply
+					faction.playerResources.supply.subtract( faction.units[i].supply );
+					
 					// removes unit from array and ensures no units are skipped
 					faction.units.splice(i, 1);
 					i--;
@@ -168,9 +170,11 @@ Game.prototype = {
 		globalx = 64*10;
 		globaly = 64*10;
 		
+		// start with villager and add required supply
 		self.factions[0].units.push(new Villager(64*2,64*3,0,self));
-		
+		self.factions[0].playerResources.supply.add( self.factions[0].units[0].supply );
 		self.factions[1].units.push(new Villager(64*17,64*16,1,self));
+		self.factions[1].playerResources.supply.add( self.factions[1].units[0].supply );
 		
 		// Add Map mineral Mines
 		self.mapMinerals.push(new MineralMine(64*1,64*3,50000));

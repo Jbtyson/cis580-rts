@@ -13,8 +13,8 @@ var Unit = function(x, y, health, faction) {
 	this.x = x;
 	this.y = y;
 	this.radius;
-	//supply is the population cost for a unit
-	this.supply;
+	//supply is the population cost for a unit, default 1
+	this.supply = 1;
 
 	this.health = health;
 	this.faction = faction;
