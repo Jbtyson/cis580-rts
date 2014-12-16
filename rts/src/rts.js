@@ -33,7 +33,6 @@ var Game = function (canvasId) {
 	this.input = new Input(this.screen, window, myself);
 	
 	// Necessary for gui making - James
-	this.playerResources = new FactionResources();
 	this.selectedUnits = [];
 	this.selectedBuildings = [];
 	this.gui = new Gui(this);
@@ -186,6 +185,12 @@ Game.prototype = {
 		// create towncenter for each team	
 		self.factions[0].buildings.push(new Towncenter(64*3, 64*3, 100, 0, self));
 		self.factions[1].buildings.push(new Towncenter(64*15, 64*15, 100, 1, self));
+		
+		// start with villager and add required supply
+		self.factions[0].units.push(new Infantry(64*3+32, 64*6+32, 0, self));
+		self.factions[0].playerResources.supply.add( self.factions[0].units[0].supply );
+		self.factions[1].units.push(new Infantry(64*15+32, 64*18+32, 1, self));
+		self.factions[1].playerResources.supply.add( self.factions[1].units[0].supply );
 		
 		self.playerFaction = self.factions[0]; // self
 		
