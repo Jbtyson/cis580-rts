@@ -52,7 +52,6 @@ Minimap.prototype = {
 				
 			}
 			faction.buildings.forEach( function(building) { 
-				console.log(building);
 				context.fillStyle = faction.color;
 				context.beginPath();
 				context.arc((building.x / 10) + 6.4, (512 + (building.y / 10)) + 6.4, 3, 0, 2*Math.PI);

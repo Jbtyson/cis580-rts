@@ -161,6 +161,12 @@ Game.prototype = {
 		self.factions[0].buildings.push(new Barracks(32*9, 32*10, 1, 0, self));
 		self.factions[1].buildings.push(new Towncenter(64*15, 64*15, 0, 1, self));
 		
+		// start with villager and add required supply
+		self.factions[0].units.push(new Infantry(64*3+32, 64*6+32, 0, self));
+		self.factions[0].playerResources.supply.add( self.factions[0].units[0].supply );
+		self.factions[1].units.push(new Infantry(64*15+32, 64*18+32, 1, self));
+		self.factions[1].playerResources.supply.add( self.factions[1].units[0].supply );
+		
 		self.playerFaction = self.factions[0]; // self
 		this.brain = new Brain(self.factions[1]);
 		
@@ -171,8 +177,8 @@ Game.prototype = {
 		globaly = tc.y + 0.5*tc.height - 0.5*HEIGHT;
 		*/
 		// temporary; I just want to keep an eye on the AI
-		globalx = 64*10;
-		globaly = 64*10;
+		//globalx = 64*10;
+		//globaly = 64*10;
 		
 		// start with villager and add required supply
 		self.factions[0].units.push(new Villager(64*2,64*3,0,self));
