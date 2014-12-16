@@ -329,7 +329,8 @@ Game.prototype = {
 			var type = typeof(this.selectedUnits[0]);
 			this.selectedUnits.forEach(function(unit) {
 				if(type === typeof(unit))
-					unit.actions[actionNum].onClick(unit);
+					if(typeof(unit.actions[actionNum]) !== "undefined")
+						unit.actions[actionNum].onClick(unit);
 			});
 		}
 		// make the building with the lowest unitQueue perform the action
