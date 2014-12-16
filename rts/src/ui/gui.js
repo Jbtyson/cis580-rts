@@ -5,7 +5,7 @@ var Gui = function(game) {
 	
 	this.minimap = new Minimap();
 	this.commandPanel = new CommandPanel();
-	this.resourceBar = new ResourceBar(this.game.playerResources);
+	this.resourceBar = new ResourceBar(0); // ResourceBar takes playerIndes as argument
 	this.unitBar = new UnitBar();
 	this.unitPortrait = new UnitPortrait();
 	this.timer = new Timer();
