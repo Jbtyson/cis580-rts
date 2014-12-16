@@ -94,16 +94,16 @@ Towncenter.prototype.update = function(elapsedTime) {
 Towncenter.prototype.buildVillager = function(building){
 
 	//TODO: Check if the player has enough resources.
-	if (!this.faction.playerResources.minerals.canSubtract(50)) {
+	if (!building.faction.playerResources.minerals.canSubtract(50)) {
 		return;
 	}
 
-	if (!this.faction.playerResources.supply.canAdd(1)) {
+	if (!building.faction.playerResources.supply.canAdd(1)) {
 		return;
 	}
 
-	this.faction.playerResources.minerals.subtract(50);
-	this.faction.playerResources.supply.add(1);
+	building.faction.playerResources.minerals.subtract(50);
+	building.faction.playerResources.supply.add(1);
 
 	building.unitQueue.push(2500);
 	building.isBuilding = true;
@@ -114,16 +114,16 @@ Towncenter.prototype.buildVillager = function(building){
 Towncenter.prototype.buildHoplite = function(building){
 
 	//TODO: Check if the player has enough resources.
-	if (!building.game.playerResources.minerals.canSubtract(100)) {
+	if (!building.faction.playerResources.minerals.canSubtract(100)) {
 		return;
 	}
 
-	if (!building.game.playerResources.supply.canAdd(1)) {
+	if (!building.faction.playerResources.supply.canAdd(1)) {
 		return;
 	}
 
-	building.game.playerResources.minerals.subtract(100);
-	building.game.playerResources.supply.add(1);
+	building.faction.playerResources.minerals.subtract(100);
+	building.faction.playerResources.supply.add(1);
 
 	building.unitQueue.push(2500);
 	building.isBuilding = true;
@@ -134,16 +134,16 @@ Towncenter.prototype.buildHoplite = function(building){
 Towncenter.prototype.buildInfantry = function(building){
 
 	//TODO: Check if the player has enough resources.
-	if (!building.game.playerResources.minerals.canSubtract(130)) {
+	if (!building.faction.playerResources.minerals.canSubtract(130)) {
 		return;
 	}
 
-	if (!building.game.playerResources.supply.canAdd(1)) {
+	if (!building.faction.playerResources.supply.canAdd(1)) {
 		return;
 	}
 
-	building.game.playerResources.minerals.subtract(130);
-	building.game.playerResources.supply.add(1);
+	building.faction.playerResources.minerals.subtract(130);
+	building.faction.playerResources.supply.add(1);
 
 	building.unitQueue.push(2500);
 	building.isBuilding = true;
