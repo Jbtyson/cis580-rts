@@ -1,6 +1,9 @@
 // max erdwien
 //Edited by Ryan Woodburn
 //Building variables and method by Yi Wang
+
+UNIT_SPRITE_DATA = [ {x:0, y: 0, width: 32, height: 32, animationFrames: 12} ];
+
 var Villager = function(x, y, faction, game) {
 	this.game = game;
 
@@ -34,33 +37,29 @@ var Villager = function(x, y, faction, game) {
 
 Villager.prototype = new Unit(100,100,this.maxhealth,this.faction);
 
-Villager.prototype.render = function(ctx) {
-	var self = this;
-
-	ctx.save();
-	ctx.beginPath();
-	if (self.selected) {
-		ctx.strokeStyle = "#00FF00";
-	} else {
-		ctx.strokeStyle = "#000000";
-	}
-	ctx.lineWidth = self.borderwidth;
-	ctx.fillStyle = self.color;
-	ctx.beginPath();
-	ctx.arc(self.x-globalx, self.y-globaly, self.radius-(self.borderwidth/2), 0, 2*Math.PI, false);
-	ctx.fill();
-	ctx.stroke();
-	
-	// draw health bar
-	var maxbarlength = 16;
-	var barheight = 4;
-	var barlength = maxbarlength * (self.health/self.maxhealth);
-	ctx.fillStyle = "#00FF00";
-	ctx.beginPath();
-	ctx.rect(self.x-(maxbarlength/2)-globalx, self.y-(barheight/2)-globaly,	barlength, barheight);
-	ctx.fill();
-	ctx.restore();
-}
+Villager.prototype.render = function(context) {
+		//draw unit
+		context.drawImage(Resource.units.img.villager[this.faction],
+			UNIT_SPRITE_DATA[0].x + UNIT_SPRITE_DATA[0].width * this.animationFrame, UNIT_SPRITE_DATA[0].y,
+			UNIT_SPRITE_DATA[0].width, UNIT_SPRITE_DATA[0].height,
+			this.x - globalx - this.radius, this.y - globaly - this.radius,
+			UNIT_SPRITE_DATA[0].width, UNIT_SPRITE_DATA[0].height);
+			
+		// draw health bar
+		var maxbarlength = this.radius*2;
+		var barheight = 4;
+		var barlength = maxbarlength * (this.health/this.maxhealth);
+		context.fillStyle = "#00FF00";
+		context.beginPath();
+		context.rect(this.x -(maxbarlength/2)-globalx, this.y - this.radius/2 - (barheight/2)-globaly,	barlength, barheight);
+		context.fill();
+		context.restore();
+		
+		if(this.selected) {
+			context.drawImage(Resource.units.img.unitSelector,
+				this.x - globalx - this.radius, this.y - globaly - this.radius);
+		}
+	},
 /*
 Villager.prototype.update = function(elapsedTime) {
 	var self = this;
