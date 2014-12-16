@@ -56,40 +56,6 @@ var Game = function (canvasId) {
 		},
 		ctx: this.screenContext
 	});
-	
-	/*
-	this.soundsready = 0;
-	this.gup = function() { game.soundsready++; };
-	this.sounds = {
-		music: new AudioFX("sounds/Mining by Moonlight", { formats: ['mp3'], volume: 1.0, loop:true}, this.gup),
-		bullet: new AudioFX("sounds/bullet", { formats: ['mp3'], pool: 20, volume: 0.1}, this.gup),
-		missile: new AudioFX("sounds/missile", { formats: ['mp3'], pool: 10, volume: 0.06, loop: true}, this.gup),
-		powerup: new AudioFX("sounds/powerup", { formats: ['mp3'], pool: 4, volume: 0.1}, this.gup),
-		explosion: new AudioFX("sounds/explosion", {formats: ['mp3'], pool: 10, volume: 0.1}, this.gup)
-	};
-	*/
-	
-	/*
-	this.ready = 0;
-	// the images will tell us when they're loaded
-	this.bgs[0].onload = function() {
-		game.ready++;
-	};
-	this.bgs[1].onload = function() {
-		game.ready++;
-	};
-	this.bgs[2].onload = function() {
-		game.ready++;
-	};
-	*/
-
-	// Game variables
-	//this.gui = new GUI();
-	//this.minimap = new Minimap(20, 440, 760, 24, this.bgs[0], this.bgs[1], this.bgs[2]);
-	
-	//sprite_sheet = new Image();
-	//sprite_sheet.src = "helicopter.png";
-	//this.heli = new Helicopter(200, 200, sprite_sheet);
 
 	this.placeLevelObjects();
 	
@@ -105,7 +71,6 @@ var Game = function (canvasId) {
 	this.STARTING_FPS = 60;
 	
 	this.started = false;
-	//this.units = [];
 	this.gameOver = false;
 }
 	
@@ -196,6 +161,10 @@ Game.prototype = {
 		globaly = tc.y + 0.5*tc.height - 0.5*HEIGHT;
 		*/
 		
+		self.factions[0].units.push(new Villager(64*2,64*3,0,self));
+		
+		self.factions[1].units.push(new Villager(64*17,64*16,1,self));
+		
 		// Add Map mineral Mines
 		self.mapMinerals.push(new MineralMine(64*1,64*3,50000));
 		self.mapMinerals.push(new MineralMine(64*18,64*16,50000));
@@ -260,9 +229,9 @@ Game.prototype = {
 				};
 			}
 		};
-
-		self.moveUnit(x, y);
 		
+		self.moveUnit(x, y);
+
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
 				if (faction != thisFaction &&
@@ -278,18 +247,16 @@ Game.prototype = {
 		});
 
 		self.mapMinerals.forEach (function(mineral, index) {
-			if (self.cd.detect(mineral, mousebox)) {
-				self.factions.forEach( function(faction) {
-					for (var j = 0; j < faction.units.length; j++) {
-							if (faction.units[j].selected) {
-								faction.units[j].startMine(mineral);
-							}
+			if (mousebox.x > mineral.x - mineral.width/2 && mousebox.x < mineral.x + mineral.width/2 
+				&& mousebox.y > mineral.y - mineral.height/2 && mousebox.y < mineral.y + mineral.height/2) {
+				for (var j = 0; j < faction.units.length; j++) {
+						if (faction.units[j].selected) {
+							faction.units[j].startMine(mineral);
 						}
-					return;
-				});
+					}
+				return;
 			}
 		});
-		
 	},
 	
 	moveUnit: function(x, y) {
