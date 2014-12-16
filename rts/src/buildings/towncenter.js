@@ -74,7 +74,7 @@ Towncenter.prototype.update = function(elapsedTime) {
 					this.faction.units.push(new Villager(this.world_x + 64, this.world_y + 128, this.factionIndex, this.game));
 					break;
 				case "hoplite":
-					this.faction.units.push(new Villager(this.world_x + 64, this.world_y + 128, this.factionIndex, this.game));
+					this.faction.units.push(new Hoplite(this.world_x + 64, this.world_y + 128, this.factionIndex, this.game));
 					break;
 				case "infantry":
 					this.faction.units.push(new Infantry(this.world_x + 64, this.world_y + 128, this.factionIndex, this.game));
