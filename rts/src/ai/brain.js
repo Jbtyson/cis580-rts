@@ -1,4 +1,5 @@
 var Brain = function(faction) {
+	this.faction = faction;
 	this.body = new Body(faction);
 	
 	this.time = 11;
@@ -12,11 +13,24 @@ Brain.prototype = {
 	
 	// goes through flow chart once every MAX_TIME seconds
 	update: function(elapsedTime) {
+		// temporarily commented, so that the only way to traverse is with 't'
 		//this.time += elapsedTime/1000;
 		if (this.time >= this.MAX_TIME) {
 			this.time -= this.MAX_TIME;
 			this.traverse();
 		}
+		
+		// add unassigned units to the army
+		for (var i = 0; i < this.faction.units.length; i++) {
+			if (this.faction.units[i].conscripted == false &&
+				this.faction.units[i].type != "villager") {
+				this.faction.units[i].conscripted = true;
+				this.faction.army.addUnit(this.faction.units[i]);
+			}
+		}
+		
+		// update armies
+		this.faction.army.update(elapsedTime);
 	},
 	
 	traverse: function() {

@@ -27,6 +27,9 @@ var Unit = function(x, y, health, faction) {
 	// returningResource
 	this.mode = "idle";
 	
+	// true if this unit belongs to an army
+	this.conscripted = false;
+	
 	this.selected = false;
 	this.velx = 0;
 	this.vely = 0;

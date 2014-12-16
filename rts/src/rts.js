@@ -173,11 +173,11 @@ Game.prototype = {
 		// start with villager and add required supply
 		self.factions[0].units.push(new Villager(64*2,64*3,0,self));
 		self.factions[0].playerResources.supply.add( self.factions[0].units[0].supply );
-		self.factions[1].units.push(new Villager(64*17,64*16,1,self));
+		self.factions[1].units.push(new Villager(64*18,64*17,1,self));
 		self.factions[1].playerResources.supply.add( self.factions[1].units[0].supply );
 		
 		// Add Map mineral Mines
-		self.mapMinerals.push(new MineralMine(64*1,64*3,50000));
+		self.mapMinerals.push(new MineralMine(64*2,64*4,50000));
 		self.mapMinerals.push(new MineralMine(64*18,64*16,50000));
 	},
 	
@@ -218,6 +218,7 @@ Game.prototype = {
 		self.sb = null;
 	},
 	
+	// faction here is the actual faction, not the index
 	unitOrder: function(x, y, faction) {
 		var self = this;
 		var thisFaction = faction;
@@ -243,6 +244,7 @@ Game.prototype = {
 		
 		self.moveUnit(x, y);
 
+		// check if the click was on an enemy unit
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
 				if (faction != thisFaction &&
@@ -257,11 +259,15 @@ Game.prototype = {
 			}
 		});
 
+		// check if the click was on a mineral patch
 		self.mapMinerals.forEach (function(mineral, index) {
 			if (self.cd.detect(mineral, mousebox)) {
-				for (var j = 0; j < faction.units.length; j++) {
-					if (faction.units[j].selected && faction.units[j].type == "villager") {
-						faction.units[j].startMine(mineral);
+				for (var i = 0; i < game.factions.length; i++) {
+					for (var j = 0; j < game.factions[i].units.length; j++) {
+						if (game.factions[i].units[j].selected &&
+							game.factions[i].units[j].type == "villager") {
+							game.factions[i].units[j].startMine(mineral);
+						}
 					}
 				}
 				return;

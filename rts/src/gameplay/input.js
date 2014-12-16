@@ -159,10 +159,10 @@ Input.prototype = {
 		 */
 		if (e.button == 0) {
 			// Perform the clicked action on the first unit in either selected buildings or units
-			if(self.game.gui.isClickOnUi(self.mousex, self.mousey)) {
+			if (self.game.gui.isClickOnUi(self.mousex, self.mousey)) {
 				var actionNum = self.game.gui.getButtonClicked(self.mousex, self.mousey);
-				if(actionNum !== -1) {
-					if(self.game.selectedUnits.length > 0)
+				if (actionNum !== -1) {
+					if (self.game.selectedUnits.length > 0)
 						self.game.selectedUnits[0].actions[actionNum].onClick();
 					else
 						self.game.selectedBuildings[0].actions[actionNum].onClick(self.game.selectedBuildings[0]);
@@ -181,7 +181,7 @@ Input.prototype = {
 		var self = this;
 
 		if (e.button == 0) {
-			if(self.game.gui.isClickOnUi(self.mousex, self.mousey)) {
+			if (self.game.gui.isClickOnUi(self.mousex, self.mousey)) {
 				// do nothing for now
 			}
 			else
