@@ -22,8 +22,6 @@ Minimap.prototype = {
 		//save the context
 		context.save();
 		
-		console.log(minerals);
-		
 		
 		//draw minimap
 		for(var i = 0; i < MINIMAP_TILES.length; i++)
