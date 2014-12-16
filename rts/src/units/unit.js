@@ -13,16 +13,8 @@ var Unit = function(x, y, health, faction) {
 	this.x = x;
 	this.y = y;
 	this.radius;
-	//supply is the population cost for a unit, default 1
-	this.supply = 1;
-	this.curNode = {
-		x: 0,
-		y: 0,
-		path: [],
-		cost: 0
-	}
-	this.curNode.x = Math.floor(x/64);
-	this.curNode.y = Math.floor(y/64);
+	//supply is the population cost for a unit
+	this.supply;
 
 	this.health = health;
 	this.faction = faction;
@@ -187,14 +179,7 @@ attack: function(unit) {
 		this.targetunit = unit;
 		this.getPath(unit.x, unit.y);
 	},
-startMine: function(mine) {
-	var self = this;
 
-	// temporarily changes mode to "move"
-	self.move(mine.x, mine.y);
-	self.mode = "goingToMine";
-	self.targetunit = mine;
-},
 	/* C.J. Dopheide
 	This takes in an x y coordinate and uses an A* search to get a path to those coordinates.
 	*/
@@ -297,11 +282,6 @@ startMine: function(mine) {
 	{
 		var xdist = this.x - unit.x;
 		var ydist = this.y - unit.y;
-		if(xdist == 0 && ydist == 0)
-		{
-			xdist = Math.random() * this.radius/3 + Math.random() * -this.radius/3;
-			ydist = Math.random() * this.radius/3 + Math.random() * -this.radius/3;
-		}
 		this.mode = "move";
 		this.getPath(this.x + xdist/3, this.y + ydist/3);
 	}

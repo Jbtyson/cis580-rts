@@ -1,7 +1,7 @@
 // ResourceBar.js
 // James Tyson
-var ResourceBar = function(playerIndex) {
-	this.playerIndex = playerIndex;
+var ResourceBar = function(resources) {
+	this.resources = resources;
 	this.image = Resource.gui.img.resourceBar;
 	
 	this.dimensions = { width:WIDTH, height:32 }
@@ -36,11 +36,9 @@ var ResourceBar = function(playerIndex) {
 
 ResourceBar.prototype = {
 	update: function(gameTime) {
-		this.minerals.text = game.factions[this.playerIndex].playerResources.minerals.amount;
-		/* this.minerals.text = this.resources.minerals.amount; */
+		this.minerals.text = this.resources.minerals.amount;
 		/* this.gas.text = this.resources.gas; */
-		/* this.supply.text = this.resources.supply.amount + " / " + this.resources.supply.maxAmount; */
-		this.supply.text = game.factions[this.playerIndex].playerResources.supply.amount + " / " + game.factions[this.playerIndex].playerResources.supply.maxAmount;
+		this.supply.text = this.resources.supply.amount + " / " + this.resources.supply.maxAmount;
 	},
 	
 	render: function(context) {

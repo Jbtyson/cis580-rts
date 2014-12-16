@@ -187,7 +187,7 @@ Input.prototype = {
 			else
 				self.game.endSelectBox(e);
 		} else if (e.button == 2) {
-			self.game.unitOrder(this.mousex+globalx, this.mousey+globaly);
+			self.game.unitOrder(this.mousex+globalx, this.mousey+globaly, game.factions[0]);
 		}
 	},
 	
