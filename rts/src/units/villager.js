@@ -28,6 +28,24 @@ var Villager = function(x, y, faction, game) {
 	//this.update = VillagerUpdate;
 	//this.getHitbox = VillagerGetHitbox;
 	//this.move = VillagerMove;
+	
+		// ------------------- James wrote this for gui stuff --------------------------
+	// -------It is necessary for gui to work, so make sure all units have it-------
+	// Unit icon for the unit bar
+	this.thumbnail = Resource.gui.img.villagerCommandButton;
+	// Declare action functions here
+	this.testAction = function() {
+		console.log("test action performed");
+	};
+	// Declare array of actions here
+	this.actions = [
+		{ 
+			thumbnail:Resource.gui.img.villagerCommandButton, 
+			tooltipText:"Sample text to pretend to be a tooltip.", 
+			onClick:this.testAction 
+		},
+	];
+	// -----------------------------------------------------------------------------
 }
 
 Villager.prototype = new Unit(100,100,this.maxhealth,this.faction);
