@@ -71,7 +71,6 @@ var Game = function (canvasId) {
 	this.STARTING_FPS = 60;
 	
 	this.started = false;
-	//this.units = [];
 	this.gameOver = false;
 }
 	
@@ -166,6 +165,10 @@ Game.prototype = {
 		globaly = tc.y + 0.5*tc.height - 0.5*HEIGHT;
 		*/
 		
+		self.factions[0].units.push(new Villager(64*2,64*3,0,self));
+		
+		self.factions[1].units.push(new Villager(64*17,64*16,1,self));
+		
 		// Add Map mineral Mines
 		self.mapMinerals.push(new MineralMine(64*1,64*3,50000));
 		self.mapMinerals.push(new MineralMine(64*18,64*16,50000));
@@ -230,6 +233,8 @@ Game.prototype = {
 				};
 			}
 		};
+		
+		self.moveUnit(x, y);
 
 		self.moveUnit(x, y);
 		
@@ -259,7 +264,6 @@ Game.prototype = {
 				});
 			}
 		});
-		
 	},
 	
 	moveUnit: function(x, y) {

@@ -56,8 +56,7 @@ Gui.prototype = {
 		this.timer.update(gameTime);
 		
 		// Update the tooltip
-		if(this.tooltip !== null)
-			this.tooltip.update(gameTime);
+		this.tooltip.update(gameTime);
 	},
 	
 	// Render the gui
@@ -83,8 +82,7 @@ Gui.prototype = {
 		this.timer.render(context);
 		
 		// Render the tooltip
-		if(this.tooltip !== null) 
-			this.tooltip.render(context);
+		this.tooltip.render(context);
 	},
 	
 	// Returns if the mouse click that just occurred, occured on the ui

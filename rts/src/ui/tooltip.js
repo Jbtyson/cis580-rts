@@ -17,8 +17,8 @@ Tooltip.prototype = {
 	update: function(gameTime) {
 		self = this;
 		self.timer += gameTime;
-		if(self.gui.commandPanel.hitbox.contains(this.position.x, this.position.y)) { // is it in the command panel
-			self.gui.commandPanel.buttons.forEach(function(button) { // is it over a button
+		if(this.gui.commandPanel.hitbox.contains(this.position.x, this.position.y)) { // is it in the command panel
+			this.gui.commandPanel.buttons.forEach(function(button) { // is it over a button
 				if(button.hitbox.contains(self.position.x, self.position.y)) {
 					if(button.id === self.buttonId) {	// is it over the same button
 						if(self.timer >= self.timeToDisplay) {
@@ -32,7 +32,7 @@ Tooltip.prototype = {
 					}
 				}
 				else {
-					self.reset();
+					//self.reset();
 				}
 			});
 		}

@@ -146,7 +146,7 @@ update: function(elapsedTime) {
 		
 		else if (this.mode == "idle") {
 			game.factions.forEach( function(faction) {
-				for (var i = 0; i <  faction.units.length; i++) {
+				for (var i = 0; i < faction.units.length; i++) {
 					var otherUnit = {
 						getHitbox: function()
 						{
@@ -166,7 +166,7 @@ update: function(elapsedTime) {
 						self.loseStack(faction.units[i]);
 					}
 				}
-			})
+			});
 		}
 },
 getHitbox: function() {
