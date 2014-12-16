@@ -20,14 +20,17 @@ var Villager = function(x, y, faction, game) {
 	// in health per second
 	this.damage = 3;
 	
+<<<<<<< Updated upstream
 	this.Villagerbuildingspeed = 1.0;
 	
+=======
+	this.Villagerbuildingspeed = 5;
+	//this.buildking
+
+>>>>>>> Stashed changes
 	this.x = x;
 	this.y = y;
 	this.faction = faction;
-	this.type = "villager";
-	
-	this.thumbnail = Resource.gui.img.villagerCommandButton;
 	
 	//this.render = VillagerRender;
 	//this.update = VillagerUpdate;
@@ -37,6 +40,7 @@ var Villager = function(x, y, faction, game) {
 
 Villager.prototype = new Unit(100,100,this.maxhealth,this.faction);
 
+<<<<<<< Updated upstream
 Villager.prototype.render = function(context) {
 		//draw unit
 		context.drawImage(Resource.units.img.villager[this.faction],
@@ -61,6 +65,36 @@ Villager.prototype.render = function(context) {
 		}
 	},
 /*
+=======
+Villager.prototype.render = function(ctx) {
+	var self = this;
+
+	ctx.save();
+	ctx.beginPath();
+	if (self.selected) {
+		ctx.strokeStyle = "#00FF00";
+	} else {
+		ctx.strokeStyle = "#000000";
+	}
+	ctx.lineWidth = self.borderwidth;
+	ctx.fillStyle = self.color;
+	ctx.beginPath();
+	ctx.arc(self.x-globalx, self.y-globaly, self.radius-(self.borderwidth/2), 0, 2*Math.PI, false);
+	ctx.fill();
+	ctx.stroke();
+	
+	// draw health bar
+	var maxbarlength = 16;
+	var barheight = 4;
+	var barlength = maxbarlength * (self.health/self.maxhealth);
+	ctx.fillStyle = "#00FF00";
+	ctx.beginPath();
+	ctx.rect(self.x-(maxbarlength/2)-globalx, self.y-(barheight/2)-globaly,	barlength, barheight);
+	ctx.fill();
+	ctx.restore();
+}
+
+>>>>>>> Stashed changes
 Villager.prototype.update = function(elapsedTime) {
 	var self = this;
 
@@ -94,7 +128,11 @@ Villager.prototype.update = function(elapsedTime) {
 		}
 	}
 	
+<<<<<<< Updated upstream
 	else if(self.mode == "build" && self.x = buildingunit.x + self.radius && self.y = buildingunit.y + self.radius){
+=======
+	else if(self.mode == "build" && self.x == self.buildingunit.x + self.radius && self.y == self.buildingunit.y + self.radius){
+>>>>>>> Stashed changes
 		buildingunit.buildingHp += self.Villagerbuildingspeed * secs;
 		if(buildingunit.buildingHp >= buildingunit.health){
 			self.mode = "idle";	
@@ -159,6 +197,7 @@ Villager.prototype.move = function(x, y) {
 
 Villager.prototype.build = function(bx,by,BuildingHp,resource,elapsedTime) {
 	var self = this;
+<<<<<<< Updated upstream
 
 	var secs = elapsedTime / 1000;
 	var buildHp = 0;
@@ -184,6 +223,12 @@ Villager.prototype.build = function(bx,by,BuildingHp,resource,elapsedTime) {
 	else{
 		console.log("Unknow reason for Building stoped");
 	}
+=======
+	self.move(Building.x,Building.y); 
+	self.mode = "build";
+	self.buildingunit = Building;
+	this.game.factions[0].buildings.push(Building);
+>>>>>>> Stashed changes
 }
 
 Villager.prototype.attack = function(unit) {
@@ -194,12 +239,12 @@ Villager.prototype.attack = function(unit) {
 	self.mode = "attack";
 	self.targetunit = unit;
 }
-*/
+
 Villager.prototype.startMine = function(mine) {
 	var self = this;
 
 	// temporarily changes mode to "move"
-	//self.move(unit.x, unit.y);
+	self.move(unit.x, unit.y);
 	self.mode = "attack";
 	self.targetunit = mine;
 }
