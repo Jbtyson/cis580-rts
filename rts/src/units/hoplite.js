@@ -13,10 +13,15 @@ var Hoplite = function(x, y, faction, game) {
 	// in health per second
 	this.damage = 6;
 	this.range = 0;
+	this.maxResources = 10;
+	this.resources = 0;
 	
 	this.x = x;
 	this.y = y;
 	this.faction = faction;
+	this.type = "hoplite";
+	
+	this.thumbnail = Resource.gui.img.villagerCommandButton;
 	
 	//this.render = HopliteRender;
 	//this.update = HopliteUpdate;
@@ -52,8 +57,8 @@ Hoplite.prototype.update = function(elapsedTime) {
 		self.y += secs*self.vely;
 		
 		//update currentNode
-		self.curNode.x = Math.floor(self.x/64);
-		self.curNode.y = Math.floor(self.y/64);
+		//self.curNode.x = Math.floor(self.x/64);
+		//self.curNode.y = Math.floor(self.y/64);
 		
 		// start moving to the next node or stop if target has been reached
 		if (self.mode == "move") {
@@ -132,6 +137,15 @@ Hoplite.prototype.getAttackRange = function() {
 		y: self.y,
 		radius: self.radius + self.range
 	};
+}
+
+Hoplite.prototype.startMine = function(mine) {
+	var self = this;
+
+	// temporarily changes mode to "move"
+	self.move(unit.x, unit.y);
+	self.mode = "attack";
+	self.targetunit = unit;
 }
 
 

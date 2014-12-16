@@ -28,3 +28,13 @@ MineralMine.prototype.render = function(context) {
 MineralMine.prototype.update = function() {
 	// if collision with villager deduct from resource and give to villager
 }
+
+MineralMine.prototype.getHitbox = function() {
+	return {
+		type: "rect",
+		x: this.x,
+		y: this.y,
+		w: this.width,
+		h: this.height
+	};
+}

@@ -1,7 +1,6 @@
 //Ryan Woodburn
 //Adapted off of hoplite
 var Infantry = function(x, y, faction, game) {
-	this.game = game;
 	
 	this.maxhealth = 30;
 	this.health = this.maxhealth;
@@ -14,10 +13,13 @@ var Infantry = function(x, y, faction, game) {
 	// in health per second
 	this.damage = 6;
 	this.range = 60;
+	this.maxResources = 20;
+	this.resources = 0;
 	
 	this.x = x;
 	this.y = y;
 	this.faction = faction;
+	this.type = "infantry";
 	
 	//this.render = Render;
 	//this.update = Update;
@@ -25,9 +27,23 @@ var Infantry = function(x, y, faction, game) {
 	//this.getAttackRange = GetAttackRange;
 	//this.move = Move;
 	//this.attack = Attack;
+	
+	// ------------------- James wrote this for gui stuff --------------------------
+	// -------It is necessary for gui to work, so make sure all units have it-------
+	// Unit icon for the unit bar
+	this.thumbnail = Resource.gui.img.villagerCommandButton;
+	// Declare action functions here
+	this.testAction = function() {
+		console.log("test action performed");
+	};
+	// Declare array of actions here
+	this.actions = [
+		{ thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.testAction }
+	];
+	// -----------------------------------------------------------------------------
 }
 
-Infantry.prototype = new Unit(100,100,this.maxhealth,this.faction);
+Infantry.prototype = new Unit(this.x,this.y,this.maxhealth,this.faction);
 
 /*Infantry.prototype.render = function(ctx) {
 	var self = this;
@@ -56,7 +72,7 @@ Infantry.prototype = new Unit(100,100,this.maxhealth,this.faction);
 	ctx.fill();
 	ctx.restore();
 }*/
-
+/*
 Infantry.prototype.update = function(elapsedTime) {
 	var self = this;
 
@@ -119,6 +135,91 @@ Infantry.prototype.update = function(elapsedTime) {
 		}
 	});
 }
+*/
+Infantry.prototype.update = function(elapsedTime) {
+		var self = this;
+		var secs = elapsedTime / 1000;
+		if (this.mode == "move" ||
+				(this.mode == "attack" && !game.cd.detect(this.targetunit, this))) {
+			if (this.mode == "attack") {
+				this.targetx = this.targetunit.x;
+				this.targety = this.targetunit.y;
+				if(Math.floor(this.targetx/64) != this.nextNode.x || Math.floor(this.targety/64) != this.nextNode.y)
+				{
+					this.getPath(this.targetunit.x, this.targetunit.y);
+				}
+			}
+			var deltaxi = this.nextx - this.x;
+			var deltayi = this.nexty - this.y;
+			
+			// actually move
+			this.x += secs*this.velx;
+			this.y += secs*this.vely;
+			
+			// start moving to the next node or stop if target has been reached
+			if (this.mode == "move") {
+				var deltaxf = this.nextx - this.x;
+				var deltayf = this.nexty - this.y;
+				if ((deltaxi/deltaxf < 0 || deltayi/deltayf < 0) || (deltaxf == 0 && deltayf == 0)) {
+					this.velx = 0;
+					this.vely = 0;
+					if(this.nextx != this.targetx && this.nexty != this.targety)
+					{
+						this.getNextDest();
+					}
+					else
+					{
+						this.velx = 0;
+						this.vely = 0;
+						this.mode = "idle";
+					}
+					
+					this.animationTime += elapsedTime;
+	  
+					if(this.animationTime >= 50){
+						this.animationTime = 0;
+						this.animationFrame = (this.animationFrame + 1) % UNIT_SPRITE_DATA[0].animationFrames;
+					}
+				}
+			}
+		}
+		
+		else if (this.mode == "attack" && game.cd.detect(this.targetunit, this)) {
+			this.targetunit.health -= this.damage*secs;
+			//console.log(this.targetunit.health);
+			if (this.targetunit.health <= 0) {
+				this.mode = "idle";
+				this.targetunit = null;
+			}
+			this.animationTime += elapsedTime;
+			this.animationFrame = 0;
+		}
+		
+		else if (this.mode == "idle") {
+			game.factions.forEach( function(faction) {
+				for (var i = 0; i <  faction.units.length; i++) {
+					var otherUnit = {
+						getHitbox: function()
+						{
+							return faction.units[i].getHitbox();
+						},
+						getAttackRange: function()
+						{
+							return faction.units[i].getHitbox();
+						}
+					}
+					if (faction.units[i].faction != self.faction &&
+							game.cd.detect(self, faction.units[i])) {
+						self.attack(faction.units[i]);
+					}
+					else if (faction.units[i].faction == self.faction &&
+							game.cd.detect(self, otherUnit) && self != faction.units[i] && faction.units[i].mode == "idle") {
+						self.loseStack(faction.units[i]);
+					}
+				}
+			})
+		}
+},
 
 Infantry.prototype.getHitbox = function() {
 	var self = this;
@@ -141,7 +242,7 @@ Infantry.prototype.getAttackRange = function() {
 		radius: self.radius + self.range
 	};
 }
-
+/*
 Infantry.prototype.move = function(x, y) {
 	var self = this;
 
@@ -163,8 +264,9 @@ Infantry.prototype.move = function(x, y) {
 		self.vely *= -1;
 	}
 }
+*/
 
-Infantry.prototype.attack = function(unit) {
+Infantry.prototype.startMine = function(mine) {
 	var self = this;
 
 	// temporarily changes mode to "move"
@@ -172,4 +274,3 @@ Infantry.prototype.attack = function(unit) {
 	self.mode = "attack";
 	self.targetunit = unit;
 }
-

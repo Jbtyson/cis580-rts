@@ -56,40 +56,6 @@ var Game = function (canvasId) {
 		},
 		ctx: this.screenContext
 	});
-	
-	/*
-	this.soundsready = 0;
-	this.gup = function() { game.soundsready++; };
-	this.sounds = {
-		music: new AudioFX("sounds/Mining by Moonlight", { formats: ['mp3'], volume: 1.0, loop:true}, this.gup),
-		bullet: new AudioFX("sounds/bullet", { formats: ['mp3'], pool: 20, volume: 0.1}, this.gup),
-		missile: new AudioFX("sounds/missile", { formats: ['mp3'], pool: 10, volume: 0.06, loop: true}, this.gup),
-		powerup: new AudioFX("sounds/powerup", { formats: ['mp3'], pool: 4, volume: 0.1}, this.gup),
-		explosion: new AudioFX("sounds/explosion", {formats: ['mp3'], pool: 10, volume: 0.1}, this.gup)
-	};
-	*/
-	
-	/*
-	this.ready = 0;
-	// the images will tell us when they're loaded
-	this.bgs[0].onload = function() {
-		game.ready++;
-	};
-	this.bgs[1].onload = function() {
-		game.ready++;
-	};
-	this.bgs[2].onload = function() {
-		game.ready++;
-	};
-	*/
-
-	// Game variables
-	//this.gui = new GUI();
-	//this.minimap = new Minimap(20, 440, 760, 24, this.bgs[0], this.bgs[1], this.bgs[2]);
-	
-	//sprite_sheet = new Image();
-	//sprite_sheet.src = "helicopter.png";
-	//this.heli = new Helicopter(200, 200, sprite_sheet);
 
 	this.placeLevelObjects();
 	
@@ -105,7 +71,6 @@ var Game = function (canvasId) {
 	this.STARTING_FPS = 60;
 	
 	this.started = false;
-	//this.units = [];
 	this.gameOver = false;
 }
 	
@@ -172,6 +137,9 @@ Game.prototype = {
 			}
 		});
 		
+		// update AI
+		self.brain.update(elapsedTime);
+		
 		// Update the GUI
 		self.gui.update(elapsedTime);
 	},
@@ -183,51 +151,30 @@ Game.prototype = {
 			self.factions.push(new Faction(self.factionColors[i]));
 		}
 		
-		// create towncenter for each team
-		for (var i = 0; i < self.factions.length; i++) {
-			var playerX = 64*4 + 64*7*i;
-			var playerY = 64*4 + 64*7*i;
-			self.factions[i].buildings.push(new Towncenter(playerX, playerY, 100, i, self));
-		}
-		
+		// create towncenter for each team	
+		self.factions[0].buildings.push(new Towncenter(64*3, 64*3, 100, 0, self));
+		self.factions[1].buildings.push(new Towncenter(64*15, 64*15, 100, 1, self));
 		
 		self.playerFaction = self.factions[0]; // self
+		this.brain = new Brain(self.factions[1]);
 		
 		// start centered on town center
+		/*
 		var tc = self.playerFaction.buildings[0];
 		globalx = tc.x + 0.5*tc.width - 0.5*WIDTH;
 		globaly = tc.y + 0.5*tc.height - 0.5*HEIGHT;
+		*/
+		// temporary; I just want to keep an eye on the AI
+		globalx = 64*10;
+		globaly = 64*10;
 		
-		var spawnlots = false;
-		if (spawnlots) {
-			for (var i = 0; i < 5; i++) {
-				for (var j = 0; j < 5; j++) {
-
-					//self.factions[0].units.push(new Hoplite(i*64+32, j*64+32, self.factions[0].color, self));
-					//self.factions[1].units.push(new Hoplite(i*64+32+320, j*64+32+320, self.factions[1].color, self));
-					
-					self.factions[0].units.push(new Infantry(i*64+32, j*64+32, 0, self));
-					self.factions[1].units.push(new Infantry(i*64+32+320, j*64+32+320, 1, self));
-				}
-			}
-		} else {
-
-			self.factions.forEach( function(faction, index) {
-				tc = faction.buildings[0];
-				faction.units.push(new Infantry(tc.x+32-64,tc.y-40-64,index,self));
-				faction.units.push(new Infantry(tc.x+64-64,tc.y-40-64,index,self));
-				faction.units.push(new Infantry(tc.x+96-64,tc.y-40-64,index,self));
-			});
-
-		}
+		self.factions[0].units.push(new Villager(64*2,64*3,0,self));
+		
+		self.factions[1].units.push(new Villager(64*17,64*16,1,self));
 		
 		// Add Map mineral Mines
-		self.mapMinerals.push(new MineralMine(55,55,50));
-		self.mapMinerals.push(new MineralMine(555,155,50));
-		self.mapMinerals.push(new MineralMine(955,355,50));
-		self.mapMinerals.push(new MineralMine(355,555,50));
-		self.mapMinerals.push(new MineralMine(255,955,50));
-		self.mapMinerals.push(new MineralMine(755,755,50));
+		self.mapMinerals.push(new MineralMine(64*1,64*3,50000));
+		self.mapMinerals.push(new MineralMine(64*18,64*16,50000));
 	},
 	
 	startSelectBox: function(x, y) {
@@ -252,27 +199,24 @@ Game.prototype = {
 				self.selectedUnits.push(this.playerFaction.units[i]);
 			}
 		}
-		this.playerFaction.buildings.forEach( function(building) {
-			if (!e.ctrlKey && !e.shiftKey) {
-				building.selected = false;
-			}
-			if(self.cd.detect(self.sb, building)) {
-
-				//REMOVE!!
-				//TEST CODE FOR BUILDING UNIT!
-				building.buildVillager();
-
-
-				building.selected = true;
-				self.selectedBuildings.push(building);
-			}
-		});
-
+		// Don't add buildings if units were selected
+		if(this.selectedUnits.length === 0) {
+			this.playerFaction.buildings.forEach( function(building) {
+				if (!e.ctrlKey && !e.shiftKey) {
+					building.selected = false;
+				}
+				if(self.cd.detect(self.sb, building)) {
+					building.selected = true;
+					self.selectedBuildings.push(building);
+				}
+			});
+		}
 		self.sb = null;
 	},
 	
-	unitOrder: function(x, y) {
+	unitOrder: function(x, y, faction) {
 		var self = this;
+		var thisFaction = faction;
 		
 		var mousebox = {
 			getHitbox: function() {
@@ -292,14 +236,16 @@ Game.prototype = {
 				};
 			}
 		};
+		
+		self.moveUnit(x, y);
 
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
-				if (faction.units[i].color != self.playerFaction &&
+				if (faction != thisFaction &&
 						self.cd.detect(faction.units[i], mousebox)) {
-					for (var j = 0; j < faction.units.length; j++) {
-						if (faction.units[j].selected) {
-							faction.units[j].attack(faction.units[i]);
+					for (var j = 0; j < thisFaction.units.length; j++) {
+						if (thisFaction.units[j].selected) {
+							thisFaction.units[j].attack(faction.units[i]);
 						}
 					}
 					return;
@@ -307,7 +253,16 @@ Game.prototype = {
 			}
 		});
 
-		self.moveUnit(x, y);
+		self.mapMinerals.forEach (function(mineral, index) {
+			if (self.cd.detect(mineral, mousebox)) {
+				for (var j = 0; j < faction.units.length; j++) {
+					if (faction.units[j].selected && faction.units[j].type == "villager") {
+						faction.units[j].startMine(mineral);
+					}
+				}
+				return;
+			}
+		});
 	},
 	
 	moveUnit: function(x, y) {
@@ -322,6 +277,35 @@ Game.prototype = {
 				}
 			}
 		});
+	},
+	
+	// Selects a unit from the array of selected units
+	// James Tyson
+	selectUnit: function(id) {
+		if(this.selectedUnits.length > 0) {
+			// Store the selected unit
+			var unit = this.selectedUnits[id];
+			// Deselect and remove all units
+			this.selectedUnits.forEach(function(unit) {
+				unit.selected = false;
+			});
+			this.selectedUnits = [];
+			// Reselect and add selected unit
+			unit.selected = true;
+			this.selectedUnits.push(unit);
+		}
+		else if(this.selectedBuildings.length > 0) {
+			// Store the selected building
+			var building = this.selectedBuildings[id];
+			// Deselect all remove all buildings
+			this.selectedBuildings.forEach(function(building) {
+				building.selected = false;
+			});
+			this.selectedBuildings = [];
+			// Reselect and add selectd building
+			building.selected = true;
+			this.selectedBuildings.push(unit);
+		}
 	},
 	
 	render: function(elapsedTime) {
@@ -373,7 +357,7 @@ Game.prototype = {
 				clearInterval(splashloop);
 				window.requestNextAnimationFrame(
 					function(time) {
-						self.playlist[self.currentTrack].play();
+						//self.playlist[self.currentTrack].play();
 						self.loop.call(self, time);
 					}
 				);

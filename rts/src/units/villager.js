@@ -22,6 +22,9 @@ var Villager = function(x, y, faction, game) {
 	this.x = x;
 	this.y = y;
 	this.faction = faction;
+	this.type = "villager";
+	
+	this.thumbnail = Resource.gui.img.villagerCommandButton;
 	
 	//this.render = VillagerRender;
 	//this.update = VillagerUpdate;
@@ -58,7 +61,7 @@ Villager.prototype.render = function(ctx) {
 	ctx.fill();
 	ctx.restore();
 }
-
+/*
 Villager.prototype.update = function(elapsedTime) {
 	var self = this;
 
@@ -177,4 +180,21 @@ Villager.prototype.build = function(bx,by,BuildingHp,resource,elapsedTime) {
 	}
 }
 
+Villager.prototype.attack = function(unit) {
+	var self = this;
+
+	// temporarily changes mode to "move"
+	self.move(unit.x, unit.y);
+	self.mode = "attack";
+	self.targetunit = unit;
+}
+*/
+Villager.prototype.startMine = function(mine) {
+	var self = this;
+
+	// temporarily changes mode to "move"
+	//self.move(unit.x, unit.y);
+	self.mode = "attack";
+	self.targetunit = unit;
+}
 

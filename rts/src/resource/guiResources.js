@@ -18,6 +18,8 @@ GuiResources = function() {
 		// Command Panel
 		commandPanel: new Image(),
 		villagerCommandButton: new Image(),
+		hopliteCommandButton: new Image(),
+		infantryCommandButton: new Image(),
 		towncenterCommandButton: new Image(),
 		commandButton: new Image(),
 		
@@ -37,7 +39,7 @@ GuiResources = function() {
 
 GuiResources.prototype = {
 	load: function() {
-		onload = function() { this.loading -= 1; console.log("got here");}
+		onload = function() { this.loading -= 1;}
 		// Minimap
 		this.img.minimap.onload = onload;
 		this.img.minimap.src = "img/ui/minimap.png";
@@ -63,6 +65,12 @@ GuiResources.prototype = {
 		
 		this.img.villagerCommandButton.onload = onload;
 		this.img.villagerCommandButton.src = "img/ui/villagerCommandButton.png";
+		
+		this.img.hopliteCommandButton.onload = onload;
+		this.img.hopliteCommandButton.src = "img/ui/villagerCommandButton.png";
+		
+		this.img.infantryCommandButton.onload = onload;
+		this.img.infantryCommandButton.src = "img/ui/villagerCommandButton.png";
 		
 		this.img.towncenterCommandButton.onload = onload;
 		this.img.towncenterCommandButton.src = "img/ui/towncenterCommandButton.png";
