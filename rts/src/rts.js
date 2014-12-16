@@ -7,6 +7,9 @@ var HEIGHT = 640;
 var GLOBAL_WIDTH = 1280;
 var GLOBAL_HEIGHT = 1280;
 
+// Required to make a dynamic minimap - Alex L.
+var MINIMAP_TILES = [];
+
 // Fixed time step of 1/60th a second
 var TIME_STEP = 1000/60;
 

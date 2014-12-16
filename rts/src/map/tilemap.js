@@ -1,6 +1,7 @@
 // Tilemap engine defined using the Module pattern
 // See http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html
 // nathan bean
+// Edited by: Alex L'Esperance
 var Tilemap = (function (){
 	var tiles = [],
 		tilesets = [],
@@ -106,16 +107,33 @@ var Tilemap = (function (){
 					if (tileId != 0) {
 						var tile = tiles[tileId - 1];
 						if (tile.image) { // Make sure the image has loaded
+						
 							screenCtx.drawImage(
 								tile.image,     // The image to draw 
 								tile.sx, tile.sy, tileWidth, tileHeight, // The portion of image to draw
 								x*tileWidth-globalx, y*tileHeight-globaly, tileWidth, tileHeight // Where to draw the image on-screen
 							);
+							//allows for dynamic maps to display the correct minimap
+							if(MINIMAP_TILES.length < 400)
+							{
+							var minimap_tile = {image: tile.image,
+												sx: tile.sx, sy: 
+												tile.sy, 
+												swidth: tileWidth / 10, 
+												sheight: tileHeight / 10,
+												x: x*(tileWidth/10),
+												y: 512 + y*(tileHeight/10), 
+												width: tileWidth/10, 
+												height: tileHeight/10};
+							MINIMAP_TILES.push(minimap_tile);
+							}
+							
 						}
 					}
 
 				}
 				}
+				
 			}
 		});
 	}

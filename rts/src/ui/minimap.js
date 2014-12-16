@@ -22,11 +22,15 @@ Minimap.prototype = {
 		context.save();
 		
 		
-		//context.drawImage(this.image, this.position.x, this.position.y);
-		
-		
 		//draw minimap
-		context.drawImage(this.minimap, this.position.x, this.position.y);
+		//context.drawImage(this.minimap, this.position.x, this.position.y);
+		for(var i = 0; i < MINIMAP_TILES.length; i++)
+		{
+			context.drawImage(MINIMAP_TILES[i].image, MINIMAP_TILES[i].sx, MINIMAP_TILES[i].sy,
+								MINIMAP_TILES[i].swidth, MINIMAP_TILES[i].sheight,
+								MINIMAP_TILES[i].x, MINIMAP_TILES[i].y,
+								MINIMAP_TILES[i].width, MINIMAP_TILES[i].height);
+		}
 		
 		//draw a black rectangle around the minimap to give it a doodie border
 		context.strokeStyle = 'black';
