@@ -15,15 +15,17 @@ var Minimap = function() {
 
 Minimap.prototype = {
 	update: function(gameTime) {
+		//
 	},
 	
-	render: function(context, factions) {
+	render: function(context, factions, minerals) {
 		//save the context
 		context.save();
 		
+		console.log(minerals);
+		
 		
 		//draw minimap
-		//context.drawImage(this.minimap, this.position.x, this.position.y);
 		for(var i = 0; i < MINIMAP_TILES.length; i++)
 		{
 			context.drawImage(MINIMAP_TILES[i].image, MINIMAP_TILES[i].sx, MINIMAP_TILES[i].sy,
@@ -50,11 +52,19 @@ Minimap.prototype = {
 				
 			}
 			faction.buildings.forEach( function(building) { 
-				context.fillStyle = building.faction.color;
+				console.log(building);
+				context.fillStyle = faction.color;
 				context.beginPath();
 				context.arc((building.x / 10) + 6.4, (512 + (building.y / 10)) + 6.4, 3, 0, 2*Math.PI);
 				context.fill();
 			});
+		});
+		
+		minerals.forEach(function(mineral) {
+			context.fillStyle = 'black';
+			context.beginPath();
+			context.arc(mineral.x / 10, 512 + (mineral.y / 10), 2, 0, 2*Math.PI);
+			context.fill();
 		});
 		
 		//our view of the world.
