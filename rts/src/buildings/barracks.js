@@ -3,9 +3,6 @@ var Barracks = function(x,y,orientation,faction) {
 	this.world_y = y;
 	this.factionIndex = faction;
 	this.orientation = orientation;
-	
-	this.width = 64;
-	this.height = 64;
 
 	this.actions = [{thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.buildVillager},
 					{thumbnail:Resource.gui.img.hopliteCommandButton, onClick:this.buildHoplite},

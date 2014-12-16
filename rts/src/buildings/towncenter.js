@@ -1,19 +1,12 @@
 var Towncenter = function(x, y, orientation, factionIndex, game) {
-	this.x = x;
-	this.y = y;
-	
+
 	this.game = game;
 
 	this.orientation = orientation;
 	
 	this.factionIndex = factionIndex;
 	this.faction = game.factions[this.factionIndex];
-	
-	this.width = 128;
-	this.height = 128;
-	
-	this.borderwidth = 6;
-	
+
 	this.world_x = x;
 	this.world_y = y;
 
@@ -157,18 +150,4 @@ Towncenter.prototype.buildInfantry = function(building){
 	building.isBuilding = true;
 	building.unitTypeQueue.push("infantry");
 
-}
-
-
-
-Towncenter.prototype.getHitbox = function() { // Update to square hitbox
-	var self = this;
-
-	return {
-		type: "rect",
-		x:self.x,
-		y:self.y,
-		h:this.height,
-		w:this.width,
-	};
 }

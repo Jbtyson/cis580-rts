@@ -156,7 +156,7 @@ Game.prototype = {
 		// create towncenter for each team	
 		self.factions[0].buildings.push(new Towncenter(64*3, 64*3, 0, 0, self));
 		self.factions[0].buildings.push(new Connector(64*5, 32*7, 0, 0, self));
-		self.factions[0].buildings.push(new Barracks(32*9, 32*10, 1, 0, self));
+		self.factions[0].buildings.push(new Barracks(32*7, 32*10, 1, 0, self));
 		self.factions[1].buildings.push(new Towncenter(64*15, 64*15, 0, 1, self));
 		
 		self.playerFaction = self.factions[0]; // self

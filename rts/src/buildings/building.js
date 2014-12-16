@@ -7,39 +7,31 @@ BUILDING_SPRITE_DATA = [ {x:0, y: 0, width: 128, height: 128, animationFrames: 1
 
 //Building Class created by Chris Delpire.
 var Building = function(type, orientation, factionIndex, game){
-	// Default values
-	this.x = 100;
-	this.y = 100;
-	this.health = 100;
-	this.color = "#000000";
-	
-	this.type = type;
-	
+
 	this.game = game;
-	
+
+	//Meta Data
+	this.type = type;
+	this.factionIndex = factionIndex;
+	this.animationFrame = 0;
+	this.animationTime = 0;
+
+	//Position Information
+	this.world_x;
+	this.world_y;
 	this.orientation = orientation;
 
-	this.factionIndex = factionIndex;
-	
-	this.width = 64;
-	this.height = 64;
-	
+	//State Information
+	this.selected = false;
+	this.isBuilding = false;
+	this.buildPercent;
+	this.buildTime;
+	this.health = 100;
+
 	this.gatherPoint = {x:100,y:100};
 	
 	this.barricadedUnits = [];
-	
-	this.animationFrame = 0;
-	this.animationTime = 0;
-	
-	this.selected = false;
-	this.isBuilding = false;
 
-	this.buildPercent;
-
-	this.buildTime;
-	this.state;
-	this.world_x;
-	this.world_y;
 }
 
 //Building Prototype created by Chris Delpire
@@ -66,12 +58,15 @@ Building.prototype = {
 		if(this.selected){
 		context.save();
 		context.translate(this.world_x - globalx, this.world_y - globaly);
+		context.translate(BUILDING_SPRITE_DATA[this.type].width / 2, BUILDING_SPRITE_DATA[this.type].height / 2);
 		context.rotate((Math.PI / 2) * this.orientation);
+		context.translate(-BUILDING_SPRITE_DATA[this.type].width / 2, -BUILDING_SPRITE_DATA[this.type].height / 2);
 		context.drawImage(Resource.buildings.img.buildingSelection[this.type],
 							BUILDING_SPRITE_DATA[this.type].x, BUILDING_SPRITE_DATA[this.type].y,
 							BUILDING_SPRITE_DATA[this.type].width, BUILDING_SPRITE_DATA[this.type].height,
 							0, 0,
 							BUILDING_SPRITE_DATA[this.type].width, BUILDING_SPRITE_DATA[this.type].height);
+		
 		context.restore();
 
 		}
@@ -80,12 +75,16 @@ Building.prototype = {
 
 		context.save();
 		context.translate(this.world_x - globalx, this.world_y - globaly);
+		context.translate(BUILDING_SPRITE_DATA[this.type].width / 2, BUILDING_SPRITE_DATA[this.type].height / 2);
 		context.rotate((Math.PI / 2) * this.orientation);
+		context.translate(-BUILDING_SPRITE_DATA[this.type].width / 2, -BUILDING_SPRITE_DATA[this.type].height / 2);
 		context.drawImage(Resource.buildings.img.buildingSpriteSheet[this.factionIndex][this.type],
 							BUILDING_SPRITE_DATA[this.type].x + BUILDING_SPRITE_DATA[this.type].width * this.animationFrame, BUILDING_SPRITE_DATA[this.type].y,
 							BUILDING_SPRITE_DATA[this.type].width, BUILDING_SPRITE_DATA[this.type].height,
 							0, 0,
 							BUILDING_SPRITE_DATA[this.type].width, BUILDING_SPRITE_DATA[this.type].height);
+
+		
 		context.restore();
 		
 	},
