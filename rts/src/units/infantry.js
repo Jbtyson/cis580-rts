@@ -140,6 +140,7 @@ Infantry.prototype.update = function(elapsedTime) {
 Infantry.prototype.update = function(elapsedTime) {
 		var self = this;
 		var secs = elapsedTime / 1000;
+		//console.log(this.mode);
 		if (this.mode == "move" ||
 				(this.mode == "attack" && !game.cd.detect(this.targetunit, this))) {
 			if (this.mode == "attack") {
@@ -176,6 +177,7 @@ Infantry.prototype.update = function(elapsedTime) {
 					}
 					
 					this.animationTime += elapsedTime;
+					console.log(this.animationTime);
 	  
 					if(this.animationTime >= 50){
 						this.animationTime = 0;
@@ -219,6 +221,8 @@ Infantry.prototype.update = function(elapsedTime) {
 					}
 				}
 			})
+			this.animationTime += elapsedTime;
+			this.animationFrame = 0;
 		}
 },
 

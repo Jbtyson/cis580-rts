@@ -151,6 +151,8 @@ Unit.prototype = {
 					}
 				}
 			});
+			this.animationTime += elapsedTime;
+			this.animationFrame = 0;
 		}
 },
 getHitbox: function() {

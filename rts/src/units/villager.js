@@ -201,6 +201,6 @@ Villager.prototype.startMine = function(mine) {
 	// temporarily changes mode to "move"
 	//self.move(unit.x, unit.y);
 	self.mode = "attack";
-	self.targetunit = unit;
+	self.targetunit = mine;
 }
 

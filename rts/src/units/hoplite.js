@@ -140,6 +140,8 @@ Hoplite.prototype.update = function(elapsedTime) {
 				}
 			}
 		});
+		this.animationTime += elapsedTime;
+		this.animationFrame = 0;
 	}
 }
 
