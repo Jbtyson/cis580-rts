@@ -59,6 +59,9 @@ Input.prototype = {
 			case 76: // l button; debug purposes only
 				console.log(this.inputState.mousex, this.inputState.mousey);
 				break;
+			case 84: // t - force AI to step through tree
+				game.brain.traverse();
+				break;
 			case 77: // m button; mute
 				break;
 			case 80: // p; pause
@@ -156,8 +159,8 @@ Input.prototype = {
 		 */
 		if (e.button == 0) {
 			// Perform the clicked action on the first unit in either selected buildings or units
-			if(self.game.gui.isClickOnUi(self.mousex+globalx, self.mousey+globaly)) {
-				var actionNum = self.game.gui.getButtonClicked(self.mousex+globalx, self.mousey+globaly);
+			if(self.game.gui.isClickOnUi(self.mousex, self.mousey)) {
+				var actionNum = self.game.gui.getButtonClicked(self.mousex, self.mousey);
 				if(actionNum !== -1) {
 					if(self.game.selectedUnits.length > 0)
 						self.game.selectedUnits[0].actions[actionNum].onClick();
@@ -178,7 +181,7 @@ Input.prototype = {
 		var self = this;
 
 		if (e.button == 0) {
-			if(self.game.gui.isClickOnUi(self.mousex+globalx, self.mousey+globaly)) {
+			if(self.game.gui.isClickOnUi(self.mousex, self.mousey)) {
 				// do nothing for now
 			}
 			else

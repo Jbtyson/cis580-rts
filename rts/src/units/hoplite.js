@@ -19,6 +19,7 @@ var Hoplite = function(x, y, faction, game) {
 	this.x = x;
 	this.y = y;
 	this.faction = faction;
+	this.type = "hoplite";
 	
 	this.thumbnail = Resource.gui.img.villagerCommandButton;
 	
@@ -56,8 +57,8 @@ Hoplite.prototype.update = function(elapsedTime) {
 		self.y += secs*self.vely;
 		
 		//update currentNode
-		self.curNode.x = Math.floor(self.x/64);
-		self.curNode.y = Math.floor(self.y/64);
+		//self.curNode.x = Math.floor(self.x/64);
+		//self.curNode.y = Math.floor(self.y/64);
 		
 		// start moving to the next node or stop if target has been reached
 		if (self.mode == "move") {

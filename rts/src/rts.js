@@ -137,6 +137,9 @@ Game.prototype = {
 			}
 		});
 		
+		// update AI
+		self.brain.update(elapsedTime);
+		
 		// Update the GUI
 		self.gui.update(elapsedTime);
 	},
@@ -153,6 +156,7 @@ Game.prototype = {
 		self.factions[1].buildings.push(new Towncenter(64*15, 64*15, 100, 1, self));
 		
 		self.playerFaction = self.factions[0]; // self
+		this.brain = new Brain(self.factions[1]);
 		
 		// start centered on town center
 		/*
@@ -160,6 +164,9 @@ Game.prototype = {
 		globalx = tc.x + 0.5*tc.width - 0.5*WIDTH;
 		globaly = tc.y + 0.5*tc.height - 0.5*HEIGHT;
 		*/
+		// temporary; I just want to keep an eye on the AI
+		globalx = 64*10;
+		globaly = 64*10;
 		
 		self.factions[0].units.push(new Villager(64*2,64*3,0,self));
 		
@@ -247,13 +254,12 @@ Game.prototype = {
 		});
 
 		self.mapMinerals.forEach (function(mineral, index) {
-			if (mousebox.x > mineral.x - mineral.width/2 && mousebox.x < mineral.x + mineral.width/2 
-				&& mousebox.y > mineral.y - mineral.height/2 && mousebox.y < mineral.y + mineral.height/2) {
+			if (self.cd.detect(mineral, mousebox)) {
 				for (var j = 0; j < faction.units.length; j++) {
-						if (faction.units[j].selected) {
-							faction.units[j].startMine(mineral);
-						}
+					if (faction.units[j].selected && faction.units[j].type == "villager") {
+						faction.units[j].startMine(mineral);
 					}
+				}
 				return;
 			}
 		});
