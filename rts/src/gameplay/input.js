@@ -184,14 +184,11 @@ Input.prototype = {
 		var self = this;
 
 		if (e.button == 0) {
-<<<<<<< HEAD
-			if(!self.game.gui.isClickOnUi(self.mousex+globalx, self.mousey+globaly))
-=======
+
 			if(self.game.gui.isClickOnUi(self.mousex, self.mousey)) {
 				// do nothing for now
 			}
 			else
->>>>>>> 7b94d760bcec171603bbc07dda8a7e4ca12e1822
 				self.game.endSelectBox(e);
 		} else if (e.button == 2) {
 			self.game.unitOrder(this.mousex+globalx, this.mousey+globaly, game.factions[0]);
