@@ -15,14 +15,6 @@ var Unit = function(x, y, health, faction) {
 	this.radius;
 	//supply is the population cost for a unit, default 1
 	this.supply = 1;
-	this.curNode = {
-		x: 0,
-		y: 0,
-		path: [],
-		cost: 0
-	}
-	this.curNode.x = Math.floor(x/64);
-	this.curNode.y = Math.floor(y/64);
 
 	this.health = health;
 	this.faction = faction;
@@ -84,18 +76,17 @@ Unit.prototype = {
 		}
 	},
 
-	update: function() {
-		this.animationTime += elapsedTime;
-	  
-		if(this.animationTime >= 50){
-			this.animationTime = 0;
-			this.animationFrame = (this.animationFrame + 1) % UNIT_SPRITE_DATA[0].animationFrames;
-	  }
-	},
-
-update: function(elapsedTime) {
+	update: function(elapsedTime) {
 		var self = this;
 		var secs = elapsedTime / 1000;
+		
+		this.animationTime += elapsedTime;
+
+		if (this.animationTime >= 50) {
+			this.animationTime = 0;
+			this.animationFrame = (this.animationFrame + 1) % UNIT_SPRITE_DATA[0].animationFrames;
+		}
+		
 		if (this.mode == "move" ||
 				(this.mode == "attack" && !game.cd.detect(this.targetunit, this))) {
 			if (this.mode == "attack") {
@@ -146,7 +137,7 @@ update: function(elapsedTime) {
 		
 		else if (this.mode == "idle") {
 			game.factions.forEach( function(faction) {
-				for (var i = 0; i <  faction.units.length; i++) {
+				for (var i = 0; i < faction.units.length; i++) {
 					var otherUnit = {
 						getHitbox: function()
 						{
@@ -166,7 +157,7 @@ update: function(elapsedTime) {
 						self.loseStack(faction.units[i]);
 					}
 				}
-			})
+			});
 		}
 },
 getHitbox: function() {
@@ -188,14 +179,7 @@ attack: function(unit) {
 		this.targetunit = unit;
 		this.getPath(unit.x, unit.y);
 	},
-startMine: function(mine) {
-	var self = this;
 
-	// temporarily changes mode to "move"
-	self.move(mine.x, mine.y);
-	self.mode = "goingToMine";
-	self.targetunit = mine;
-},
 	/* C.J. Dopheide
 	This takes in an x y coordinate and uses an A* search to get a path to those coordinates.
 	*/
@@ -298,11 +282,6 @@ startMine: function(mine) {
 	{
 		var xdist = this.x - unit.x;
 		var ydist = this.y - unit.y;
-		if(xdist == 0 && ydist == 0)
-		{
-			xdist = Math.random() * this.radius/3 + Math.random() * -this.radius/3;
-			ydist = Math.random() * this.radius/3 + Math.random() * -this.radius/3;
-		}
 		this.mode = "move";
 		this.getPath(this.x + xdist/3, this.y + ydist/3);
 	}

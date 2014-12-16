@@ -3,6 +3,7 @@
 //Mineral mine to place on map, inherits PlayerResource
 
 var MineralMine = function(x, y, amount) {
+	// x and y refer to center of MineralMine
 	this.x = x;
 	this.y = y;
 	
@@ -32,9 +33,11 @@ MineralMine.prototype.update = function() {
 MineralMine.prototype.getHitbox = function() {
 	return {
 		type: "rect",
+		// recall x and y refer to center of MineralMine
 		x: this.x - this.width/2,
 		y: this.y - this.height/2,
 		w: this.width,
 		h: this.height
 	};
+	context.fillStyle = "#404040";
 }

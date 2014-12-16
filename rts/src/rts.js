@@ -55,40 +55,6 @@ var Game = function (canvasId) {
 		},
 		ctx: this.screenContext
 	});
-	
-	/*
-	this.soundsready = 0;
-	this.gup = function() { game.soundsready++; };
-	this.sounds = {
-		music: new AudioFX("sounds/Mining by Moonlight", { formats: ['mp3'], volume: 1.0, loop:true}, this.gup),
-		bullet: new AudioFX("sounds/bullet", { formats: ['mp3'], pool: 20, volume: 0.1}, this.gup),
-		missile: new AudioFX("sounds/missile", { formats: ['mp3'], pool: 10, volume: 0.06, loop: true}, this.gup),
-		powerup: new AudioFX("sounds/powerup", { formats: ['mp3'], pool: 4, volume: 0.1}, this.gup),
-		explosion: new AudioFX("sounds/explosion", {formats: ['mp3'], pool: 10, volume: 0.1}, this.gup)
-	};
-	*/
-	
-	/*
-	this.ready = 0;
-	// the images will tell us when they're loaded
-	this.bgs[0].onload = function() {
-		game.ready++;
-	};
-	this.bgs[1].onload = function() {
-		game.ready++;
-	};
-	this.bgs[2].onload = function() {
-		game.ready++;
-	};
-	*/
-
-	// Game variables
-	//this.gui = new GUI();
-	//this.minimap = new Minimap(20, 440, 760, 24, this.bgs[0], this.bgs[1], this.bgs[2]);
-	
-	//sprite_sheet = new Image();
-	//sprite_sheet.src = "helicopter.png";
-	//this.heli = new Helicopter(200, 200, sprite_sheet);
 
 	this.placeLevelObjects();
 	
@@ -104,7 +70,6 @@ var Game = function (canvasId) {
 	this.STARTING_FPS = 60;
 	
 	this.started = false;
-	//this.units = [];
 	this.gameOver = false;
 }
 	
@@ -158,6 +123,9 @@ Game.prototype = {
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
 				if (faction.units[i].health <= 0) {
+					// remove supply from faction supply
+					faction.playerResources.supply.subtract( faction.units[i].supply );
+					
 					// removes unit from array and ensures no units are skipped
 					faction.units.splice(i, 1);
 					i--;
@@ -171,6 +139,9 @@ Game.prototype = {
 			}
 		});
 		
+		// update AI
+		self.brain.update(elapsedTime);
+		
 		// Update the GUI
 		self.gui.update(elapsedTime);
 	},
@@ -183,8 +154,10 @@ Game.prototype = {
 		}
 		
 		// create towncenter for each team	
-		self.factions[0].buildings.push(new Towncenter(64*3, 64*3, 100, 0, self));
-		self.factions[1].buildings.push(new Towncenter(64*15, 64*15, 100, 1, self));
+		self.factions[0].buildings.push(new Towncenter(64*3, 64*3, 0, 0, self));
+		self.factions[0].buildings.push(new Connector(64*5, 32*7, 0, 0, self));
+		self.factions[0].buildings.push(new Barracks(32*9, 32*10, 1, 0, self));
+		self.factions[1].buildings.push(new Towncenter(64*15, 64*15, 0, 1, self));
 		
 		// start with villager and add required supply
 		self.factions[0].units.push(new Infantry(64*3+32, 64*6+32, 0, self));
@@ -193,6 +166,7 @@ Game.prototype = {
 		self.factions[1].playerResources.supply.add( self.factions[1].units[0].supply );
 		
 		self.playerFaction = self.factions[0]; // self
+		this.brain = new Brain(self.factions[1]);
 		
 		// start centered on town center
 		/*
@@ -200,6 +174,15 @@ Game.prototype = {
 		globalx = tc.x + 0.5*tc.width - 0.5*WIDTH;
 		globaly = tc.y + 0.5*tc.height - 0.5*HEIGHT;
 		*/
+		// temporary; I just want to keep an eye on the AI
+		globalx = 64*10;
+		globaly = 64*10;
+		
+		// start with villager and add required supply
+		self.factions[0].units.push(new Villager(64*2,64*3,0,self));
+		self.factions[0].playerResources.supply.add( self.factions[0].units[0].supply );
+		self.factions[1].units.push(new Villager(64*17,64*16,1,self));
+		self.factions[1].playerResources.supply.add( self.factions[1].units[0].supply );
 		
 		// Add Map mineral Mines
 		self.mapMinerals.push(new MineralMine(64*1,64*3,50000));
@@ -265,9 +248,9 @@ Game.prototype = {
 				};
 			}
 		};
-
-		self.moveUnit(x, y);
 		
+		self.moveUnit(x, y);
+
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
 				if (faction != thisFaction &&
@@ -284,17 +267,14 @@ Game.prototype = {
 
 		self.mapMinerals.forEach (function(mineral, index) {
 			if (self.cd.detect(mineral, mousebox)) {
-				self.factions.forEach( function(faction) {
-					for (var j = 0; j < faction.units.length; j++) {
-							if (faction.units[j].selected) {
-								faction.units[j].startMine(mineral);
-							}
-						}
-					return;
-				});
+				for (var j = 0; j < faction.units.length; j++) {
+					if (faction.units[j].selected && faction.units[j].type == "villager") {
+						faction.units[j].startMine(mineral);
+					}
+				}
+				return;
 			}
 		});
-		
 	},
 	
 	moveUnit: function(x, y) {

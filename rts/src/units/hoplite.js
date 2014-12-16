@@ -19,6 +19,9 @@ var Hoplite = function(x, y, faction, game) {
 	this.x = x;
 	this.y = y;
 	this.faction = faction;
+	this.type = "hoplite";
+	
+	this.thumbnail = Resource.gui.img.villagerCommandButton;
 	
 	//this.render = HopliteRender;
 	//this.update = HopliteUpdate;
@@ -27,7 +30,7 @@ var Hoplite = function(x, y, faction, game) {
 	//this.attack = HopliteAttack;
 }
 
-Hoplite.prototype = new Unit(100,100,this.maxhealth,this.faction);
+Hoplite.prototype = new Unit(100,100,60,"#000000");
 
 Hoplite.prototype.update = function(elapsedTime) {
 	var self = this;
@@ -54,8 +57,8 @@ Hoplite.prototype.update = function(elapsedTime) {
 		self.y += secs*self.vely;
 		
 		//update currentNode
-		self.curNode.x = Math.floor(self.x/64);
-		self.curNode.y = Math.floor(self.y/64);
+		//self.curNode.x = Math.floor(self.x/64);
+		//self.curNode.y = Math.floor(self.y/64);
 		
 		// start moving to the next node or stop if target has been reached
 		if (self.mode == "move") {
@@ -103,30 +106,6 @@ Hoplite.prototype.update = function(elapsedTime) {
 	}
 }
 
-Hoplite.prototype.render = function(context) {
-		//draw unit
-		context.drawImage(Resource.units.img.hoplite[this.faction],
-			UNIT_SPRITE_DATA[0].x + UNIT_SPRITE_DATA[0].width * this.animationFrame, UNIT_SPRITE_DATA[0].y,
-			UNIT_SPRITE_DATA[0].width, UNIT_SPRITE_DATA[0].height,
-			this.x - globalx - this.radius, this.y - globaly - this.radius,
-			UNIT_SPRITE_DATA[0].width, UNIT_SPRITE_DATA[0].height);
-			
-		// draw health bar
-		var maxbarlength = this.radius*2;
-		var barheight = 4;
-		var barlength = maxbarlength * (this.health/this.maxhealth);
-		context.fillStyle = "#00FF00";
-		context.beginPath();
-		context.rect(this.x -(maxbarlength/2)-globalx, this.y - this.radius/2 - (barheight/2)-globaly,	barlength, barheight);
-		context.fill();
-		context.restore();
-		
-		if(this.selected) {
-			context.drawImage(Resource.units.img.unitSelector,
-				this.x - globalx - this.radius, this.y - globaly - this.radius);
-		}
-	},
-
 Hoplite.prototype.getHitbox = function() {
 	var self = this;
 
@@ -160,6 +139,14 @@ Hoplite.prototype.getAttackRange = function() {
 	};
 }
 
+Hoplite.prototype.startMine = function(mine) {
+	var self = this;
+
+	// temporarily changes mode to "move"
+	self.move(unit.x, unit.y);
+	self.mode = "attack";
+	self.targetunit = unit;
+}
 
 
 
