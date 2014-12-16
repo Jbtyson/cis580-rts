@@ -70,10 +70,10 @@ GuiResources.prototype = {
 		this.img.villagerCommandButton.src = "img/ui/villagerCommandButton.png";
 		
 		this.img.hopliteCommandButton.onload = onload;
-		this.img.hopliteCommandButton.src = "img/ui/villagerCommandButton.png";
+		this.img.hopliteCommandButton.src = "img/ui/hopliteCommandButton.png";
 		
 		this.img.infantryCommandButton.onload = onload;
-		this.img.infantryCommandButton.src = "img/ui/villagerCommandButton.png";
+		this.img.infantryCommandButton.src = "img/ui/infantryCommandButton.png";
 		
 		this.img.towncenterCommandButton.onload = onload;
 		this.img.towncenterCommandButton.src = "img/ui/towncenterCommandButton.png";

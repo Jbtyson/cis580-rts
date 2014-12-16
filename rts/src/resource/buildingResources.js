@@ -2,7 +2,7 @@
 // James Tyson
 //----------------------------------
 BuildingResources = function() {
-	this.loading = 3;
+	this.loading = 9;
 	
 	//Building Resources by Chris Delpire.
 	this.img = {
