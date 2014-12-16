@@ -18,23 +18,27 @@ Tooltip.prototype = {
 		self = this;
 		self.timer += gameTime;
 		if(this.gui.commandPanel.hitbox.contains(this.position.x, this.position.y)) { // is it in the command panel
-			this.gui.commandPanel.buttons.forEach(function(button) { // is it over a button
-				if(button.hitbox.contains(self.position.x, self.position.y)) {
-					if(button.id === self.buttonId) {	// is it over the same button
-						if(self.timer >= self.timeToDisplay) {
-							self.show = true;
-							self.text = button.tooltipText;
-						}
-					}
-					else {	// is over a different button
-						self.reset();
-						self.buttonId = button.id;
+			// if we have a button, check it
+			if(this.buttonId > -1) {
+				if(this.gui.commandPanel.buttons[this.buttonId].hitbox.contains(this.position.x, this.position.y)) {
+					if(self.timer >= self.timeToDisplay) {
+						self.show = true;
+						self.text = this.gui.commandPanel.buttons[this.buttonId].tooltipText;
 					}
 				}
 				else {
-					//self.reset();
+					this.reset();
 				}
-			});
+			}
+			// else we check all of the buttons and find the new one
+			else {
+				this.gui.commandPanel.buttons.forEach(function(button) { // is it over a button
+					if(button.hitbox.contains(self.position.x, self.position.y)) {
+						self.reset();
+						self.buttonId = button.id;
+					}
+				});
+			}
 		}
 		else {
 			this.reset();

@@ -115,7 +115,6 @@ Gui.prototype = {
 				button = b;
 		});
 		if(typeof(button) !== "undefined") {
-			console.log(button.id + " on the unit bar was clicked");
 			game.selectUnit(button.id);	
 			return -1;
 		}
