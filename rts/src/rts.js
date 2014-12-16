@@ -236,8 +236,6 @@ Game.prototype = {
 		
 		self.moveUnit(x, y);
 
-		self.moveUnit(x, y);
-		
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
 				if (faction != thisFaction &&
@@ -253,15 +251,14 @@ Game.prototype = {
 		});
 
 		self.mapMinerals.forEach (function(mineral, index) {
-			if (self.cd.detect(mineral, mousebox)) {
-				self.factions.forEach( function(faction) {
-					for (var j = 0; j < faction.units.length; j++) {
-							if (faction.units[j].selected) {
-								faction.units[j].startMine(mineral);
-							}
+			if (mousebox.x > mineral.x - mineral.width/2 && mousebox.x < mineral.x + mineral.width/2 
+				&& mousebox.y > mineral.y - mineral.height/2 && mousebox.y < mineral.y + mineral.height/2) {
+				for (var j = 0; j < faction.units.length; j++) {
+						if (faction.units[j].selected) {
+							faction.units[j].startMine(mineral);
 						}
-					return;
-				});
+					}
+				return;
 			}
 		});
 	},
