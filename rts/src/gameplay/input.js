@@ -59,6 +59,9 @@ Input.prototype = {
 			case 76: // l button; debug purposes only
 				console.log(this.inputState.mousex, this.inputState.mousey);
 				break;
+			case 84: // t - force AI to step through tree
+				game.brain.traverse();
+				break;
 			case 77: // m button; mute
 				break;
 			case 80: // p; pause
@@ -155,7 +158,18 @@ Input.prototype = {
 		 * 2 = right click
 		 */
 		if (e.button == 0) {
-			self.game.startSelectBox(this.mousex+globalx, this.mousey+globaly);
+			// Perform the clicked action on the first unit in either selected buildings or units
+			if(self.game.gui.isClickOnUi(self.mousex, self.mousey)) {
+				var actionNum = self.game.gui.getButtonClicked(self.mousex, self.mousey);
+				if(actionNum !== -1) {
+					if(self.game.selectedUnits.length > 0)
+						self.game.selectedUnits[0].actions[actionNum].onClick();
+					else
+						self.game.selectedBuildings[0].actions[actionNum].onClick(self.game.selectedBuildings[0]);
+				}
+			}
+			else
+				self.game.startSelectBox(self.mousex+globalx, self.mousey+globaly);
 		} else if (e.button == 2) {
 			
 		} else if (e.button == 1) {
@@ -167,7 +181,11 @@ Input.prototype = {
 		var self = this;
 
 		if (e.button == 0) {
-			self.game.endSelectBox(e);
+			if(self.game.gui.isClickOnUi(self.mousex, self.mousey)) {
+				// do nothing for now
+			}
+			else
+				self.game.endSelectBox(e);
 		} else if (e.button == 2) {
 			self.game.unitOrder(this.mousex+globalx, this.mousey+globaly);
 		}

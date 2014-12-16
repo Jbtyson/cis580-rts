@@ -19,7 +19,7 @@ var Infantry = function(x, y, faction, game) {
 	this.x = x;
 	this.y = y;
 	this.faction = faction;
-	
+	this.type = "infantry";
 	
 	//this.render = Render;
 	//this.update = Update;

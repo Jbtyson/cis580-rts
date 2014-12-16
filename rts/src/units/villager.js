@@ -23,6 +23,7 @@ var Villager = function(x, y, faction, game) {
 	this.x = x;
 	this.y = y;
 	this.faction = faction;
+	this.type = "villager";
 	
 	this.thumbnail = Resource.gui.img.villagerCommandButton;
 	
@@ -203,7 +204,7 @@ Villager.prototype.startMine = function(mine) {
 	var self = this;
 
 	// temporarily changes mode to "move"
-	self.move(unit.x, unit.y);
+	//self.move(unit.x, unit.y);
 	self.mode = "attack";
 	self.targetunit = unit;
 }
