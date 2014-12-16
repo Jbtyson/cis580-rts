@@ -45,7 +45,7 @@ Minimap.prototype = {
 			{
 				context.fillStyle = faction.color;
 				context.beginPath();
-				context.arc(faction.units[k].x / 10, 512 + (faction.units[k].y / 10), 1, 0, 2*Math.PI);
+				context.arc(faction.units[k].x / 10, 512 + (faction.units[k].y / 10), 1.5, 0, 2*Math.PI);
 				context.fill();
 				
 			}

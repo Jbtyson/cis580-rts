@@ -1,23 +1,30 @@
-var Brain = function(body) {
-	this.body = body;
+var Brain = function(faction) {
+	this.body = new Body(faction);
 	
-	this.time = 0;
+	this.time = 11;
 	// a stack of all the failure messages we get as we traverse the decision flow chart
 	// used to detect cycles
 	this.failure_stack;
 }
 
 Brain.prototype = {
-	MAX_TIME: 5,
+	MAX_TIME: 15,
 	
 	// goes through flow chart once every MAX_TIME seconds
 	update: function(elapsedTime) {
-		this.time += elapsedTime/1000;
+		//this.time += elapsedTime/1000;
 		if (this.time >= this.MAX_TIME) {
 			this.time -= this.MAX_TIME;
-			this.failure_stack = new Array();
-			process(this.body.buildSoldiers());
+			this.traverse();
 		}
+	},
+	
+	traverse: function() {
+		this.failure_stack = new Array();
+		var r = this.body.buildSoldiers();
+		console.log("starting process");
+		this.process(r);
+		console.log(this.body.faction);
 	},
 	
 	process: function(problem) {
@@ -29,14 +36,12 @@ Brain.prototype = {
 		}
 		this.failure_stack.push(problem);
 		var nextStep = null;
+		console.log(problem);
 		switch (problem) {
 			case "success":
 				return;
 			case "need_minerals":
 				nextStep = this.body.gatherMinerals();
-				break;
-			case "barracks_maxed":
-				nextStep = this.body.buildBarracks();
 				break;
 			case "towncenters_maxed":
 				nextStep = this.body.buildTowncenter();
@@ -49,9 +54,10 @@ Brain.prototype = {
 				break;
 			default:
 				console.log("error: invalid return value");
+				console.log(problem);
 				break;
 		}
-		process(nextStep);
+		this.process(nextStep);
 	}
 }
 

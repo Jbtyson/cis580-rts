@@ -1,9 +1,10 @@
-var Towncenter = function(x, y, health, factionIndex, game) {
+var Towncenter = function(x, y, orientation, factionIndex, game) {
 	this.x = x;
 	this.y = y;
-	this.health = health;
 	
 	this.game = game;
+
+	this.orientation = orientation;
 	
 	this.factionIndex = factionIndex;
 	this.faction = game.factions[this.factionIndex];
@@ -18,6 +19,7 @@ var Towncenter = function(x, y, health, factionIndex, game) {
 
 	this.unitQueue = [];
 	this.unitTypeQueue = [];
+	this.unitBuildPositionIndex = 0;
 	
 
 	// ------------------- James wrote this for gui stuff --------------------------
@@ -37,31 +39,7 @@ var Towncenter = function(x, y, health, factionIndex, game) {
 	// -----------------------------------------------------------------------------
 }
 
-Towncenter.prototype = new Building(0, this.factionIndex, this.game);
-
-/*Towncenter.prototype.render = function(context) {
-	var self = this;
-	
-	context.save();
-	
-	if (self.selected) {
-		context.strokeStyle = "#00FF00";
-	} else {
-		context.strokeStyle = "#000000";
-	}
-	context.lineWidth = self.borderwidth;
-	
-	//translate to center of bldg
-	context.translate(-0.5*self.width,-0.5*self.height);
-	
-	context.fillStyle = self.color;
-	context.fillRect(self.x-globalx,self.y-globaly,self.height,self.width);
-	context.strokeRect(self.x-globalx,self.y-globaly,self.height,self.width);
-	
-	context.restore();
-	
-	context.restore();
-}*/
+Towncenter.prototype = new Building(0, this.orientation, this.factionIndex, this.game);
 
 Towncenter.prototype.update = function(elapsedTime) {
 
@@ -80,22 +58,52 @@ Towncenter.prototype.update = function(elapsedTime) {
 		this.buildPercent = this.unitQueue[0] / 2500;
 
 		if(this.unitQueue[0] <= 0){
+
+			var buildPosition_x;
+			var buildPosition_y;
+
+			switch(this.unitBuildPositionIndex){
+				case 0:
+					buildPosition_x = this.world_x + 32;
+					buildPosition_y = this.world_y + 96;
+					break;
+				case 1:
+					buildPosition_x = this.world_x + 96;
+					buildPosition_y = this.world_y + 96;
+					break;
+				case 2:
+					buildPosition_x = this.world_x + 96;
+					buildPosition_y = this.world_y + 32;
+					break;
+				case 3:
+					buildPosition_x = this.world_x + 32;
+					buildPosition_y = this.world_y + 32;
+					break;
+				default:
+					console.log("error; invalid buildPositionIndex");
+					return;
+
+			}
+
+
 			this.unitQueue.shift();
 			var unitType = this.unitTypeQueue.shift();
 			switch (unitType) {
 				case "villager":
-					this.faction.units.push(new Villager(this.world_x + 64, this.world_y + 128, this.factionIndex, this.game));
+					this.faction.units.push(new Villager(buildPosition_x, buildPosition_y, this.factionIndex, this.game));
 					break;
 				case "hoplite":
-					this.faction.units.push(new Hoplite(this.world_x + 64, this.world_y + 128, this.factionIndex, this.game));
+					this.faction.units.push(new Hoplite(buildPosition_x, buildPosition_y, this.factionIndex, this.game));
 					break;
 				case "infantry":
-					this.faction.units.push(new Infantry(this.world_x + 64, this.world_y + 128, this.factionIndex, this.game));
+					this.faction.units.push(new Infantry(buildPosition_x, buildPosition_y, this.factionIndex, this.game));
 					break;
 				default:
 					console.log("error; invalid unit");
 					return;
 			}
+
+			this.unitBuildPositionIndex = (this.unitBuildPositionIndex + 1) % 4 
 			
 		}
 	} else {
@@ -107,16 +115,16 @@ Towncenter.prototype.update = function(elapsedTime) {
 Towncenter.prototype.buildVillager = function(building){
 
 	//TODO: Check if the player has enough resources.
-	if (!building.game.playerResources.minerals.canSubtract(50)) {
+	if (!building.faction.playerResources.minerals.canSubtract(50)) {
 		return;
 	}
 
-	if (!building.game.playerResources.supply.canAdd(1)) {
+	if (!building.faction.playerResources.supply.canAdd(1)) {
 		return;
 	}
 
-	building.game.playerResources.minerals.subtract(50);
-	building.game.playerResources.supply.add(1);
+	building.faction.playerResources.minerals.subtract(50);
+	building.faction.playerResources.supply.add(1);
 
 	building.unitQueue.push(2500);
 	building.isBuilding = true;
@@ -127,16 +135,16 @@ Towncenter.prototype.buildVillager = function(building){
 Towncenter.prototype.buildHoplite = function(building){
 
 	//TODO: Check if the player has enough resources.
-	if (!building.game.playerResources.minerals.canSubtract(100)) {
+	if (!building.faction.playerResources.minerals.canSubtract(100)) {
 		return;
 	}
 
-	if (!building.game.playerResources.supply.canAdd(1)) {
+	if (!building.faction.playerResources.supply.canAdd(1)) {
 		return;
 	}
 
-	building.game.playerResources.minerals.subtract(100);
-	building.game.playerResources.supply.add(1);
+	building.faction.playerResources.minerals.subtract(100);
+	building.faction.playerResources.supply.add(1);
 
 	building.unitQueue.push(2500);
 	building.isBuilding = true;
@@ -147,16 +155,16 @@ Towncenter.prototype.buildHoplite = function(building){
 Towncenter.prototype.buildInfantry = function(building){
 
 	//TODO: Check if the player has enough resources.
-	if (!building.game.playerResources.minerals.canSubtract(130)) {
+	if (!building.faction.playerResources.minerals.canSubtract(130)) {
 		return;
 	}
 
-	if (!building.game.playerResources.supply.canAdd(1)) {
+	if (!building.faction.playerResources.supply.canAdd(1)) {
 		return;
 	}
 
-	building.game.playerResources.minerals.subtract(130);
-	building.game.playerResources.supply.add(1);
+	building.faction.playerResources.minerals.subtract(130);
+	building.faction.playerResources.supply.add(1);
 
 	building.unitQueue.push(2500);
 	building.isBuilding = true;

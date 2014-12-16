@@ -8,34 +8,34 @@ var Body = function(faction) {
 Body.prototype = {
 	buildSoldiers: function() {
 		// 50 should be replaced with variable
+		//if (!this.faction.playerResources.minerals.canSubtract(50)) {
 		if (!this.faction.playerResources.minerals.canSubtract(50)) {
 			return "need_minerals";
 		}
 		// TODO: add check for supply
-		var foundBarracks = false;
-		for (var i = 0; i < this.faction.buildings; i++) {
-			if (this.faction.buildings[i].type == "Barracks" &&
-				this.faction.buildings[i].isBuilding == false) {
+		var foundTC = false;
+		for (var i = 0; i < this.faction.buildings.length; i++) {
+			if (this.faction.buildings[i].isBuilding == false) {
 				// TODO: make a variety of units
 				// TODO: add units to army
-				this.faction.buildings[i].buildHoplite();
-				foundBarracks = true;
+				this.faction.buildings[i].buildHoplite(this.faction.buildings[i]);
+				foundTC = true;
 				break;
 			}
 		}
-		if (!foundBarracks) {
-			return "barracks_maxed";
+		if (!foundTC) {
+			return "towncenters_maxed";
 		}
 		return "success";
 	},
 	
 	buildVillagers: function() {
-	
+		return "success";
 	},
 	
 	gatherMinerals: function() {
 		for (var i = 0; i < this.faction.units.length; i++) {
-			if (this.faction.units[i].type == "Villager" &&
+			if (this.faction.units[i].type == "villager" &&
 				this.faction.units[i].mode == "idle") {
 				// we found an idle villager. now we need to find minerals
 				var least_distance = 0;
@@ -50,14 +50,20 @@ Body.prototype = {
 					}
 				}
 				// TODO: have the villager collect the target_minerals
+				this.faction.units[i].selected = true;
+				console.log("biscuit: buttered");
+				game.unitOrder(target_minerals.x, target_minerals.y, 1);
+				this.faction.units[i].selected = false;
 				break;
 			}
 		}
+		return "success";
 	},
 	
-	buildBarracks: function() {
+	buildTowncenter: function() {
+		console.log("building TC");
 		for (var i = 0; i < this.faction.units.length; i++) {
-			if (this.faction.units[i].type == "Villager" &&
+			if (this.faction.units[i].type == "villager" &&
 				(this.faction.units[i].mode == "idle" ||
 				this.faction.units[i].mode == "mine" ||
 				this.faction.units[i].mode == "returningResource" ||
@@ -66,10 +72,7 @@ Body.prototype = {
 				
 			}
 		}
-	},
-	
-	buildTowncenter: function() {
-		
+		return "success";
 	}
 	
 }
