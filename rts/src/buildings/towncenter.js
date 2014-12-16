@@ -19,9 +19,22 @@ var Towncenter = function(x, y, health, factionIndex, game) {
 	this.unitQueue = [];
 	this.unitTypeQueue = [];
 	
-	this.actions = [{thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.buildVillager},
-					{thumbnail:Resource.gui.img.hopliteCommandButton, onClick:this.buildHoplite},
-					{thumbnail:Resource.gui.img.infantryCommandButton, onClick:this.buildInfantry}];
+
+	// ------------------- James wrote this for gui stuff --------------------------
+	// -------It is necessary for gui to work, so make sure all units have it-------
+	// Building icon for the bottom bar
+	this.thumbnail = Resource.gui.img.villagerCommandButton;
+	// Declare action functions here
+	this.testAction = function() {
+		console.log("test action performed");
+	};
+	// Declare array of actions here
+	this.actions = [
+		{thumbnail:Resource.gui.img.villagerCommandButton, tooltipText: "Build a villager", onClick:this.buildVillager},
+		{thumbnail:Resource.gui.img.hopliteCommandButton, tooltipText: "Build a hoplite", onClick:this.buildHoplite},
+		{thumbnail:Resource.gui.img.infantryCommandButton, tooltipText: "Build an infantry unit", onClick:this.buildInfantry}
+	];
+	// -----------------------------------------------------------------------------
 }
 
 Towncenter.prototype = new Building(0, this.factionIndex, this.game);

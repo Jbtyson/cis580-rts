@@ -153,6 +153,7 @@ Game.prototype = {
 		// create towncenter for each team	
 		self.factions[0].buildings.push(new Towncenter(64*3, 64*3, 100, 0, self));
 		self.factions[1].buildings.push(new Towncenter(64*15, 64*15, 100, 1, self));
+
 		
 		self.playerFaction = self.factions[0]; // self
 		
@@ -384,13 +385,6 @@ Game.prototype = {
 				);
 			}
 		},200);
-		
-		/*window.requestNextAnimationFrame(
-			function(time) {
-				self.started = true;
-				self.loop.call(self, time);
-			}
-		);*/
 
 	},
 	
@@ -441,7 +435,7 @@ Game.prototype = {
 		
 			// Check which players are still active
 			self.factions.forEach( function(faction) {
-				if( faction.units.length == 0 ) {//&& faction.buildings.length == 0 ) { // enable once buildings can be attacked
+				if( faction.buildings.length == 0 ) {//&& faction.buildings.length == 0 ) { // enable once buildings can be attacked
 					self.activePlayers--;
 				}
 			});
