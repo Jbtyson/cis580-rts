@@ -13,8 +13,8 @@ var Unit = function(x, y, health, faction) {
 	this.x = x;
 	this.y = y;
 	this.radius;
-	//supply is the population cost for a unit
-	this.supply;
+	//supply is the population cost for a unit, default 1
+	this.supply = 1;
 	this.curNode = {
 		x: 0,
 		y: 0,
@@ -94,6 +94,7 @@ Unit.prototype = {
 	},
 
 update: function(elapsedTime) {
+		var self = this;
 		var secs = elapsedTime / 1000;
 		if (this.mode == "move" ||
 				(this.mode == "attack" && !game.cd.detect(this.targetunit, this))) {
@@ -112,10 +113,6 @@ update: function(elapsedTime) {
 			// actually move
 			this.x += secs*this.velx;
 			this.y += secs*this.vely;
-			
-			//update currentNode
-			this.curNode.x = Math.floor(this.x/64);
-			this.curNode.y = Math.floor(this.y/64);
 			
 			// start moving to the next node or stop if target has been reached
 			if (this.mode == "move") {
@@ -148,16 +145,28 @@ update: function(elapsedTime) {
 		}
 		
 		else if (this.mode == "idle") {
-			for (var i = 0; i <  game.units.length; i++) {
-				if (game.units[i].faction != this.faction &&
-						game.cd.detect(this, game.units[i])) {
-					this.attack(game.units[i]);
+			game.factions.forEach( function(faction) {
+				for (var i = 0; i < faction.units.length; i++) {
+					var otherUnit = {
+						getHitbox: function()
+						{
+							return faction.units[i].getHitbox();
+						},
+						getAttackRange: function()
+						{
+							return faction.units[i].getHitbox();
+						}
+					}
+					if (faction.units[i].faction != self.faction &&
+							game.cd.detect(self, faction.units[i])) {
+						self.attack(faction.units[i]);
+					}
+					else if (faction.units[i].faction == self.faction &&
+							game.cd.detect(self, otherUnit) && self != faction.units[i] && faction.units[i].mode == "idle") {
+						self.loseStack(faction.units[i]);
+					}
 				}
-				else if (game.units[i].faction == this.faction &&
-						game.cd.detect(this, game.units[i]) && this != game.units[i] &&game.units[i].mode == "idle") {
-					this.loseStack(game.units[i]);
-				}
-			}
+			});
 		}
 },
 getHitbox: function() {
@@ -179,7 +188,14 @@ attack: function(unit) {
 		this.targetunit = unit;
 		this.getPath(unit.x, unit.y);
 	},
+startMine: function(mine) {
+	var self = this;
 
+	// temporarily changes mode to "move"
+	self.move(mine.x, mine.y);
+	self.mode = "goingToMine";
+	self.targetunit = mine;
+},
 	/* C.J. Dopheide
 	This takes in an x y coordinate and uses an A* search to get a path to those coordinates.
 	*/
@@ -187,11 +203,19 @@ attack: function(unit) {
 	{
 		var tile = Tilemap.tileAt(Math.floor(x/64), Math.floor(y/64), 0);
         if(tile && !tile.solid) {
+			var curNode = {
+				x: 0,
+				y: 0,
+				path: [],
+				cost: 0
+			}
+			curNode.x = Math.floor(this.x/64);
+			curNode.y = Math.floor(this.y/64);
 			this.openSet = new PointSet(),
 			this.closedSet = new PointSet();
 			this.targetx = x;
 			this.targety = y;
-			this.destNode = aStarSearch({x: Math.floor(this.targetx/64), y: Math.floor(this.targety/64)}, this.curNode, this.openSet, this.closedSet);
+			this.destNode = aStarSearch({x: Math.floor(this.targetx/64), y: Math.floor(this.targety/64)}, curNode, this.openSet, this.closedSet);
 			if(this.destNode != undefined)
 			{
 				this.getNextDest();
@@ -274,6 +298,11 @@ attack: function(unit) {
 	{
 		var xdist = this.x - unit.x;
 		var ydist = this.y - unit.y;
+		if(xdist == 0 && ydist == 0)
+		{
+			xdist = Math.random() * this.radius/3 + Math.random() * -this.radius/3;
+			ydist = Math.random() * this.radius/3 + Math.random() * -this.radius/3;
+		}
 		this.mode = "move";
 		this.getPath(this.x + xdist/3, this.y + ydist/3);
 	}

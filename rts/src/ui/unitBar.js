@@ -30,6 +30,9 @@ UnitBar.prototype = {
 			for(i = 0; i < this.maxUnitsDisplayed && i < this.unitList.length; i++) {
 				this.buttons[i] = new Button();
 				this.buttons[i].image = this.unitList[i].thumbnail;
+				if (this.buttons[i].image === undefined) {
+					console.log(this.unitList[i]);
+				}
 				this.buttons[i].position = {};
 				this.buttons[i].position.x = this.unitStartPosition.x + i%8 * this.unitDimensions.width;
 				this.buttons[i].position.y = (i < this.maxUnitsInRow) ? this.unitStartPosition.y : this.unitStartPosition.y + this.unitDimensions.height;
