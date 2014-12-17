@@ -86,6 +86,13 @@ Input.prototype = {
 				if( globaly < 0 ) { globaly = 0; }
 				else if( globaly > GLOBAL_HEIGHT - HEIGHT ) { globaly = GLOBAL_HEIGHT - HEIGHT; }
 				break;
+			case 46: // delete
+				if( self.game.selectedUnits.length > 0 ) {
+					self.game.selectedUnits[0].health = 0;
+				} else if ( self.game.selectedBuildings.length > 0 ) {
+					self.game.selectedBuildings[0].health = 0;
+				}
+				break;
 			case 13: // enter; start new game
 				if( !game.started ) {
 					game.started = true;
