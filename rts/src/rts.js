@@ -183,7 +183,7 @@ Game.prototype = {
 		// start with villager and add required supply
 		self.factions[0].units.push(new Infantry(64*3+32, 64*6+32, 0, self));
 		self.factions[0].playerResources.supply.add( self.factions[0].units[0].supply );
-		self.factions[1].units.push(new Infantry(64*15+32, 64*18+32, 1, self));
+		self.factions[1].units.push(new Infantry(64*15+32, 64*17+32, 1, self));
 		self.factions[1].playerResources.supply.add( self.factions[1].units[0].supply );
 		
 		self.playerFaction = self.factions[0]; // self
@@ -226,7 +226,13 @@ Game.prototype = {
 			if (!e.ctrlKey && !e.shiftKey) {
 				this.playerFaction.units[i].selected = false;
 			}
-			if (self.cd.detect(self.sb, this.playerFaction.units[i])) {
+			// only use the regular unit hitbox; not the attack range
+			var unit = {
+				getHitbox: function() {
+					return game.playerFaction.units[i].getHitbox();
+				}
+			}
+			if (self.cd.detect(self.sb, unit)) {
 				this.playerFaction.units[i].selected = true;
 				console.log(this.playerFaction.units[i]);
 				self.selectedUnits.push(this.playerFaction.units[i]);
