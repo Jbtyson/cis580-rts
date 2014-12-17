@@ -47,12 +47,15 @@ PhantomBuilding.prototype = {
 	   
 		for(var i = 0; i < this.game.factions[0].buildings.length; i++){
 
+			// Calculate how far away the phantom is from a building.
 			var distance_x = (this.game.input.mousex - globalx) - (this.game.factions[0].buildings[i].world_x + BUILDING_SPRITE_DATA[this.game.factions[0].buildings[i].type].width / 2);
 			var distance_y = (this.game.input.mousey - globaly) - (this.game.factions[0].buildings[i].world_y + BUILDING_SPRITE_DATA[this.game.factions[0].buildings[i].type].height / 2);
-
 			var distance = Math.sqrt( distance_x * distance_x + distance_y * distance_y)
 
+			// If a building is close enough to the phantom, then orient the building so that it
+			// is facing the write direction.
 			if(distance < BUILDING_SPRITE_DATA[this.game.factions[0].buildings[i].type].width){
+
 				if(Math.abs(distance_y) < Math.abs(distance_x)){
 
 					if(distance_x < 0){
@@ -61,6 +64,18 @@ PhantomBuilding.prototype = {
 					else{
 						this.orientation = 0;
 					}
+
+					// If the building is close enough, and the user tries to build
+					// then build the building in the correct location.
+					if(this.game.tryToBuild){
+						this.game.factions[0].buildings.push( new Connector(this.game.factions[0].buildings[i].world_x + (BUILDING_SPRITE_DATA[this.game.factions[0].buildings[i].type].width * Math.sign(distance_x)),
+																			this.game.factions[0].buildings[i].world_y + ((BUILDING_SPRITE_DATA[this.game.factions[0].buildings[i].type].height - BUILDING_SPRITE_DATA[this.type].height) / 2),
+																			this.orientation, 0, this.game));
+
+						this.game.phantom = null;
+					}
+
+
 				}
 
 				if(Math.abs(distance_x) < Math.abs(distance_y)){
@@ -71,8 +86,20 @@ PhantomBuilding.prototype = {
 					else{
 						this.orientation = 1;
 					}
+
+					// If the building is close enough, and the user tries to build
+					// then build the building in the correct location.
+					if(this.game.tryToBuild){
+						this.game.factions[0].buildings.push( new Connector(this.game.factions[0].buildings[i].world_x + ((BUILDING_SPRITE_DATA[this.game.factions[0].buildings[i].type].height - BUILDING_SPRITE_DATA[this.type].height) / 2),
+																			this.game.factions[0].buildings[i].world_y + (BUILDING_SPRITE_DATA[this.game.factions[0].buildings[i].type].width * Math.sign(distance_y)),
+																			this.orientation, 0, this.game));
+
+						this.game.phantom = null;
+					}
 				}
 			}
+
+			this.game.tryToBuild = false;
 
 
 		}

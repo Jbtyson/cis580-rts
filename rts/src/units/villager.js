@@ -35,7 +35,7 @@ var Villager = function(x, y, faction, game) {
 		{ 
 			thumbnail:Resource.gui.img.towncenterCommandButton, 
 			tooltipText:"Sample text to pretend to be a tooltip.", 
-			onClick:this.buildTowncenter 
+			onClick:this.buildBarracks 
 		},
 		{ 
 			thumbnail:Resource.gui.img.villagerCommandButton, 
@@ -196,8 +196,8 @@ Villager.prototype.move = function(x, y) {
 	}
 }
 
-Villager.prototype.buildBarracks = function() {
-	this.build(new Barracks());
+Villager.prototype.buildBarracks = function(villager) {
+	villager.build(new Barracks(0, 0, 0, 0, villager.game));
 }
 
 Villager.prototype.buildTowncenter = function(villager) {

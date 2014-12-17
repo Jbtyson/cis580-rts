@@ -205,6 +205,9 @@ Input.prototype = {
 			}
 			else
 				self.game.endSelectBox(e);
+			if(self.game.phantom != null){
+				self.game.tryToBuild = true;
+			}
 		} else if (e.button == 2) {
 			
 			//If the user right clicks while trying to build a building, they

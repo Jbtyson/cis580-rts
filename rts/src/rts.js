@@ -35,7 +35,9 @@ var Game = function (canvasId) {
 	
 	this.input = new Input(this.screen, window, myself);
 
+	// Variables need to build buildings.
 	this.phantom = null;
+	this.tryToBuild = false;
 	
 	// Necessary for gui making - James
 	this.selectedUnits = [];
