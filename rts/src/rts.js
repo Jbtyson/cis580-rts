@@ -37,6 +37,7 @@ var Game = function (canvasId) {
 	// Variables need to build buildings.
 	this.phantom = null;
 	this.tryToBuild = false;
+	this.buildingVillager;
 	
 	// Necessary for gui making - James
 	this.selectedUnits = [];
@@ -177,7 +178,7 @@ Game.prototype = {
 		for(var i = 0; i < self.numPlayers; i++) { // create players and assign colors
 			self.factions.push(new Faction(self.factionColors[i]));
 		}
-		// create towncenter for each team	
+		// create towncenter for each team
 		self.factions[0].buildings.push(new Towncenter(64*3, 64*3, 0, 0, self));
 		self.factions[0].buildings.push(new Connector(64*5, 32*7, 0, 0, self));
 		self.factions[0].buildings.push(new Barracks(32*7, 32*10, 1, 0, self));
@@ -223,7 +224,7 @@ Game.prototype = {
 		
 		if (!e.ctrlKey && !e.shiftKey) {
 			self.selectedUnits = [];
-			self.selectedBuildings = [];		
+			self.selectedBuildings = [];
 		}
 		
 		for (var i = 0; i < this.playerFaction.units.length; i++) {

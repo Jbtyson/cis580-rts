@@ -129,6 +129,9 @@ PhantomBuilding.prototype = {
 //Helper function to build new buildings.
 var buildNewBuilding = function(x, y, type, buildingArray, orientation, game){
 
+  game.buildingVillager.mode = "build";
+  game.buildingVillager.building = new Towncenter(x, y, orientation, 0, game);
+
   switch(type){
     
     case 0:
