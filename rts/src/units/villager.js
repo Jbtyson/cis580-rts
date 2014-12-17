@@ -34,15 +34,23 @@ var Villager = function(x, y, faction, game) {
 	// Unit icon for the unit bar
 	this.thumbnail = Resource.gui.img.villagerCommandButton;
 	// Declare action functions here
-	this.testAction = function() {
-		console.log("test action performed");
+	this.buildTowncenter = function() {
+		build(new Barracks());
+	};
+	this.buildTowncenter = function() {
+		build(new Towncenter());
 	};
 	// Declare array of actions here
 	this.actions = [
 		{ 
 			thumbnail:Resource.gui.img.villagerCommandButton, 
 			tooltipText:"Sample text to pretend to be a tooltip.", 
-			onClick:this.testAction 
+			onClick:this.buildTowncenter 
+		},
+		{ 
+			thumbnail:Resource.gui.img.villagerCommandButton, 
+			tooltipText:"Sample text to pretend to be a tooltip.", 
+			onClick:this.buildTowncenter 
 		},
 	];
 	// -----------------------------------------------------------------------------

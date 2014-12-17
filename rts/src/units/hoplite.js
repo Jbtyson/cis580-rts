@@ -26,13 +26,29 @@ var Hoplite = function(x, y, faction, game) {
 	this.faction = faction;
 	this.type = "hoplite";
 	
-	this.thumbnail = Resource.gui.img.villagerCommandButton;
-	
 	//this.render = HopliteRender;
 	//this.update = HopliteUpdate;
 	//this.getHitbox = HopliteGetHitbox;
 	//this.move = HopliteMove;
 	//this.attack = HopliteAttack;
+	
+	// ------------------- James wrote this for gui stuff --------------------------
+	// -------It is necessary for gui to work, so make sure all units have it-------
+	// Unit icon for the unit bar
+	this.thumbnail = Resource.gui.img.villagerCommandButton;
+	// Declare action functions here
+	this.testAction = function() {
+		console.log("test action performed");
+	};
+	// Declare array of actions here
+	this.actions = [
+		{ 
+			thumbnail:Resource.gui.img.villagerCommandButton, 
+			tooltipText:"Sample text to pretend to be a tooltip.", 
+			onClick:this.testAction 
+		},
+	];
+	// -----------------------------------------------------------------------------
 }
 
 Hoplite.prototype = new Unit(100,100,60,"#000000");
