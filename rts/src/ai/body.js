@@ -2,6 +2,7 @@
 // answer questions posed by the brain
 var Body = function(faction) {
 	this.faction = faction;
+	this.armies = new Array();
 }
 
 Body.prototype = {
@@ -16,6 +17,7 @@ Body.prototype = {
 		for (var i = 0; i < this.faction.buildings.length; i++) {
 			if (this.faction.buildings[i].isBuilding == false) {
 				// TODO: make a variety of units
+				// TODO: add units to army
 				this.faction.buildings[i].buildHoplite(this.faction.buildings[i]);
 				foundTC = true;
 				break;
@@ -50,7 +52,7 @@ Body.prototype = {
 				// TODO: have the villager collect the target_minerals
 				this.faction.units[i].selected = true;
 				console.log("biscuit: buttered");
-				game.unitOrder(target_minerals.x, target_minerals.y, this.faction);
+				game.unitOrder(target_minerals.x, target_minerals.y, 1);
 				this.faction.units[i].selected = false;
 				break;
 			}

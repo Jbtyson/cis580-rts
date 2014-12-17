@@ -7,7 +7,8 @@ var Input = function(screen, window, game) {
 	this.yoffset = rect.top;
 	this.mousex = 0;
 	this.mousey = 0;
-	
+	this.mode = "normal";
+
 	var self = this;
 	window.onkeydown = function (e) { self.keyDown(e); };
 	window.onkeyup = function (e) { self.keyUp(e); };
@@ -63,77 +64,10 @@ Input.prototype = {
 				game.brain.traverse();
 				break;
 			case 77: // m button; mute
-				var onoff = false;
-				if( self.game.playlist[self.game.currentTrack].muted == false ) {
-					onoff = true;
-				}
-				self.game.playlist.forEach( function(track) {
-					track.muted = onoff;
-				});
 				break;
 			case 80: // p; pause
 			case 32: // spacebar
 				self.game.paused = !self.game.paused;
-				break;
-			case 66: // b; cycle through buildings
-				if( self.game.playerFaction.buildings.length > 0 ) {
-					if(self.game.buildingIndex < self.game.playerFaction.buildings.length ) {
-						var selB = self.game.playerFaction.buildings[self.game.buildingIndex++];
-					}
-					else{
-						self.game.buildingIndex = 0;
-						var selB = self.game.playerFaction.buildings[self.game.buildingIndex++];
-					}
-					self.game.selectedUnits.forEach( function(unit) {
-						unit.selected = false;
-					});
-					self.game.selectedUnits = []; // clear selected
-					self.game.selectedBuildings.forEach( function(building) {
-						building.selected = false;
-					});
-					self.game.selectedBuildings = []; // clear selected
-					self.game.selectedBuildings.push(selB); // select unit
-					selB.selected = true;
-				}
-				break;
-			case 86: // v; cycle through villagers
-				if( self.game.playerFaction.units.length > 0 ) {
-					if(self.game.unitIndex < self.game.playerFaction.units.length ) {
-						var su = self.game.playerFaction.units[self.game.unitIndex++];
-					}
-					else{//(self.game.unitIndex > self.game.playerFaction.units.length ) { // loop
-						self.game.unitIndex = 0;
-						var su = self.game.playerFaction.units[self.game.unitIndex++];
-					}
-					self.game.selectedBuildings.forEach( function(building) {
-						building.selected = false;
-					});
-					self.game.selectedBuildings = []; // clear selected
-					self.game.selectedUnits.forEach( function(unit) {
-						unit.selected = false;
-					});
-					self.game.selectedUnits = []; // clear selected
-					self.game.selectedUnits.push(su); // select unit
-					su.selected = true;
-				}
-				break;
-			case 72: // h; home/town center
-				var tc = self.game.playerFaction.buildings[0];
-				globalx = tc.world_x - 0.5*WIDTH;
-				// clamp globalx
-				if( globalx < 0 ) { globalx = 0; }
-				else if( globalx > GLOBAL_WIDTH - WIDTH ) { globalx = GLOBAL_WIDTH - WIDTH; }
-				globaly = tc.world_y - 0.5*HEIGHT;
-				// clamp globaly
-				if( globaly < 0 ) { globaly = 0; }
-				else if( globaly > GLOBAL_HEIGHT - HEIGHT ) { globaly = GLOBAL_HEIGHT - HEIGHT; }
-				break;
-			case 46: // delete
-				if( self.game.selectedUnits.length > 0 ) {
-					self.game.selectedUnits[0].health = 0;
-				} else if ( self.game.selectedBuildings.length > 0 ) {
-					self.game.selectedBuildings[0].health = 0;
-				}
 				break;
 			case 13: // enter; start new game
 				if( !game.started ) {
@@ -143,7 +77,6 @@ Input.prototype = {
 					// reset game
 					game.gameOver = false;
 					game.activePlayers = game.numPlayers;
-					self.game.credits.reset();
 				}
 				break;
 		}
@@ -230,14 +163,36 @@ Input.prototype = {
 		 */
 		if (e.button == 0) {
 			// Perform the clicked action on the first unit in either selected buildings or units
-			if (self.game.gui.isClickOnUi(self.mousex, self.mousey)) {
+			if(self.game.gui.isClickOnUi(self.mousex, self.mousey)) {
 				var actionNum = self.game.gui.getButtonClicked(self.mousex, self.mousey);
 				if(actionNum !== -1) {
 					self.game.performAction(actionNum);
 				}
 			}
-			else
-				self.game.startSelectBox(self.mousex+globalx, self.mousey+globaly);
+			else{
+				if(self.mode == "placement"){
+					for(var i = 0; i < self.game.selectedUnits.length; i++){
+							if(self.game.selectedUnits[i].type== "villager"){
+								self.game.selectedUnits[i].move(self.mousex+globalx,self.mousey+globaly);
+								self.game.selectedUnits[i].mode = "build";
+								
+								//self.game.startSelectBox(self.mousex+globalx, self.mousey+globaly);
+								//console.log(self.game.selectedUnits[i].mode);
+
+								//if(self.game.selectedUnits[i].mode == "idle"){
+									self.game.selectedUnits[i].setbuildingposition(self.mousex+globalx,self.mousey+globaly);
+									//self.game.selectedUnits[i].isinposition();
+
+								//}
+							}
+					}
+					
+				}
+				else if (self.mode == "normal"){
+					self.game.startSelectBox(self.mousex+globalx, self.mousey+globaly);
+					console.log("in normal");
+				}
+			}
 		} else if (e.button == 2) {
 			
 		} else if (e.button == 1) {
@@ -249,25 +204,22 @@ Input.prototype = {
 		var self = this;
 
 		if (e.button == 0) {
+
 			//if(!self.game.gui.isClickOnUi(self.mousex+globalx, self.mousey+globaly))
 			if(self.game.gui.isClickOnUi(self.mousex, self.mousey)) {
 				// do nothing for now
 			}
-			else
-				self.game.endSelectBox(e);
-			if(self.game.phantom != null){
-				self.game.tryToBuild = true;
+			else{
+				if(self.mode == "placement"){
+					self.mode == "normal";
+				}
+				else{
+					self.game.endSelectBox(e);
+				}
+
 			}
 		} else if (e.button == 2) {
-			
-			//If the user right clicks while trying to build a building, they
-			//will stop trying to build a building. Otherwise, move the selected unit.
-			if(self.game.phantom != null){
-				self.game.phantom = null;
-			}
-			else{
-				self.game.unitOrder(this.mousex+globalx, this.mousey+globaly, game.factions[0]);
-			}
+			self.game.unitOrder(this.mousex+globalx, this.mousey+globaly, game.factions[0]);
 		}
 	},
 	

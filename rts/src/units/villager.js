@@ -5,10 +5,9 @@ var Villager = function(x, y, faction, game) {
 	this.game = game;
 
 	this.maxhealth = 60;
-	this.health = this.maxhealth;
+	//this.__proto__ = new Unit(x, y, this.maxhealth, color);
 	
-	this.type = "villager";
-	this.radius = 16;
+	this.radius = 32;
 	this.range = 0;
 	this.borderwidth = 6;
 	this.maxResources = 50;
@@ -17,17 +16,26 @@ var Villager = function(x, y, faction, game) {
 	this.maxvel = 200;
 	// in health per second
 	this.damage = 3;
-	
-	this.Villagerbuildingspeed = 5;
-	//this.buildking
-	
-	this.targetMine;
 
+	//price list
+	this.towncentercost = 200;
+	this.barracks = 100;
+
+	this.mode = 0;
+	this.Villagerbuildingspeed = 20;
+
+	this.building = 0;
+
+	//this.buildking
+	this.type = "villager";
 	this.x = x;
 	this.y = y;
 	this.faction = faction;
 	
-	this.type = "villager";
+	//this.render = VillagerRender;
+	//this.update = VillagerUpdate;
+	//this.getHitbox = VillagerGetHitbox;
+	//this.move = VillagerMove;
 	
 		// ------------------- James wrote this for gui stuff --------------------------
 	// -------It is necessary for gui to work, so make sure all units have it-------
@@ -38,22 +46,28 @@ var Villager = function(x, y, faction, game) {
 	// Declare array of actions here
 	this.actions = [
 		{ 
-			thumbnail:Resource.gui.img.towncenterCommandButton, 
+			thumbnail:Resource.gui.img.villagerCommandButton, 
 			tooltipText:"Sample text to pretend to be a tooltip.", 
-			onClick:this.buildBarracks 
+			onClick:this.buildtowncenter
+		},
+
+		{ 
+			thumbnail:Resource.gui.img.villagerCommandButton, 
+			tooltipText:"Sample text to pretend to be a tooltip.", 
+			onClick:this.buildbarracks
 		},
 		{ 
 			thumbnail:Resource.gui.img.villagerCommandButton, 
 			tooltipText:"Sample text to pretend to be a tooltip.", 
-			onClick:this.buildTowncenter 
+			onClick:this.buildconnector
 		},
 	];
 	// -----------------------------------------------------------------------------
 }
 
-Villager.prototype = new Unit();
+Villager.prototype = new Unit(100,100,this.maxhealth,this.faction);
 
-/*Villager.prototype.render = function(ctx) {
+Villager.prototype.render = function(ctx) {
 	var self = this;
 
 	ctx.save();
@@ -79,38 +93,27 @@ Villager.prototype = new Unit();
 	ctx.rect(self.x-(maxbarlength/2)-globalx, self.y-(barheight/2)-globaly,	barlength, barheight);
 	ctx.fill();
 	ctx.restore();
-}*/
+}
 
 Villager.prototype.update = function(elapsedTime) {
 	var self = this;
 	var secs = elapsedTime / 1000;
-	if (self.mode == "move" || 
-	(self.mode == "goingToMine" && !game.cd.detect(self.targetunit, self)) ||
-	(self.mode == "returningToBase" && !game.cd.detect(self.targetunit, self))) {
-		var deltaxi = self.nextx - self.x;
-		var deltayi = self.nexty - self.y;
-		
+	if (self.mode == "move" || (self.mode == "build" && !self.game.cd.detect(self.building, self))){
+		var deltaxi = self.targetx - self.x;
+		var deltayi = self.targety - self.y;
+
 		// actually move
 		self.x += secs*self.velx;
 		self.y += secs*self.vely;
 		
 		// stop if target has been reached
 		if (self.mode == "move") {
-			var deltaxf = this.nextx - this.x;
-			var deltayf = this.nexty - this.y;
-			if ((deltaxi/deltaxf < 0 || deltayi/deltayf < 0) || (deltaxf == 0 && deltayf == 0)) {
-				this.velx = 0;
-				this.vely = 0;
-				if(this.nextx != this.targetx && this.nexty != this.targety)
-				{
-					this.getNextDest();
-				}
-				else
-				{
-					this.velx = 0;
-					this.vely = 0;
-					this.mode = "idle";
-				}
+			var deltaxf = self.targetx - self.x;
+			var deltayf = self.targety - self.y;
+			if (deltaxi/deltaxf < 0 || deltaxi/deltaxf < 0) {
+				self.velx = 0;
+				self.vely = 0;
+				self.mode = "idle";
 			}
 		}
 	}
@@ -122,12 +125,12 @@ Villager.prototype.update = function(elapsedTime) {
 			self.mode = "idle";
 			self.targetunit = null;
 		}
-		self.mode = "idle";
 	}
 	
-	else if(self.mode == "build" && self.x == self.buildingunit.x + self.radius && self.y == self.buildingunit.y + self.radius){
-		buildingunit.buildingHp += self.Villagerbuildingspeed * secs;
-		if(buildingunit.buildingHp >= buildingunit.health){
+	else if(self.mode == "build"){ 
+		this.building.buildingHp += self.Villagerbuildingspeed * secs;
+		if(this.building.buildingHp >= this.building.health){
+			this.game.factions[0].buildings.push(this.building);
 			self.mode = "idle";	
 		}
 	}
@@ -142,39 +145,6 @@ Villager.prototype.update = function(elapsedTime) {
 			}
 		});
 	}
-	
-	else if (self.mode == "goingToMine" && game.cd.detect(self.targetunit, self))
-	{
-		self.mode = "mining";
-	}
-	
-	/*else if (self.mode == "mining" && self.resources >= self.maxResources)
-	{
-		if (self.resources > self.maxResources) self.resources = self.maxResources;
-		self.mode = "returningToBase";
-		self.targetunit = self.game.factions[0].buildings[0];//todo: check for closest town center
-	}*/
-	
-	else if (self.mode == "returningToBase" && game.cd.detect(self.targetunit, self))
-	{
-		self.resources = 0; //change later
-		self.mode = "goingToMine";
-		self.targetunit = self.targetMine;
-	}
-	
-	else if (self.mode == "mining")
-	{
-		self.resources += elapsedTime;
-		if (self.resources >= MINING_TIMER) 
-		{
-			self.resources = 0;
-			self.targetunit.subtract(MINING_RATE);
-			self.game.factions[self.faction].playerResources.minerals.add(MINING_RATE);
-			if (!self.targetunit.canSubtract(MINING_RATE)) self.mode = "idle";
-		}
-	}
-	
-	else console.log("unhandled case");
 }
 
 Villager.prototype.render = function(context) {
@@ -224,49 +194,88 @@ Villager.prototype.getAttackRange = function() {
 }
 
 Villager.prototype.move = function(x, y) {
-		this.mode = "move";
-		this.getPath(x, y);
-	},
-
-Villager.prototype.buildBarracks = function(villager) {
-	villager.build(new Barracks(0, 0, 0, 0, villager.game));
-}
-
-Villager.prototype.buildTowncenter = function(villager) {
-	villager.build(new Towncenter(0, 0, 0, 0, villager.game));
-}
-
-Villager.prototype.build = function(Building) {
 	var self = this;
 
-	this.game.phantom = new PhantomBuilding(Building.type, this.game);
-
-	self.getPath(Building.x,Building.y); 
-	self.mode = "build";
-	self.buildingunit = Building;
+	self.mode = "move";
+	self.targetx = x;
+	self.targety = y;
 	
+	var deltax = x - self.x;
+	var deltay = y - self.y;
+	
+	self.velx = Math.sqrt((self.maxvel*self.maxvel * deltax*deltax) /
+			(deltax*deltax + deltay*deltay));
+	self.vely = Math.sqrt((self.maxvel*self.maxvel * deltay*deltay) /
+			(deltax*deltax + deltay*deltay));
+	if (self.velx/deltax < 0) {
+		self.velx *= -1;
+	}
+	if (self.vely/deltay < 0) {
+		self.vely *= -1;
+	}
 }
+
+
+Villager.prototype.setbuildingposition = function(x,y){
+	this.building.world_x = x;
+	this.building.world_y = y;
+}
+
+Villager.prototype.buildtowncenter = function(villager){
+	if(game.factions[0].playerResources.minerals.amount >= 200){
+		game.input.mode = "placement";
+		self.mode = "build";
+		villager.building = new Towncenter(0,0,0,0,game);
+		this.building = villager.building;
+		game.factions[0].playerResources.minerals.amount -= 200;
+	}
+	else{
+		console.log("resources is not enough");
+	}
+}
+
+Villager.prototype.buildbarracks = function(villager){
+	if(game.factions[0].playerResources.minerals.amount >= 100){
+		game.input.mode = "placement";
+		self.mode = "build";
+		villager.building = new Barracks(0,0,0,0,game);
+		this.building = villager.building;
+		game.factions[0].playerResources.minerals.amount -= 100;
+	}
+	else{
+		console.log("resources is not enough");
+	}
+}
+
+Villager.prototype.buildconnector = function(villager){
+	if(game.factions[0].playerResources.minerals.amount >= 100){
+		game.input.mode = "placement";
+		self.mode = "build";
+		villager.building = new Connector(0,0,0,0,game);
+		this.building = villager.building;
+		game.factions[0].playerResources.minerals.amount -= 100;
+	}
+	else{
+		console.log("resources is not enough");
+	}
+}
+
 
 Villager.prototype.attack = function(unit) {
 	var self = this;
 
 	// temporarily changes mode to "move"
-	self.getPath(unit.x, unit.y);
+	self.move(unit.x, unit.y);
 	self.mode = "attack";
 	self.targetunit = unit;
-}
-
-Villager.prototype.attackBuilding = function(building) {
-	this.mode = "attack_building";
-	this.targetunit = building;
-	this.getPath(building.x, building.y);
 }
 
 Villager.prototype.startMine = function(mine) {
 	var self = this;
 
-	self.mode = "goingToMine";
-	self.targetunit = mine;
-	self.targetMine = mine;
+	// temporarily changes mode to "move"
+	self.move(unit.x, unit.y);
+	self.mode = "attack";
+	self.targetunit = unit;
 }
 

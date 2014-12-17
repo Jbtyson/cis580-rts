@@ -3,12 +3,14 @@
 // 1. there is an attack on a building or villager
 // 2. the number of soldiers reaches MAX_STRENGTH
 // in case 1, the army runs to defend.
-// after the defense is over, the army returns to the waiting state
+// after the defense is over, the army disbands
+// and the units join another army
 // in case 2, the army attacks until it is dead
 
 var Army = function() {
 	// the mode can be any of:
-	// {action: "attack", target: building}
+	// {action: "defend", targetx: int, targety: int}
+	// {action: "attack", targetbuilding: building}
 	// {action: "wait"}
 	this.mode = {
 		action: "wait"
@@ -21,106 +23,41 @@ var Army = function() {
 Army.prototype = {
 	MAX_STRENGTH: 3,
 	
-	update: function(elapsedTime) {
-		// remove casualties
-		/*
-		for (var i = 0; i < this.units.length; i++) {
-			if (this.units[i].health <= 0) {
-				this.units.splice(i, 1);
-				i--;
-				continue;
-			}
-		}
-		*/
-		
-		// decide new orders
-		if (this.mode.action == "attack") {
-			// check if the building is dead
-			if (this.mode.target.health <= 0) {
-				console.log("target eliminated");
-				this.decideAction();
-			}
-		}
-		if (this.mode.action == "attack") {
-			
-			// temporarily select all army units
-			for (var i = 0; i < this.units.length; i++) {
-				this.units[i].selected = true;
-			}
-			// hard coded faction; probably bad
-			if (this.mode.target.world_x === undefined) {
-				game.unitOrder(this.mode.target.x, this.mode.target.y, game.factions[1]);
-			} else {
-				game.unitOrder(this.mode.target.world_x + 10, this.mode.target.world_y + 10, game.factions[1]);
-			}
-			for (var i = 0; i < this.units.length; i++) {
-				this.units[i].selected = false;
-			}
-		}
-		
-		else if (this.mode.action == "wait") {
-			// check if we need to defend our buildings
-			for (var i = 0; i < game.factions[0].units.length; i++) {
-				if (game.factions[0].units[i].mode == "attack_building") {
-					this.mode = {
-						action: "attack",
-						target:game.factions[0].units[i]
-					};
-				}
-			}
-		}
-	},
-	
-	decideAction: function() {
-		if (this.units.length >= this.MAX_STRENGTH) {
-			this.updateCentroid();
-			var target = this.findTarget();
-			if (target == null) {
-				this.mode = { action: "wait" }
-			} else {
-				this.mode = {
-					action: "attack",
-					target: target
-				}
-				console.log("new target:", target);
-			}
-		} else {
-			this.mode = {
-				action: "wait"
-			}
-		}
-	},
-	
 	addUnit: function(unit) {
 		this.units.push(unit);
-		this.decideAction();
+		if (this.units.length >= this.MAX_STRENGTH) {
+			this.updateCentroid();
+			var targetBuilding = this.findTarget();
+			this.mode = {
+				action: "attack",
+				targetbuilding: targetBuilding
+			}
+		}
 	},
 	
-	// finds the closest enemy building or unit
+	// army is called forth to protect the realm
+	defend: function(x, y) {
+		this.mode = {
+			action: "defend",
+			targetx: x,
+			targety: y
+		};
+	},
+	
+	// finds the closest enemy building
 	findTarget: function() {
 		var least_distance = 0;
-		var target = null;
-		// closest building
+		var target_building = null;
 		for (var i = 0; i < game.factions[0].buildings.length; i++) {
 			var distSqrd = 
-				Math.pow(this.centroidx - game.factions[0].buildings[i].world_x, 2) +
-				Math.pow(this.centroidy - game.factions[0].buildings[i].world_y, 2);
+				Math.pow(this.centroidx - game.factions[0].buildings[i].x, 2) +
+				Math.pow(this.centroidy - game.factions[0].buildings[i].y, 2);
 			if (least_distance == 0 || least_distance > distSqrd) {
 				least_distance = distSqrd;
-				target = game.factions[0].buildings[i];
+				target_building = game.factions[0].buildings[i];
 			}
 		}
-		// closest unit
-		for (var i = 0; i < game.factions[0].units.length; i++) {
-			var distSqrd = 
-				Math.pow(this.centroidx - game.factions[0].units[i].x, 2) +
-				Math.pow(this.centroidy - game.factions[0].units[i].y, 2);
-			if (least_distance == 0 || least_distance > distSqrd) {
-				least_distance = distSqrd;
-				target = game.factions[0].units[i];
-			}
-		}
-		return target;
+		return target_building;
 	},
 	
 	// updates the company centroid

@@ -24,9 +24,6 @@ CollisionDetector.prototype = {
 			}
 		} else if (a.type == "rect") {
 			if (b.type == "circle") {
-				if (q.getAttackRange != undefined) {
-					b = q.getAttackRange();
-				}
 				collision = this.circleRect(b, a);
 			} else if (b.type == "rect") {
 				collision = this.twoRects(a, b);

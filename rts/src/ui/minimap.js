@@ -52,41 +52,7 @@ Minimap.prototype = {
 			faction.buildings.forEach( function(building) { 
 				context.fillStyle = faction.color;
 				context.beginPath();
-				
-				var heightOffset, widthOffset;
-				
-				if(building instanceof Towncenter)
-				{
-					heightOffset = widthOffset = 6.4;
-				}
-				else if (building instanceof Connector)
-				{
-					if(building.orientation == 1) //vertical
-					{
-						heightOffset = 0;
-						widthOffset = 3.2;
-					}
-					else
-					{
-						heightOffset = 3.2;
-						widthOffset = 0;
-					}
-				}
-				else //Barracks
-				{
-					if(building.orientation == 1) //vertical
-					{
-						heightOffset = 0;
-						widthOffset = 3.2;
-					}
-					else 
-					{
-						heightOffset = 3.2;
-						widthOffset = 0;
-					}
-				}
-	
-				context.arc((building.world_x / 10) + widthOffset, (512 + (building.world_y / 10)) + heightOffset, 3, 0, 2*Math.PI);
+				context.arc((building.x / 10) + 6.4, (512 + (building.y / 10)) + 6.4, 3, 0, 2*Math.PI);
 				context.fill();
 			});
 		});

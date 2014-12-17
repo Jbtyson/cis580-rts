@@ -5,7 +5,6 @@ var Tooltip = function(gui) {
 	this.gui = gui;
 	this.dimensions = { width:64, height:32 }
 	this.position = { x:0, y:0 }
-	this.offset = { x:0, y:0 }
 	this.buttonId = -1;
 	this.show = false;
 	this.timer = 0;
@@ -50,7 +49,7 @@ Tooltip.prototype = {
 		if(this.show) {
 			context.save();
 			context.fillStyle = "black";
-			context.fillRect(this.position.x + this.offset.x, this.position.y - this.dimensions.height, this.dimensions.width, this.dimensions.height);
+			context.fillRect(this.position.x, this.position.y - this.dimensions.height, this.dimensions.width, this.dimensions.height);
 			context.fillStyle = "white";
 			this.wrapText(context);
 			context.restore();
@@ -60,11 +59,6 @@ Tooltip.prototype = {
 	updateMousePos: function(mousePosX, mousePosY) {
 		this.position.x = mousePosX;
 		this.position.y = mousePosY;
-		
-		if(this.position.x + this.dimensions.width > WIDTH)
-			this.offset.x = -this.dimensions.width;
-		else
-			this.offset.x = 0;
 	},
 	
 	reset: function() {
@@ -75,7 +69,7 @@ Tooltip.prototype = {
 	
 	wrapText: function(context) {
         var words = this.text.split(" ");
-		var x = this.position.x+this.offset.x+2;
+		var x = this.position.x+2;
 		var y = this.position.y-25;
 		var numLines = 0;
         var line = "";

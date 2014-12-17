@@ -27,6 +27,9 @@ var Building = function(type, orientation, factionIndex, game){
 	this.buildPercent;
 	this.buildTime;
 	this.health = 100;
+	//this is for BUILDING
+	this.buildingHp = 1;
+
 
 	this.gatherPoint = {x:100,y:100};
 	
