@@ -187,7 +187,7 @@ Game.prototype = {
 		self.factions[1].playerResources.supply.add( self.factions[1].units[0].supply );
 		
 		// Add Map mineral Mines
-		self.mapMinerals.push(new MineralMine(64*1,64*3,50000));
+		self.mapMinerals.push(new MineralMine(64*2,64*6,50000));
 		self.mapMinerals.push(new MineralMine(64*18,64*16,50000));
 	},
 	
