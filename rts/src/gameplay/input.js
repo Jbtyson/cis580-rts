@@ -77,11 +77,11 @@ Input.prototype = {
 				break;
 			case 72: // h; home/town center
 				var tc = self.game.playerFaction.buildings[0];
-				globalx = tc.world_x - 0.5*WIDTH; //+ 0.5*tc.width 
+				globalx = tc.world_x - 0.5*WIDTH;
 				// clamp globalx
 				if( globalx < 0 ) { globalx = 0; }
 				else if( globalx > GLOBAL_WIDTH - WIDTH ) { globalx = GLOBAL_WIDTH - WIDTH; }
-				globaly = tc.world_y - 0.5*HEIGHT;//+ 0.5*tc.height
+				globaly = tc.world_y - 0.5*HEIGHT;
 				// clamp globaly
 				if( globaly < 0 ) { globaly = 0; }
 				else if( globaly > GLOBAL_HEIGHT - HEIGHT ) { globaly = GLOBAL_HEIGHT - HEIGHT; }

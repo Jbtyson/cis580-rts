@@ -140,7 +140,8 @@ Infantry.prototype.update = function(elapsedTime) {
 	var secs = elapsedTime / 1000;
 
 	if (self.mode == "move" ||
-			(self.mode == "attack" && !game.cd.detect(self.targetunit, self))) {
+			(self.mode == "attack" && !game.cd.detect(self.targetunit, self)) ||
+			(self.mode == "attack_building" && !game.cd.detect(self.targetunit, self))) {
 		if (self.mode == "attack") {
 			self.targetx = self.targetunit.x;
 			self.targety = self.targetunit.y;
@@ -149,6 +150,15 @@ Infantry.prototype.update = function(elapsedTime) {
 				self.getPath(self.targetunit.x, self.targetunit.y);
 			}
 			self.mode = "attack";
+		}
+		else if (self.mode == "attack_building") {
+			self.targetx = self.targetunit.x;
+			self.targety = self.targetunit.y;
+			if(Math.floor(self.targetx/64) != self.nextNode.x || Math.floor(self.targety/64) != self.nextNode.y)
+			{
+				self.getPath(self.targetunit.x, self.targetunit.y);
+			}
+			self.mode = "attack_building";
 		}
 		var deltaxi = self.nextx - self.x;
 		var deltayi = self.nexty - self.y;
@@ -189,7 +199,8 @@ Infantry.prototype.update = function(elapsedTime) {
 		}
 	}
 	
-	else if (self.mode == "attack" && self.game.cd.detect(self.targetunit, self)) {
+	else if ((self.mode == "attack" && self.game.cd.detect(self.targetunit, self)) ||
+			(self.mode == "attack_building" && self.game.cd.detect(self.targetunit, self))) {
 		self.targetunit.health -= self.damage*secs;
 		//console.log(self.targetunit.health);
 		if (self.targetunit.health <= 0) {
