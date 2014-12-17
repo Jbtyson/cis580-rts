@@ -54,7 +54,6 @@ Minimap.prototype = {
 				context.beginPath();
 				
 				var heightOffset, widthOffset;
-				console.log(building);
 				
 				if(building instanceof Towncenter)
 				{
@@ -78,11 +77,11 @@ Minimap.prototype = {
 					if(building.orientation == 1) //vertical
 					{
 						heightOffset = 0;
-						widthOffset = -3.2;
+						widthOffset = 3.2;
 					}
 					else 
 					{
-						heightOffset = -3.2;
+						heightOffset = 3.2;
 						widthOffset = 0;
 					}
 				}
