@@ -63,6 +63,13 @@ Input.prototype = {
 				game.brain.traverse();
 				break;
 			case 77: // m button; mute
+				var onoff = false;
+				if( self.game.playlist[self.game.currentTrack].muted == false ) {
+					onoff = true;
+				}
+				self.game.playlist.forEach( function(track) {
+					track.muted = onoff;
+				});
 				break;
 			case 80: // p; pause
 			case 32: // spacebar

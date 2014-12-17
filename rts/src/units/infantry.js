@@ -7,7 +7,6 @@ var Infantry = function(x, y, faction, game) {
 	this.game = game;
 	this.maxhealth = 30;
 	this.health = this.maxhealth;
-	//this.__proto__ = new Unit(x, y, this.maxhealth, faction);
 	
 	this.radius = 16;
 	this.borderwidth = 3;
@@ -25,13 +24,7 @@ var Infantry = function(x, y, faction, game) {
 	this.y = y;
 	this.faction = faction;
 	this.type = "infantry";
-	
-	//this.render = Render;
-	//this.update = Update;
-	//this.getHitbox = GetHitbox;
-	//this.getAttackRange = GetAttackRange;
-	//this.move = Move;
-	//this.attack = Attack;
+
 	
 	// ------------------- James wrote this for gui stuff --------------------------
 	// -------It is necessary for gui to work, so make sure all units have it-------
@@ -76,7 +69,7 @@ Infantry.prototype.render = function(context) {
 			context.drawImage(Resource.units.img.unitSelector,
 				this.x - globalx - this.radius, this.y - globaly - this.radius);
 		}
-	},
+}
 /*
 Infantry.prototype.update = function(elapsedTime) {
 	var self = this;
@@ -246,6 +239,12 @@ Infantry.prototype.getAttackRange = function() {
 		y: self.y,
 		radius: self.radius + self.range
 	};
+}
+
+Infantry.prototype.attackBuilding = function(building) {
+	this.mode = "attack_building";
+	this.targetunit = building;
+	this.getPath(building.x, building.y);
 }
 /*
 Infantry.prototype.move = function(x, y) {

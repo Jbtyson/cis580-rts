@@ -423,7 +423,7 @@ Game.prototype = {
 				clearInterval(splashloop);
 				window.requestNextAnimationFrame(
 					function(time) {
-						//self.playlist[self.currentTrack].play();
+						self.playlist[self.currentTrack].play();
 						self.loop.call(self, time);
 					}
 				);
@@ -479,7 +479,7 @@ Game.prototype = {
 		
 			// Check which players are still active
 			self.factions.forEach( function(faction,index,array) {
-				if( faction.buildings.length == 0 && faction.buildings.length == 0 && faction.armies.length = 0) {
+				if( faction.buildings.length == 0 && faction.buildings.length == 0 ) { //&& faction.armies.length == 0) {
 					self.activePlayers--;
 					self.inactivePlayers.push(array.splice(index--,1));
 				}
@@ -493,6 +493,8 @@ Game.prototype = {
 				self.inactivePlayers = [];
 				self.placeLevelObjects();
 				self.credits.active = true;
+				globalx = 0;
+				globaly = 0;
 			}
 		
 		} else if(this.gameOver || !this.started) { // render credits

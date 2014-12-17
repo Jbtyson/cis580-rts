@@ -7,7 +7,7 @@ var Hoplite = function(x, y, faction, game) {
 	this.game = game;
 
 	this.maxhealth = 60;
-	//this.__proto__ = new Unit(x, y, this.maxhealth, color);
+	this.health = this.maxhealth;
 	
 	this.radius = 16;
 	this.borderwidth = 6;
@@ -25,12 +25,7 @@ var Hoplite = function(x, y, faction, game) {
 	this.y = y;
 	this.faction = faction;
 	this.type = "hoplite";
-	
-	//this.render = HopliteRender;
-	//this.update = HopliteUpdate;
-	//this.getHitbox = HopliteGetHitbox;
-	//this.move = HopliteMove;
-	//this.attack = HopliteAttack;
+
 
 	// ------------------- James wrote this for gui stuff --------------------------
 	// -------It is necessary for gui to work, so make sure all units have it-------
@@ -40,7 +35,7 @@ var Hoplite = function(x, y, faction, game) {
 	this.actions = [];
 }
 
-Hoplite.prototype = new Unit(100,100,60,"#000000");
+Hoplite.prototype = new Unit();
 
 Hoplite.prototype.render = function(context) {
 		//draw unit
@@ -64,7 +59,7 @@ Hoplite.prototype.render = function(context) {
 			context.drawImage(Resource.units.img.unitSelector,
 				this.x - globalx - this.radius, this.y - globaly - this.radius);
 		}
-	},
+}
 
 Hoplite.prototype.update = function(elapsedTime) {
 	var self = this;
