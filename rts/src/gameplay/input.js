@@ -209,8 +209,19 @@ Input.prototype = {
 			}
 			else
 				self.game.endSelectBox(e);
+			if(self.game.phantom != null){
+				self.game.tryToBuild = true;
+			}
 		} else if (e.button == 2) {
-			self.game.unitOrder(this.mousex+globalx, this.mousey+globaly, game.factions[0]);
+			
+			//If the user right clicks while trying to build a building, they
+			//will stop trying to build a building. Otherwise, move the selected unit.
+			if(self.game.phantom != null){
+				self.game.phantom = null;
+			}
+			else{
+				self.game.unitOrder(this.mousex+globalx, this.mousey+globaly, game.factions[0]);
+			}
 		}
 	},
 	

@@ -46,10 +46,15 @@ var Villager = function(x, y, faction, game) {
 	// Declare array of actions here
 	this.actions = [
 		{ 
-			thumbnail:Resource.gui.img.villagerCommandButton, 
+			thumbnail:Resource.gui.img.soldierCommandButton, 
+			tooltipText:"Sample text to pretend to be a tooltip.", 
+			onClick:this.buildBarracks 
+		},
+		{ 
+			thumbnail:Resource.gui.img.towncenterCommandButton, 
 			tooltipText:"Sample text to pretend to be a tooltip.", 
 			onClick:this.buildtowncenter
-		},
+		}
 	];
 	// -----------------------------------------------------------------------------
 }
@@ -213,7 +218,6 @@ Villager.prototype.move = function(x, y) {
 	}
 }*/
 
-
 Villager.prototype.setbuildingposition = function(x,y){
 
 	this.building.world_x = x;
@@ -223,11 +227,22 @@ Villager.prototype.setbuildingposition = function(x,y){
 	//}
 }
 
-Villager.prototype.buildtowncenter = function(villager) {
-	game.input.mode = "placement";
+Villager.prototype.buildBarracks = function(villager) {
+	villager.build(new Barracks(0, 0, 0, 0, villager.game));
+}
+
+Villager.prototype.buildTowncenter = function(villager) {
+	villager.build(new Towncenter(0, 0, 0, 0, villager.game));
+}
+
+Villager.prototype.build = function(Building) {
+	var self = this;
+
+	this.game.phantom = new PhantomBuilding(Building.type, this.game);
+
+	self.move(Building.x,Building.y); 
 	self.mode = "build";
-	villager.building = new Towncenter(0,0,0,0,game);
-	this.building = villager.building;
+	self.buildingunit = Building;
 }
 
 /*Villager.prototype.build = function(Building) {

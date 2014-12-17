@@ -34,6 +34,10 @@ var Game = function (canvasId) {
 	this.backBufferContext = this.backBuffer.getContext('2d');
 	
 	this.input = new Input(this.screen, window, myself);
+
+	// Variables need to build buildings.
+	this.phantom = null;
+	this.tryToBuild = false;
 	
 	// Necessary for gui making - James
 	this.selectedUnits = [];
@@ -122,6 +126,11 @@ Game.prototype = {
 			this.sb.x = this.sb.x + globalxchange;
 		}
 		
+		// update Mineral Mines
+		self.mapMinerals.forEach( function(mineralMine) {
+			mineralMine.update(elapsedTime);
+		});
+		
 		// update units
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
@@ -141,6 +150,9 @@ Game.prototype = {
 			  faction.buildings[i].update(elapsedTime);
 			}
 		});
+
+		//If there is a phantom building, update it.
+		if(this.phantom != null) this.phantom.update(elapsedTime);
 		
 		// update AI
 		self.brain.update(elapsedTime);
@@ -187,7 +199,8 @@ Game.prototype = {
 		self.factions[1].playerResources.supply.add( self.factions[1].units[0].supply );
 		
 		// Add Map mineral Mines
-		self.mapMinerals.push(new MineralMine(64*1,64*3,50000));
+
+		self.mapMinerals.push(new MineralMine(64*2,64*7,50000));
 		self.mapMinerals.push(new MineralMine(64*18,64*16,50000));
 	},
 	
@@ -373,6 +386,9 @@ Game.prototype = {
 		if (self.sb != null) {
 			self.sb.render(self.backBufferContext);
 		}
+
+		//If there is a phantom building, render it.
+		if(this.phantom != null) this.phantom.render(self.backBufferContext);
 		
 		// Render the GUI
 		self.gui.render(self.backBufferContext);

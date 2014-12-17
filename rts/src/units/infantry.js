@@ -4,7 +4,7 @@
 UNIT_SPRITE_DATA = [ {x:0, y: 0, width: 32, height: 32, animationFrames: 12} ];
 
 var Infantry = function(x, y, faction, game) {
-	
+	this.game = game;
 	this.maxhealth = 30;
 	this.health = this.maxhealth;
 	//this.__proto__ = new Unit(x, y, this.maxhealth, faction);
@@ -201,20 +201,20 @@ Infantry.prototype.update = function(elapsedTime) {
 			this.animationTime += elapsedTime;
 			this.animationFrame = 0;
 		}
-		
-		else if (this.mode == "idle") {
-			game.factions.forEach( function(faction) {
+	
+		else if (self.mode == "idle") {
+			self.game.factions.forEach( function(faction) {
 				for (var i = 0; i <  faction.units.length; i++) {
 					var otherUnit = {
-						getHitbox: function()
-						{
-							return faction.units[i].getHitbox();
-						},
-						getAttackRange: function()
-						{
-							return faction.units[i].getHitbox();
+							getHitbox: function()
+							{
+								return faction.units[i].getHitbox();
+							},
+							getAttackRange: function()
+							{
+								return faction.units[i].getHitbox();
+							}
 						}
-					}
 					if (faction.units[i].faction != self.faction &&
 							game.cd.detect(self, faction.units[i])) {
 						self.attack(faction.units[i]);
