@@ -1,6 +1,5 @@
 // Max Erdwien
 // Screen Size
-//Ryan Woodburn: replaced hoplites with infantry, changed cd.detect method call in UnitOrder
 var WIDTH = 640;
 var HEIGHT = 640;
 
@@ -306,10 +305,13 @@ Game.prototype = {
 		// check if the click was on a mineral patch
 		self.mapMinerals.forEach (function(mineral, index) {
 			if (self.cd.detect(mineral, mousebox)) {
+				console.log("mine selected");
 				for (var i = 0; i < game.factions.length; i++) {
 					for (var j = 0; j < game.factions[i].units.length; j++) {
+					console.log("got here");
 						if (game.factions[i].units[j].selected &&
 							game.factions[i].units[j].type == "villager") {
+							console.log("mining");
 							game.factions[i].units[j].startMine(mineral);
 						}
 					}
