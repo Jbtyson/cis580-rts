@@ -44,6 +44,7 @@ var Game = function (canvasId) {
 	this.numPlayers = 2;
 	this.factionColors = ["#FF0000","#0000FF"];
 	this.activePlayers = this.numPlayers;
+	this.inactivePlayers = [];
 	
 	this.credits = new Credits();
 
@@ -452,7 +453,7 @@ Game.prototype = {
 		// happening
 		this.elapsedTime = Math.min(this.elapsedTime, 4 * TIME_STEP);
 		
-		if(!self.gameOver) {
+		if(!self.gameOver && !self.paused) {
 			// We want a fixed game loop of 1/60th a second, so if necessary run multiple
 			// updates during each rendering pass
 			// Invariant: We have unprocessed time in excess of TIME_STEP
@@ -477,17 +478,19 @@ Game.prototype = {
 			self.render(this.elapsedTime);
 		
 			// Check which players are still active
-			self.factions.forEach( function(faction) {
-				if( faction.buildings.length == 0 ) {//&& faction.buildings.length == 0 ) { // enable once buildings can be attacked
+			self.factions.forEach( function(faction,index,array) {
+				if( faction.buildings.length == 0 && faction.buildings.length == 0 && faction.armies.length = 0) {
 					self.activePlayers--;
+					self.inactivePlayers.push(array.splice(index--,1));
 				}
 			});
 		
-			// ***TODO:Check victory conditions
-			if( self.activePlayers == 0 ) {
+			// Check victory conditions
+			if( self.activePlayers == 1 ) {
 				self.gameOver = true;
 				self.started = false;
 				self.factions = [];
+				self.inactivePlayers = [];
 				self.placeLevelObjects();
 				self.credits.active = true;
 			}
@@ -507,6 +510,12 @@ Game.prototype = {
 			 setTimeout( function () {
 					window.requestNextAnimationFrame(
 						 function (time) {
+								self.screenContext.fillStyle = "#000000";
+								self.screenContext.fillRect(0,0,WIDTH,HEIGHT);
+								self.screenContext.font = "30px Arial";
+								self.screenContext.fillStyle = "#FFFFFF";
+								self.screenContext.fillText("Paused",0.5*WIDTH-30,0.5*HEIGHT);
+								self.screenContext.fillText("Press [space] to resume",0.5*WIDTH-140,0.5*HEIGHT+50);
 								self.loop.call(self, time);
 						 });
 			 }, 200);
