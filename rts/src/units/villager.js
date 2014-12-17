@@ -7,7 +7,7 @@ var Villager = function(x, y, faction, game) {
 	this.maxhealth = 60;
 	this.health = this.maxhealth;
 	
-	this.radius = 32;
+	this.radius = 16;
 	this.range = 0;
 	this.borderwidth = 6;
 	this.maxResources = 50;
@@ -50,7 +50,7 @@ var Villager = function(x, y, faction, game) {
 
 Villager.prototype = new Unit();
 
-Villager.prototype.render = function(ctx) {
+/*Villager.prototype.render = function(ctx) {
 	var self = this;
 
 	ctx.save();
@@ -76,7 +76,7 @@ Villager.prototype.render = function(ctx) {
 	ctx.rect(self.x-(maxbarlength/2)-globalx, self.y-(barheight/2)-globaly,	barlength, barheight);
 	ctx.fill();
 	ctx.restore();
-}
+}*/
 
 Villager.prototype.update = function(elapsedTime) {
 	var self = this;
