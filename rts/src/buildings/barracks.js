@@ -1,26 +1,24 @@
-var Barracks = function(x,y,health,faction) {
-	this.x = x;
-	this.y = y;
-	this.health = health;
-	this.faction = faction;
-	
-	this.width = 64;
-	this.height = 64;
+var Barracks = function(x,y,orientation,faction) {
+	this.world_x = x;
+	this.world_y = y;
+	this.factionIndex = faction;
+	this.orientation = orientation;
+
+	this.actions = [{thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.buildVillager},
+					{thumbnail:Resource.gui.img.hopliteCommandButton, onClick:this.buildHoplite},
+					{thumbnail:Resource.gui.img.infantryCommandButton, onClick:this.buildInfantry}];
 }
 
-Barracks.prototype = new Building();
+Barracks.prototype = new Building(2, this.orientation, this.factionIndex, this.game);
 
-Barracks.prototype.render = function(context) {
-	var self = this;
-	
-	context.save();
-	
-	context.fillStyle = self.color;
-	context.fillRect(self.x-globalx,self.y-globaly,self.height,self.width);
-	
-	context.restore();
-}
 
-Barracks.prototype.update = function() {
+Barracks.prototype.update = function(elapsedTime) {
 
+	this.animationTime += elapsedTime;
+
+	//Move the animation frame.
+	if(this.animationTime >= 50){
+		this.animationTime = 0;
+		this.animationFrame = (this.animationFrame + 1) % BUILDING_SPRITE_DATA[this.type].animationFrames;
+	}
 }

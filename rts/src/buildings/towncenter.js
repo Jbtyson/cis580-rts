@@ -1,54 +1,38 @@
-var Towncenter = function(x, y, health, factionIndex, game) {
-	this.x = x;
-	this.y = y;
-	this.health = health;
-	
+var Towncenter = function(x, y, orientation, factionIndex, game) {
 	this.game = game;
 	
 	this.factionIndex = factionIndex;
 	this.faction = game.factions[this.factionIndex];
-	
-	this.width = 128;
-	this.height = 128;
-	
-	this.borderwidth = 6;
-	
+
 	this.world_x = x;
 	this.world_y = y;
 
+	this.orientation = orientation;
+
 	this.unitQueue = [];
 	this.unitTypeQueue = [];
+	this.unitBuildPositionIndex = 0;
 	
-	this.actions = [{thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.buildVillager},
-					{thumbnail:Resource.gui.img.hopliteCommandButton, onClick:this.buildHoplite},
-					{thumbnail:Resource.gui.img.infantryCommandButton, onClick:this.buildInfantry}];
+
+	// ------------------- James wrote this for gui stuff --------------------------
+	// -------It is necessary for gui to work, so make sure all units have it-------
+	// Building icon for the bottom bar
+	this.thumbnail = Resource.gui.img.villagerCommandButton;
+	// Declare action functions here
+	this.testAction = function() {
+		console.log("test action performed");
+	};
+	// Declare array of actions here
+	this.actions = [
+		{thumbnail:Resource.gui.img.villagerCommandButton, tooltipText: "Build a villager", onClick:this.buildVillager},
+		{thumbnail:Resource.gui.img.hopliteCommandButton, tooltipText: "Build a hoplite", onClick:this.buildHoplite},
+		{thumbnail:Resource.gui.img.infantryCommandButton, tooltipText: "Build an infantry unit", onClick:this.buildInfantry}
+	];
+	// -----------------------------------------------------------------------------
 }
 
-Towncenter.prototype = new Building(0, this.factionIndex, this.game);
+Towncenter.prototype = new Building(0, this.orientation, this.factionIndex, this.game);
 
-/*Towncenter.prototype.render = function(context) {
-	var self = this;
-	
-	context.save();
-	
-	if (self.selected) {
-		context.strokeStyle = "#00FF00";
-	} else {
-		context.strokeStyle = "#000000";
-	}
-	context.lineWidth = self.borderwidth;
-	
-	//translate to center of bldg
-	context.translate(-0.5*self.width,-0.5*self.height);
-	
-	context.fillStyle = self.color;
-	context.fillRect(self.x-globalx,self.y-globaly,self.height,self.width);
-	context.strokeRect(self.x-globalx,self.y-globaly,self.height,self.width);
-	
-	context.restore();
-	
-	context.restore();
-}*/
 
 Towncenter.prototype.update = function(elapsedTime) {
 
@@ -67,22 +51,51 @@ Towncenter.prototype.update = function(elapsedTime) {
 		this.buildPercent = this.unitQueue[0] / 2500;
 
 		if(this.unitQueue[0] <= 0){
+
+			var buildPosition_x;
+			var buildPosition_y;
+
+			switch(this.unitBuildPositionIndex){
+				case 0:
+					buildPosition_x = this.world_x + 32;
+					buildPosition_y = this.world_y + 96;
+					break;
+				case 1:
+					buildPosition_x = this.world_x + 96;
+					buildPosition_y = this.world_y + 96;
+					break;
+				case 2:
+					buildPosition_x = this.world_x + 96;
+					buildPosition_y = this.world_y + 32;
+					break;
+				case 3:
+					buildPosition_x = this.world_x + 32;
+					buildPosition_y = this.world_y + 32;
+					break;
+				default:
+					console.log("error; invalid buildPositionIndex");
+					return;
+
+			}
+
 			this.unitQueue.shift();
 			var unitType = this.unitTypeQueue.shift();
 			switch (unitType) {
 				case "villager":
-					this.faction.units.push(new Villager(this.world_x + 64, this.world_y + 128, this.factionIndex, this.game));
+					this.faction.units.push(new Villager(buildPosition_x, buildPosition_y, this.factionIndex, this.game));
 					break;
 				case "hoplite":
-					this.faction.units.push(new Hoplite(this.world_x + 64, this.world_y + 128, this.factionIndex, this.game));
+					this.faction.units.push(new Hoplite(buildPosition_x, buildPosition_y, this.factionIndex, this.game));
 					break;
 				case "infantry":
-					this.faction.units.push(new Infantry(this.world_x + 64, this.world_y + 128, this.factionIndex, this.game));
+					this.faction.units.push(new Infantry(buildPosition_x, buildPosition_y, this.factionIndex, this.game));
 					break;
 				default:
 					console.log("error; invalid unit");
 					return;
 			}
+
+			this.unitBuildPositionIndex = (this.unitBuildPositionIndex + 1) % 4;
 			
 		}
 	} else {
@@ -149,18 +162,4 @@ Towncenter.prototype.buildInfantry = function(building){
 	building.isBuilding = true;
 	building.unitTypeQueue.push("infantry");
 
-}
-
-
-
-Towncenter.prototype.getHitbox = function() { // Update to square hitbox
-	var self = this;
-
-	return {
-		type: "rect",
-		x:self.x,
-		y:self.y,
-		h:this.height,
-		w:this.width,
-	};
 }
