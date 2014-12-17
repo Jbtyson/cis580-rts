@@ -383,18 +383,16 @@ Game.prototype = {
 		}
 		// make the building with the lowest unitQueue perform the action
 		else if(this.selectedBuildings.length > 0) {
-			var type = typeof(this.selectedBuildings[0]);
+			var type = this.selectedBuildings[0].type;
 			var lowestIndex = 0;
 			var lowest = this.selectedBuildings[0].unitQueue.length;
 			this.selectedBuildings.forEach(function(building, index) {
-				console.log(building instanceof selectedBuildings[0]);
-				console.log(typeof(building));
-				if(type === typeof(building) && building.unitQueue.length < lowest) {
+				if(type === building.type && building.unitQueue.length < lowest) {
 					lowestIndex = index;
 					lowest = building.unitQueue.length;
 				}
 			});
-		this.selectedBuildings[lowestIndex].actions[actionNum].onClick(this.selectedBuildings[lowestIndex]);
+			this.selectedBuildings[lowestIndex].actions[actionNum].onClick(this.selectedBuildings[lowestIndex]);
 		}
 	},
 	

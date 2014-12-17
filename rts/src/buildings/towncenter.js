@@ -13,8 +13,7 @@ var Towncenter = function(x, y, orientation, factionIndex, game) {
 
 	this.unitQueue = [];
 	this.unitTypeQueue = [];
-	this.unitBuildPositionIndex = 0;
-	
+	this.unitBuildPositionIndex = 0;	
 
 	// ------------------- James wrote this for gui stuff --------------------------
 	// -------It is necessary for gui to work, so make sure all units have it-------
