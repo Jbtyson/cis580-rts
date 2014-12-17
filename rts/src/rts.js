@@ -343,6 +343,7 @@ Game.prototype = {
 			this.selectedUnits.forEach(function(unit) {
 				if(type === typeof(unit))
 					if(typeof(unit.actions[actionNum]) !== "undefined")
+					console.log(actionNum);
 						unit.actions[actionNum].onClick(unit);
 			});
 		}

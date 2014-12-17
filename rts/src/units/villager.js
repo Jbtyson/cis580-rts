@@ -46,7 +46,7 @@ var Villager = function(x, y, faction, game) {
 	// Declare array of actions here
 	this.actions = [
 		{ 
-			thumbnail:Resource.gui.img.soldierCommandButton, 
+			thumbnail:Resource.gui.img.infantryCommandButton, 
 			tooltipText:"Sample text to pretend to be a tooltip.", 
 			onClick:this.buildBarracks 
 		},
@@ -242,7 +242,7 @@ Villager.prototype.build = function(Building) {
 
 	self.move(Building.x,Building.y); 
 	self.mode = "build";
-	self.buildingunit = Building;
+	self.building = Building;
 }
 
 /*Villager.prototype.build = function(Building) {
@@ -264,8 +264,8 @@ Villager.prototype.startMine = function(mine) {
 	var self = this;
 
 	// temporarily changes mode to "move"
-	self.move(unit.x, unit.y);
+	self.move(mine.x, mine.y);
 	self.mode = "attack";
-	self.targetunit = unit;
+	self.targetunit = mine;
 }
 
