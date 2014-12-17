@@ -83,13 +83,6 @@ Unit.prototype = {
 		var self = this;
 		var secs = elapsedTime / 1000;
 		
-		this.animationTime += elapsedTime;
-
-		if (this.animationTime >= 50) {
-			this.animationTime = 0;
-			this.animationFrame = (this.animationFrame + 1) % UNIT_SPRITE_DATA[0].animationFrames;
-		}
-		
 		if (this.mode == "move" ||
 				(this.mode == "attack" && !game.cd.detect(this.targetunit, this))) {
 			if (this.mode == "attack") {
@@ -161,6 +154,8 @@ Unit.prototype = {
 					}
 				}
 			});
+			this.animationTime += elapsedTime;
+			this.animationFrame = 0;
 		}
 },
 getHitbox: function() {

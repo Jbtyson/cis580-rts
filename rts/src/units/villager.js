@@ -17,19 +17,43 @@ var Villager = function(x, y, faction, game) {
 	// in health per second
 	this.damage = 3;
 	
-	this.Villagerbuildingspeed = 1.0;
-	
+	this.Villagerbuildingspeed = 5;
+	//this.buildking
+
 	this.x = x;
 	this.y = y;
 	this.faction = faction;
-	this.type = "villager";
-	
-	this.thumbnail = Resource.gui.img.villagerCommandButton;
 	
 	//this.render = VillagerRender;
 	//this.update = VillagerUpdate;
 	//this.getHitbox = VillagerGetHitbox;
 	//this.move = VillagerMove;
+	
+		// ------------------- James wrote this for gui stuff --------------------------
+	// -------It is necessary for gui to work, so make sure all units have it-------
+	// Unit icon for the unit bar
+	this.thumbnail = Resource.gui.img.villagerCommandButton;
+	// Declare action functions here
+	this.buildTowncenter = function() {
+		build(new Barracks());
+	};
+	this.buildTowncenter = function() {
+		build(new Towncenter());
+	};
+	// Declare array of actions here
+	this.actions = [
+		{ 
+			thumbnail:Resource.gui.img.towncenterCommandButton, 
+			tooltipText:"Sample text to pretend to be a tooltip.", 
+			onClick:this.buildTowncenter 
+		},
+		{ 
+			thumbnail:Resource.gui.img.villagerCommandButton, 
+			tooltipText:"Sample text to pretend to be a tooltip.", 
+			onClick:this.buildTowncenter 
+		},
+	];
+	// -----------------------------------------------------------------------------
 }
 
 Villager.prototype = new Unit(100,100,this.maxhealth,this.faction);
@@ -61,7 +85,7 @@ Villager.prototype.render = function(ctx) {
 	ctx.fill();
 	ctx.restore();
 }
-/*
+
 Villager.prototype.update = function(elapsedTime) {
 	var self = this;
 
@@ -85,7 +109,7 @@ Villager.prototype.update = function(elapsedTime) {
 			}
 		}
 	}
-	
+
 	else if (self.mode == "attack" && self.game.cd.detect(self.targetunit, self)) {
 		self.targetunit.health -= self.damage*secs;
 		//console.log(self.targetunit.health);
@@ -95,7 +119,14 @@ Villager.prototype.update = function(elapsedTime) {
 		}
 	}
 	
-	else if (self.mode == "idle") {
+	else if(self.mode == "build" && self.x == self.buildingunit.x + self.radius && self.y == self.buildingunit.y + self.radius){
+		buildingunit.buildingHp += self.Villagerbuildingspeed * secs;
+		if(buildingunit.buildingHp >= buildingunit.health){
+			self.mode = "idle";	
+		}
+	}
+
+	else if (self.mode == "idle" || self.mode == "build") {
 		self.game.factions.forEach( function(faction) {
 			for (var i = 0; i <  faction.units.length; i++) {
 				if (faction.units[i].color != self.color &&
@@ -106,6 +137,30 @@ Villager.prototype.update = function(elapsedTime) {
 		});
 	}
 }
+
+Villager.prototype.render = function(context) {
+		//draw unit
+		context.drawImage(Resource.units.img.villager[this.faction],
+			UNIT_SPRITE_DATA[0].x + UNIT_SPRITE_DATA[0].width * this.animationFrame, UNIT_SPRITE_DATA[0].y,
+			UNIT_SPRITE_DATA[0].width, UNIT_SPRITE_DATA[0].height,
+			this.x - globalx - this.radius, this.y - globaly - this.radius,
+			UNIT_SPRITE_DATA[0].width, UNIT_SPRITE_DATA[0].height);
+			
+		// draw health bar
+		var maxbarlength = this.radius*2;
+		var barheight = 4;
+		var barlength = maxbarlength * (this.health/this.maxhealth);
+		context.fillStyle = "#00FF00";
+		context.beginPath();
+		context.rect(this.x -(maxbarlength/2)-globalx, this.y - this.radius/2 - (barheight/2)-globaly,	barlength, barheight);
+		context.fill();
+		context.restore();
+		
+		if(this.selected) {
+			context.drawImage(Resource.units.img.unitSelector,
+				this.x - globalx - this.radius, this.y - globaly - this.radius);
+		}
+	},
 
 Villager.prototype.getHitbox = function() {
 	var self = this;
@@ -151,33 +206,12 @@ Villager.prototype.move = function(x, y) {
 	}
 }
 
-Villager.prototype.build = function(bx,by,BuildingHp,resource,elapsedTime) {
+Villager.prototype.build = function(Building) {
 	var self = this;
-
-	var secs = elapsedTime / 1000;
-	var buildHp = 0;
-	//check resource
-
-	//read in xy position, move to xy position
-	self.move(bx,by); // was villagerMove(bx,by)
-	
-	//buiding start && villegar stay in position
-	while(self.mode == "idle" && self.x ==bx && self.y==by && buildHP != self.BuildingHp){
-		buildHp = self.Villagerbuildingspeed * secs;
-	}
-	//outer the while loop building is stoped, out reason check
-	
-	//villegar have been moved
-	if(self.mode != "idle" || self.x !=bx || self.y != by && buildHP < self.BuildingHp){
-			//store the buildingHp on the x,y position.
-	}
-	//Building complete
-	else if(buildHp==self.BuildingHp){
-		//render Building
-	}
-	else{
-		console.log("Unknow reason for Building stoped");
-	}
+	self.move(Building.x,Building.y); 
+	self.mode = "build";
+	self.buildingunit = Building;
+	this.game.factions[0].buildings.push(Building);
 }
 
 Villager.prototype.attack = function(unit) {
@@ -188,12 +222,12 @@ Villager.prototype.attack = function(unit) {
 	self.mode = "attack";
 	self.targetunit = unit;
 }
-*/
+
 Villager.prototype.startMine = function(mine) {
 	var self = this;
 
 	// temporarily changes mode to "move"
-	//self.move(unit.x, unit.y);
+	self.move(unit.x, unit.y);
 	self.mode = "attack";
 	self.targetunit = unit;
 }

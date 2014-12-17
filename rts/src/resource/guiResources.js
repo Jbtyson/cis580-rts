@@ -2,11 +2,12 @@
 // James Tyson
 //----------------------------------
 GuiResources = function() {
-	this.loading = 10;
+	this.loading = 11;
 	
 	this.img = {
 		// Minimap
 		minimap: new Image(),
+		minimap_map: new Image(),
 		
 		// Unit Panel
 		unitPanel: new Image(),
@@ -43,6 +44,8 @@ GuiResources.prototype = {
 		// Minimap
 		this.img.minimap.onload = onload;
 		this.img.minimap.src = "img/ui/minimap.png";
+		this.img.minimap_map.onload = onload;
+		this.img.minimap_map.src = "img/ui/rts_minimap.png";
 		// Unit Panel
 		this.img.unitPanel.onload = onload;
 		this.img.unitPanel.src = "img/ui/unitPanel.png";
@@ -67,13 +70,13 @@ GuiResources.prototype = {
 		this.img.villagerCommandButton.src = "img/ui/villagerCommandButton.png";
 		
 		this.img.hopliteCommandButton.onload = onload;
-		this.img.hopliteCommandButton.src = "img/ui/villagerCommandButton.png";
+		this.img.hopliteCommandButton.src = "img/ui/hopliteCommandButton.png";
 		
 		this.img.infantryCommandButton.onload = onload;
-		this.img.infantryCommandButton.src = "img/ui/villagerCommandButton.png";
+		this.img.infantryCommandButton.src = "img/ui/infantryCommandButton.png";
 		
 		this.img.towncenterCommandButton.onload = onload;
-		this.img.towncenterCommandButton.src = "img/ui/towncenterCommandButton.png";
+		this.img.towncenterCommandButton.src = "img/ui/townCenterIcon.png";
 	
 		// this.sfx.audio.onload = this.onload;
 		// this.sfx.audio.src = "gjr.wav";

@@ -7,6 +7,9 @@ var HEIGHT = 640;
 var GLOBAL_WIDTH = 1280;
 var GLOBAL_HEIGHT = 1280;
 
+// Required to make a dynamic minimap - Alex L.
+var MINIMAP_TILES = [];
+
 // Fixed time step of 1/60th a second
 var TIME_STEP = 1000/60;
 
@@ -158,12 +161,17 @@ Game.prototype = {
 		for(var i = 0; i < self.numPlayers; i++) { // create players and assign colors
 			self.factions.push(new Faction(self.factionColors[i]));
 		}
-		
 		// create towncenter for each team	
 		self.factions[0].buildings.push(new Towncenter(64*3, 64*3, 0, 0, self));
 		self.factions[0].buildings.push(new Connector(64*5, 32*7, 0, 0, self));
-		self.factions[0].buildings.push(new Barracks(32*9, 32*10, 1, 0, self));
+		self.factions[0].buildings.push(new Barracks(32*7, 32*10, 1, 0, self));
 		self.factions[1].buildings.push(new Towncenter(64*15, 64*15, 0, 1, self));
+		
+		// start with villager and add required supply
+		self.factions[0].units.push(new Infantry(64*3+32, 64*6+32, 0, self));
+		self.factions[0].playerResources.supply.add( self.factions[0].units[0].supply );
+		self.factions[1].units.push(new Infantry(64*15+32, 64*18+32, 1, self));
+		self.factions[1].playerResources.supply.add( self.factions[1].units[0].supply );
 		
 		self.playerFaction = self.factions[0]; // self
 		this.brain = new Brain(self.factions[1]);
@@ -175,8 +183,8 @@ Game.prototype = {
 		globaly = tc.y + 0.5*tc.height - 0.5*HEIGHT;
 		*/
 		// temporary; I just want to keep an eye on the AI
-		globalx = 64*10;
-		globaly = 64*10;
+		//globalx = 64*10;
+		//globaly = 64*10;
 		
 		// start with villager and add required supply
 		self.factions[0].units.push(new Villager(64*2,64*3,0,self));
@@ -195,10 +203,11 @@ Game.prototype = {
 	
 	endSelectBox: function(e) {
 		var self = this;
-	
-		// Clear the selected units (James)
-		self.selectedUnits = [];
-		self.selectedBuildings = [];
+		
+		if (!e.ctrlKey && !e.shiftKey) {
+			self.selectedUnits = [];
+			self.selectedBuildings = [];		
+		}
 		
 		for (var i = 0; i < this.playerFaction.units.length; i++) {
 			if (!e.ctrlKey && !e.shiftKey) {
@@ -207,7 +216,6 @@ Game.prototype = {
 			if (self.cd.detect(self.sb, this.playerFaction.units[i])) {
 				this.playerFaction.units[i].selected = true;
 				console.log(this.playerFaction.units[i]);
-				// Add the selected unit into the array of selected units (James)
 				self.selectedUnits.push(this.playerFaction.units[i]);
 			}
 		}
@@ -335,7 +343,33 @@ Game.prototype = {
 			this.selectedBuildings = [];
 			// Reselect and add selectd building
 			building.selected = true;
-			this.selectedBuildings.push(unit);
+			this.selectedBuildings.push(building);
+		}
+	},
+	
+	// Performs an action after based on the click input from the ui
+	performAction: function(actionNum) {
+		// make all units of the original type perform the action
+		if(this.selectedUnits.length > 0) {
+			var type = typeof(this.selectedUnits[0]);
+			this.selectedUnits.forEach(function(unit) {
+				if(type === typeof(unit))
+					if(typeof(unit.actions[actionNum]) !== "undefined")
+						unit.actions[actionNum].onClick(unit);
+			});
+		}
+		// make the building with the lowest unitQueue perform the action
+		else if(this.selectedBuildings.length > 0) {
+			var type = typeof(this.selectedBuildings[0]);
+			var lowestIndex = 0;
+			var lowest = this.selectedBuildings[0].unitQueue.length;
+			this.selectedBuildings.forEach(function(building, index) {
+				if(building.unitQueue.length < lowest && type === typeof(building)) {
+					lowestIndex = index;
+					lowest = building.unitQueue.length;
+				}
+			});
+		this.selectedBuildings[lowestIndex].actions[actionNum].onClick(this.selectedBuildings[lowestIndex]);
 		}
 	},
 	
@@ -394,13 +428,6 @@ Game.prototype = {
 				);
 			}
 		},200);
-		
-		/*window.requestNextAnimationFrame(
-			function(time) {
-				self.started = true;
-				self.loop.call(self, time);
-			}
-		);*/
 
 	},
 	
@@ -451,7 +478,7 @@ Game.prototype = {
 		
 			// Check which players are still active
 			self.factions.forEach( function(faction) {
-				if( faction.units.length == 0 ) {//&& faction.buildings.length == 0 ) { // enable once buildings can be attacked
+				if( faction.buildings.length == 0 ) {//&& faction.buildings.length == 0 ) { // enable once buildings can be attacked
 					self.activePlayers--;
 				}
 			});
