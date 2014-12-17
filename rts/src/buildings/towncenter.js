@@ -3,6 +3,8 @@ var Towncenter = function(x, y, orientation, factionIndex, game) {
 	
 	this.factionIndex = factionIndex;
 	this.faction = game.factions[this.factionIndex];
+	
+	this.unitbuildtime = 500;
 
 	this.world_x = x;
 	this.world_y = y;
@@ -39,38 +41,39 @@ Towncenter.prototype.update = function(elapsedTime) {
 	this.animationTime += elapsedTime;
 
 	//Move the animation frame.
-	if(this.animationTime >= 50){
+	if (this.animationTime >= 50) {
 		this.animationTime = 0;
-		this.animationFrame = (this.animationFrame + 1) % BUILDING_SPRITE_DATA[this.type].animationFrames;
+		this.animationFrame = (this.animationFrame + 1)
+			% BUILDING_SPRITE_DATA[this.type].animationFrames;
 	}
 
 	//Check if the Towncenter is building a unit.
-	if(this.unitQueue.length > 0){
+	if (this.unitQueue.length > 0) {
 		this.unitQueue[0] -= elapsedTime;
 
-		this.buildPercent = this.unitQueue[0] / 2500;
+		this.buildPercent = this.unitQueue[0] / this.unitbuildtime;
 
-		if(this.unitQueue[0] <= 0){
+		if (this.unitQueue[0] <= 0) {
 
 			var buildPosition_x;
 			var buildPosition_y;
 
 			switch(this.unitBuildPositionIndex){
 				case 0:
-					buildPosition_x = this.world_x + 32;
-					buildPosition_y = this.world_y + 96;
+					buildPosition_x = this.world_x - 16;
+					buildPosition_y = this.world_y - 16;
 					break;
 				case 1:
-					buildPosition_x = this.world_x + 96;
-					buildPosition_y = this.world_y + 96;
+					buildPosition_x = this.world_x + 144;
+					buildPosition_y = this.world_y + 144;
 					break;
 				case 2:
-					buildPosition_x = this.world_x + 96;
-					buildPosition_y = this.world_y + 32;
+					buildPosition_x = this.world_x + 144;
+					buildPosition_y = this.world_y - 16;
 					break;
 				case 3:
-					buildPosition_x = this.world_x + 32;
-					buildPosition_y = this.world_y + 32;
+					buildPosition_x = this.world_x - 16;
+					buildPosition_y = this.world_y + 144;
 					break;
 				default:
 					console.log("error; invalid buildPositionIndex");
@@ -104,8 +107,7 @@ Towncenter.prototype.update = function(elapsedTime) {
 
 }
 
-Towncenter.prototype.buildVillager = function(building){
-
+Towncenter.prototype.buildVillager = function(building) {
 	//TODO: Check if the player has enough resources.
 	if (!building.faction.playerResources.minerals.canSubtract(50)) {
 		return;
@@ -118,7 +120,7 @@ Towncenter.prototype.buildVillager = function(building){
 	building.faction.playerResources.minerals.subtract(50);
 	building.faction.playerResources.supply.add(1);
 
-	building.unitQueue.push(2500);
+	building.unitQueue.push(building.unitbuildtime);
 	building.isBuilding = true;
 	building.unitTypeQueue.push("villager");
 
@@ -138,7 +140,7 @@ Towncenter.prototype.buildHoplite = function(building){
 	building.faction.playerResources.minerals.subtract(100);
 	building.faction.playerResources.supply.add(1);
 
-	building.unitQueue.push(2500);
+	building.unitQueue.push(building.unitbuildtime);
 	building.isBuilding = true;
 	building.unitTypeQueue.push("hoplite");
 
@@ -158,7 +160,7 @@ Towncenter.prototype.buildInfantry = function(building){
 	building.faction.playerResources.minerals.subtract(130);
 	building.faction.playerResources.supply.add(1);
 
-	building.unitQueue.push(2500);
+	building.unitQueue.push(building.unitbuildtime);
 	building.isBuilding = true;
 	building.unitTypeQueue.push("infantry");
 

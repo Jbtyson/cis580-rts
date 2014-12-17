@@ -7,7 +7,7 @@ var Hoplite = function(x, y, faction, game) {
 	this.game = game;
 
 	this.maxhealth = 60;
-	//this.__proto__ = new Unit(x, y, this.maxhealth, color);
+	this.health = this.maxhealth;
 	
 	this.radius = 16;
 	this.borderwidth = 6;
@@ -25,12 +25,7 @@ var Hoplite = function(x, y, faction, game) {
 	this.y = y;
 	this.faction = faction;
 	this.type = "hoplite";
-	
-	//this.render = HopliteRender;
-	//this.update = HopliteUpdate;
-	//this.getHitbox = HopliteGetHitbox;
-	//this.move = HopliteMove;
-	//this.attack = HopliteAttack;
+
 
 	// ------------------- James wrote this for gui stuff --------------------------
 	// -------It is necessary for gui to work, so make sure all units have it-------
@@ -40,7 +35,7 @@ var Hoplite = function(x, y, faction, game) {
 	this.actions = [];
 }
 
-Hoplite.prototype = new Unit(100,100,60,"#000000");
+Hoplite.prototype = new Unit();
 
 Hoplite.prototype.render = function(context) {
 		//draw unit
@@ -64,7 +59,7 @@ Hoplite.prototype.render = function(context) {
 			context.drawImage(Resource.units.img.unitSelector,
 				this.x - globalx - this.radius, this.y - globaly - this.radius);
 		}
-	},
+}
 
 Hoplite.prototype.update = function(elapsedTime) {
 	var self = this;
@@ -72,7 +67,8 @@ Hoplite.prototype.update = function(elapsedTime) {
 	var secs = elapsedTime / 1000;
 
 	if (self.mode == "move" ||
-			(self.mode == "attack" && !game.cd.detect(self.targetunit, self))) {
+			(self.mode == "attack" && !game.cd.detect(self.targetunit, self)) ||
+			(self.mode == "attack_building" && !game.cd.detect(self.targetunit, self))) {
 		if (self.mode == "attack") {
 			self.targetx = self.targetunit.x;
 			self.targety = self.targetunit.y;
@@ -81,6 +77,15 @@ Hoplite.prototype.update = function(elapsedTime) {
 				self.getPath(self.targetunit.x, self.targetunit.y);
 			}
 			self.mode = "attack";
+		}
+		else if (self.mode == "attack_building") {
+			self.targetx = self.targetunit.world_x;
+			self.targety = self.targetunit.world_y;
+			if(Math.floor(self.targetx/64) != self.nextNode.x || Math.floor(self.targety/64) != self.nextNode.y)
+			{
+				self.getPath(self.targetunit.world_x, self.targetunit.world_y);
+			}
+			self.mode = "attack_building";
 		}
 		var deltaxi = self.nextx - self.x;
 		var deltayi = self.nexty - self.y;
@@ -121,7 +126,8 @@ Hoplite.prototype.update = function(elapsedTime) {
 		}
 	}
 	
-	else if (self.mode == "attack" && self.game.cd.detect(self.targetunit, self)) {
+	else if ((self.mode == "attack" && self.game.cd.detect(self.targetunit, self)) ||
+			(self.mode == "attack_building" && self.game.cd.detect(self.targetunit, self))) {
 		self.targetunit.health -= self.damage*secs;
 		//console.log(self.targetunit.health);
 		if (self.targetunit.health <= 0) {
@@ -135,12 +141,22 @@ Hoplite.prototype.update = function(elapsedTime) {
 	else if (self.mode == "idle") {
 		self.game.factions.forEach( function(faction) {
 			for (var i = 0; i <  faction.units.length; i++) {
+				var otherUnit = {
+						getHitbox: function()
+						{
+							return faction.units[i].getHitbox();
+						},
+						getAttackRange: function()
+						{
+							return faction.units[i].getHitbox();
+						}
+					}
 				if (faction.units[i].faction != self.faction &&
 						self.game.cd.detect(self, faction.units[i])) {
 					self.attack(faction.units[i]);
 				}
 				else if (faction.units[i].faction == self.faction &&
-						game.cd.detect(self, faction.units[i]) && self != faction.units[i] && faction.units[i].mode == "idle") {
+						game.cd.detect(self, otherUnit) && self != faction.units[i] && faction.units[i].mode == "idle") {
 					self.loseStack(faction.units[i]);
 				}
 			}
