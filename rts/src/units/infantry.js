@@ -1,5 +1,8 @@
 //Ryan Woodburn
 //Adapted off of hoplite
+
+UNIT_SPRITE_DATA = [ {x:0, y: 0, width: 32, height: 32, animationFrames: 12} ];
+
 var Infantry = function(x, y, faction, game) {
 	
 	this.maxhealth = 30;
@@ -15,6 +18,8 @@ var Infantry = function(x, y, faction, game) {
 	this.range = 60;
 	this.maxResources = 20;
 	this.resources = 0;
+	this.animationFrame = 0;
+	this.animationTime = 0;
 	
 	this.x = x;
 	this.y = y;
@@ -45,33 +50,29 @@ var Infantry = function(x, y, faction, game) {
 
 Infantry.prototype = new Unit(this.x,this.y,this.maxhealth,this.faction);
 
-/*Infantry.prototype.render = function(ctx) {
-	var self = this;
-
-	ctx.save();
-	ctx.beginPath();
-	if (self.selected) {
-		ctx.strokeStyle = "#00FF00";
-	} else {
-		ctx.strokeStyle = "#000000";
-	}
-	ctx.lineWidth = self.borderwidth;
-	ctx.fillStyle = self.color;
-	ctx.beginPath();
-	ctx.arc(self.x-globalx, self.y-globaly, self.radius-(self.borderwidth/2), 0, 2*Math.PI, false);
-	ctx.fill();
-	ctx.stroke();
-	
-	// draw health bar
-	var maxbarlength = self.radius;
-	var barheight = 4;
-	var barlength = maxbarlength * (self.health/self.maxhealth);
-	ctx.fillStyle = "#00FF00";
-	ctx.beginPath();
-	ctx.rect(self.x-(maxbarlength/2)-globalx, self.y-(barheight/2)-globaly,	barlength, barheight);
-	ctx.fill();
-	ctx.restore();
-}*/
+Infantry.prototype.render = function(context) {
+		//draw unit
+		context.drawImage(Resource.units.img.soldier[this.faction],
+			UNIT_SPRITE_DATA[0].x + UNIT_SPRITE_DATA[0].width * this.animationFrame, UNIT_SPRITE_DATA[0].y,
+			UNIT_SPRITE_DATA[0].width, UNIT_SPRITE_DATA[0].height,
+			this.x - globalx - this.radius, this.y - globaly - this.radius,
+			UNIT_SPRITE_DATA[0].width, UNIT_SPRITE_DATA[0].height);
+			
+		// draw health bar
+		var maxbarlength = this.radius*2;
+		var barheight = 4;
+		var barlength = maxbarlength * (this.health/this.maxhealth);
+		context.fillStyle = "#00FF00";
+		context.beginPath();
+		context.rect(this.x -(maxbarlength/2)-globalx, this.y - this.radius/2 - (barheight/2)-globaly,	barlength, barheight);
+		context.fill();
+		context.restore();
+		
+		if(this.selected) {
+			context.drawImage(Resource.units.img.unitSelector,
+				this.x - globalx - this.radius, this.y - globaly - this.radius);
+		}
+	},
 /*
 Infantry.prototype.update = function(elapsedTime) {
 	var self = this;
@@ -139,6 +140,7 @@ Infantry.prototype.update = function(elapsedTime) {
 Infantry.prototype.update = function(elapsedTime) {
 		var self = this;
 		var secs = elapsedTime / 1000;
+		//console.log(this.mode);
 		if (this.mode == "move" ||
 				(this.mode == "attack" && !game.cd.detect(this.targetunit, this))) {
 			if (this.mode == "attack") {
@@ -175,6 +177,7 @@ Infantry.prototype.update = function(elapsedTime) {
 					}
 					
 					this.animationTime += elapsedTime;
+					console.log(this.animationTime);
 	  
 					if(this.animationTime >= 50){
 						this.animationTime = 0;
@@ -218,6 +221,8 @@ Infantry.prototype.update = function(elapsedTime) {
 					}
 				}
 			})
+			this.animationTime += elapsedTime;
+			this.animationFrame = 0;
 		}
 },
 

@@ -1,14 +1,14 @@
 var Towncenter = function(x, y, orientation, factionIndex, game) {
 
 	this.game = game;
-
-	this.orientation = orientation;
 	
 	this.factionIndex = factionIndex;
 	this.faction = game.factions[this.factionIndex];
 
 	this.world_x = x;
 	this.world_y = y;
+
+	this.orientation = orientation;
 
 	this.unitQueue = [];
 	this.unitTypeQueue = [];
@@ -20,6 +20,7 @@ var Towncenter = function(x, y, orientation, factionIndex, game) {
 }
 
 Towncenter.prototype = new Building(0, this.orientation, this.factionIndex, this.game);
+
 
 Towncenter.prototype.update = function(elapsedTime) {
 
@@ -65,7 +66,6 @@ Towncenter.prototype.update = function(elapsedTime) {
 
 			}
 
-
 			this.unitQueue.shift();
 			var unitType = this.unitTypeQueue.shift();
 			switch (unitType) {
@@ -83,7 +83,7 @@ Towncenter.prototype.update = function(elapsedTime) {
 					return;
 			}
 
-			this.unitBuildPositionIndex = (this.unitBuildPositionIndex + 1) % 4 
+			this.unitBuildPositionIndex = (this.unitBuildPositionIndex + 1) % 4;
 			
 		}
 	} else {
