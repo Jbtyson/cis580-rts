@@ -16,10 +16,11 @@ var Army = function() {
 	this.units = new Array();
 	this.centroidx = null;
 	this.centroidy = null;
+	
+	this.MAX_STRENGTH = Math.floor(Math.random()*6);
 }
 
 Army.prototype = {
-	MAX_STRENGTH: 3,
 	
 	update: function(elapsedTime) {
 		// remove casualties

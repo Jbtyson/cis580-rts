@@ -4,7 +4,7 @@ var Towncenter = function(x, y, orientation, factionIndex, game) {
 	this.factionIndex = factionIndex;
 	this.faction = game.factions[this.factionIndex];
 	
-	this.unitbuildtime = 500;
+	this.unitbuildtime = 2500;
 
 	this.world_x = x;
 	this.world_y = y;

@@ -9,7 +9,7 @@ var Brain = function(faction) {
 }
 
 Brain.prototype = {
-	MAX_TIME: 4,
+	MAX_TIME: 7,
 	
 	// goes through flow chart once every MAX_TIME seconds
 	update: function(elapsedTime) {
@@ -71,6 +71,9 @@ Brain.prototype = {
 				return;
 			case "need_minerals":
 				nextStep = this.body.gatherMinerals();
+				break;
+			case "barracks_maxed":
+				nextStep = this.body.buildBarracks();
 				break;
 			case "towncenters_maxed":
 				nextStep = this.body.buildTowncenter();
