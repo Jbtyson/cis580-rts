@@ -2,14 +2,14 @@
 // James Tyson, Michael Speirs
 //----------------------------------
 SoundtrackResources = function() {
-	this.loading = 7;
+	this.loading = 8;
 	
 	this.img = {		
 
 	};
 	this.sfx = {
 		// Tracks
-		tracks: [new Audio(),new Audio(),new Audio(),new Audio(),new Audio(),new Audio(),new Audio()]
+		tracks: [new Audio(),new Audio(),new Audio(),new Audio(),new Audio(),new Audio(),new Audio(),new Audio()]
 	};
 }
 
@@ -38,6 +38,9 @@ SoundtrackResources.prototype = {
 		
 		this.sfx.tracks[6].onload = onload;
 		this.sfx.tracks[6].src = "sfx/soundtrack/WayneRobson_-_Camels_Breath.mp3";
+		
+		this.sfx.tracks[7].onload = onload;
+		this.sfx.tracks[7].onload = "sfx/soundtrack/Gate";
 	
 		// this.sfx.audio.onload = this.onload;
 		// this.sfx.audio.src = "gjr.wav";

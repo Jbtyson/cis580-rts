@@ -35,6 +35,7 @@ GuiResources = function() {
 	};
 	this.sfx = {
 		// Need some button click sounds
+		click: new Audio();
 	};
 }
 
@@ -77,6 +78,10 @@ GuiResources.prototype = {
 		
 		this.img.towncenterCommandButton.onload = onload;
 		this.img.towncenterCommandButton.src = "img/ui/townCenterIcon.png";
+	
+		// click
+		//this.sfx.click.onload = onload;
+		//this.sfx.click.onload = "sfx/mouseClick"
 	
 		// this.sfx.audio.onload = this.onload;
 		// this.sfx.audio.src = "gjr.wav";
