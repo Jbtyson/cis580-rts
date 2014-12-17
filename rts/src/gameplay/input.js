@@ -63,10 +63,28 @@ Input.prototype = {
 				game.brain.traverse();
 				break;
 			case 77: // m button; mute
+				var onoff = false;
+				if( self.game.playlist[self.game.currentTrack].muted == false ) {
+					onoff = true;
+				}
+				self.game.playlist.forEach( function(track) {
+					track.muted = onoff;
+				});
 				break;
 			case 80: // p; pause
 			case 32: // spacebar
 				self.game.paused = !self.game.paused;
+				break;
+			case 72: // h; home/town center
+				var tc = self.game.playerFaction.buildings[0];
+				globalx = tc.world_x - 0.5*WIDTH;
+				// clamp globalx
+				if( globalx < 0 ) { globalx = 0; }
+				else if( globalx > GLOBAL_WIDTH - WIDTH ) { globalx = GLOBAL_WIDTH - WIDTH; }
+				globaly = tc.world_y - 0.5*HEIGHT;
+				// clamp globaly
+				if( globaly < 0 ) { globaly = 0; }
+				else if( globaly > GLOBAL_HEIGHT - HEIGHT ) { globaly = GLOBAL_HEIGHT - HEIGHT; }
 				break;
 			case 13: // enter; start new game
 				if( !game.started ) {
@@ -162,7 +180,7 @@ Input.prototype = {
 		 */
 		if (e.button == 0) {
 			// Perform the clicked action on the first unit in either selected buildings or units
-			if(self.game.gui.isClickOnUi(self.mousex, self.mousey)) {
+			if (self.game.gui.isClickOnUi(self.mousex, self.mousey)) {
 				var actionNum = self.game.gui.getButtonClicked(self.mousex, self.mousey);
 				if(actionNum !== -1) {
 					self.game.performAction(actionNum);

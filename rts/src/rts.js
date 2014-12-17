@@ -44,6 +44,7 @@ var Game = function (canvasId) {
 	this.numPlayers = 2;
 	this.factionColors = ["#FF0000","#0000FF"];
 	this.activePlayers = this.numPlayers;
+	this.inactivePlayers = [];
 	
 	this.credits = new Credits();
 
@@ -142,8 +143,14 @@ Game.prototype = {
 				faction.units[i].update(elapsedTime);
 			}
 			
-			for(i = 0; i < faction.buildings.length; i++){
-			  faction.buildings[i].update(elapsedTime);
+			for (var i = 0; i < faction.buildings.length; i++) {
+				if (faction.buildings[i].health <= 0) {
+					// removes unit from array and ensures no units are skipped
+					faction.buildings.splice(i, 1);
+					i--;
+					continue;
+				}
+				faction.buildings[i].update(elapsedTime);
 			}
 		});
 		
@@ -188,7 +195,7 @@ Game.prototype = {
 		// start with villager and add required supply
 		self.factions[0].units.push(new Villager(64*2,64*3,0,self));
 		self.factions[0].playerResources.supply.add( self.factions[0].units[0].supply );
-		self.factions[1].units.push(new Villager(64*17,64*16,1,self));
+		self.factions[1].units.push(new Villager(64*18,64*17,1,self));
 		self.factions[1].playerResources.supply.add( self.factions[1].units[0].supply );
 		
 		// Add Map mineral Mines
@@ -202,10 +209,11 @@ Game.prototype = {
 	
 	endSelectBox: function(e) {
 		var self = this;
-	
-		// Clear the selected units (James)
-		self.selectedUnits = [];
-		self.selectedBuildings = [];
+		
+		if (!e.ctrlKey && !e.shiftKey) {
+			self.selectedUnits = [];
+			self.selectedBuildings = [];		
+		}
 		
 		for (var i = 0; i < this.playerFaction.units.length; i++) {
 			if (!e.ctrlKey && !e.shiftKey) {
@@ -214,7 +222,6 @@ Game.prototype = {
 			if (self.cd.detect(self.sb, this.playerFaction.units[i])) {
 				this.playerFaction.units[i].selected = true;
 				console.log(this.playerFaction.units[i]);
-				// Add the selected unit into the array of selected units (James)
 				self.selectedUnits.push(this.playerFaction.units[i]);
 			}
 		}
@@ -233,6 +240,7 @@ Game.prototype = {
 		self.sb = null;
 	},
 	
+	// faction here is the actual faction, not the index
 	unitOrder: function(x, y, faction) {
 		var self = this;
 		var thisFaction = faction;
@@ -256,8 +264,9 @@ Game.prototype = {
 			}
 		};
 		
-		self.moveUnit(x, y);
+		self.moveUnit(x, y, faction);
 
+		// check if the click was on an enemy unit
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
 				if (faction != thisFaction &&
@@ -271,12 +280,31 @@ Game.prototype = {
 				}
 			}
 		});
+		
+		// check if the click was on an enemy building
+		self.factions.forEach( function(faction) {
+			for (var i = 0; i < faction.buildings.length; i++) {
+				if (faction != thisFaction &&
+						self.cd.detect(faction.buildings[i], mousebox)) {
+					for (var j = 0; j < thisFaction.units.length; j++) {
+						if (thisFaction.units[j].selected) {
+							thisFaction.units[j].attackBuilding(faction.buildings[i]);
+						}
+					}
+					return;
+				}
+			}
+		});
 
+		// check if the click was on a mineral patch
 		self.mapMinerals.forEach (function(mineral, index) {
 			if (self.cd.detect(mineral, mousebox)) {
-				for (var j = 0; j < faction.units.length; j++) {
-					if (faction.units[j].selected && faction.units[j].type == "villager") {
-						faction.units[j].startMine(mineral);
+				for (var i = 0; i < game.factions.length; i++) {
+					for (var j = 0; j < game.factions[i].units.length; j++) {
+						if (game.factions[i].units[j].selected &&
+							game.factions[i].units[j].type == "villager") {
+							game.factions[i].units[j].startMine(mineral);
+						}
 					}
 				}
 				return;
@@ -284,18 +312,16 @@ Game.prototype = {
 		});
 	},
 	
-	moveUnit: function(x, y) {
+	moveUnit: function(x, y, faction) {
 		var self = this;
 		
 		// more efficient to have a seperate array of selected units
 		// instead of searching the whole thing; fix later, if necessary
-		self.factions.forEach( function(faction) {
-			for (var i = 0; i < faction.units.length; i++) {
-				if (faction.units[i].selected) {
-					faction.units[i].move(x, y);
-				}
+		for (var i = 0; i < faction.units.length; i++) {
+			if (faction.units[i].selected) {
+				faction.units[i].move(x, y);
 			}
-		});
+		}
 	},
 	
 	// Selects a unit from the array of selected units
@@ -402,7 +428,7 @@ Game.prototype = {
 				clearInterval(splashloop);
 				window.requestNextAnimationFrame(
 					function(time) {
-						//self.playlist[self.currentTrack].play();
+						self.playlist[self.currentTrack].play();
 						self.loop.call(self, time);
 					}
 				);
@@ -432,7 +458,7 @@ Game.prototype = {
 		// happening
 		this.elapsedTime = Math.min(this.elapsedTime, 4 * TIME_STEP);
 		
-		if(!self.gameOver) {
+		if(!self.gameOver && !self.paused) {
 			// We want a fixed game loop of 1/60th a second, so if necessary run multiple
 			// updates during each rendering pass
 			// Invariant: We have unprocessed time in excess of TIME_STEP
@@ -457,19 +483,23 @@ Game.prototype = {
 			self.render(this.elapsedTime);
 		
 			// Check which players are still active
-			self.factions.forEach( function(faction) {
-				if( faction.buildings.length == 0 ) {//&& faction.buildings.length == 0 ) { // enable once buildings can be attacked
+			self.factions.forEach( function(faction,index,array) {
+				if( faction.units.length == 0 && faction.buildings.length == 0 ) { //&& faction.armies.length == 0) {
 					self.activePlayers--;
+					self.inactivePlayers.push(array.splice(index--,1));
 				}
 			});
 		
-			// ***TODO:Check victory conditions
-			if( self.activePlayers == 0 ) {
+			// Check victory conditions
+			if( self.activePlayers == 1 ) {
 				self.gameOver = true;
 				self.started = false;
 				self.factions = [];
+				self.inactivePlayers = [];
 				self.placeLevelObjects();
 				self.credits.active = true;
+				globalx = 0;
+				globaly = 0;
 			}
 		
 		} else if(this.gameOver || !this.started) { // render credits
@@ -487,6 +517,12 @@ Game.prototype = {
 			 setTimeout( function () {
 					window.requestNextAnimationFrame(
 						 function (time) {
+								self.screenContext.fillStyle = "#000000";
+								self.screenContext.fillRect(0,0,WIDTH,HEIGHT);
+								self.screenContext.font = "30px Arial";
+								self.screenContext.fillStyle = "#FFFFFF";
+								self.screenContext.fillText("Paused",0.5*WIDTH-30,0.5*HEIGHT);
+								self.screenContext.fillText("Press [space] to resume",0.5*WIDTH-140,0.5*HEIGHT+50);
 								self.loop.call(self, time);
 						 });
 			 }, 200);

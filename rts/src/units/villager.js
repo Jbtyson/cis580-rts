@@ -5,7 +5,7 @@ var Villager = function(x, y, faction, game) {
 	this.game = game;
 
 	this.maxhealth = 60;
-	//this.__proto__ = new Unit(x, y, this.maxhealth, color);
+	this.health = this.maxhealth;
 	
 	this.radius = 32;
 	this.range = 0;
@@ -24,31 +24,34 @@ var Villager = function(x, y, faction, game) {
 	this.y = y;
 	this.faction = faction;
 	
-	//this.render = VillagerRender;
-	//this.update = VillagerUpdate;
-	//this.getHitbox = VillagerGetHitbox;
-	//this.move = VillagerMove;
-	
 		// ------------------- James wrote this for gui stuff --------------------------
 	// -------It is necessary for gui to work, so make sure all units have it-------
 	// Unit icon for the unit bar
 	this.thumbnail = Resource.gui.img.villagerCommandButton;
 	// Declare action functions here
-	this.testAction = function() {
-		console.log("test action performed");
+	this.buildTowncenter = function() {
+		build(new Barracks());
+	};
+	this.buildTowncenter = function() {
+		build(new Towncenter());
 	};
 	// Declare array of actions here
 	this.actions = [
 		{ 
+			thumbnail:Resource.gui.img.towncenterCommandButton, 
+			tooltipText:"Sample text to pretend to be a tooltip.", 
+			onClick:this.buildTowncenter 
+		},
+		{ 
 			thumbnail:Resource.gui.img.villagerCommandButton, 
 			tooltipText:"Sample text to pretend to be a tooltip.", 
-			onClick:this.testAction 
+			onClick:this.buildTowncenter 
 		},
 	];
 	// -----------------------------------------------------------------------------
 }
 
-Villager.prototype = new Unit(100,100,this.maxhealth,this.faction);
+Villager.prototype = new Unit();
 
 Villager.prototype.render = function(ctx) {
 	var self = this;
@@ -213,6 +216,12 @@ Villager.prototype.attack = function(unit) {
 	self.move(unit.x, unit.y);
 	self.mode = "attack";
 	self.targetunit = unit;
+}
+
+Villager.prototype.attackBuilding = function(building) {
+	this.mode = "attack_building";
+	this.targetunit = building;
+	this.getPath(building.x, building.y);
 }
 
 Villager.prototype.startMine = function(mine) {

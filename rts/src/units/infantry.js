@@ -7,7 +7,6 @@ var Infantry = function(x, y, faction, game) {
 	this.game = game;
 	this.maxhealth = 30;
 	this.health = this.maxhealth;
-	//this.__proto__ = new Unit(x, y, this.maxhealth, faction);
 	
 	this.radius = 16;
 	this.borderwidth = 3;
@@ -25,13 +24,7 @@ var Infantry = function(x, y, faction, game) {
 	this.y = y;
 	this.faction = faction;
 	this.type = "infantry";
-	
-	//this.render = Render;
-	//this.update = Update;
-	//this.getHitbox = GetHitbox;
-	//this.getAttackRange = GetAttackRange;
-	//this.move = Move;
-	//this.attack = Attack;
+
 	
 	// ------------------- James wrote this for gui stuff --------------------------
 	// -------It is necessary for gui to work, so make sure all units have it-------
@@ -76,7 +69,7 @@ Infantry.prototype.render = function(context) {
 			context.drawImage(Resource.units.img.unitSelector,
 				this.x - globalx - this.radius, this.y - globaly - this.radius);
 		}
-	},
+}
 /*
 Infantry.prototype.update = function(elapsedTime) {
 	var self = this;
@@ -147,7 +140,8 @@ Infantry.prototype.update = function(elapsedTime) {
 	var secs = elapsedTime / 1000;
 
 	if (self.mode == "move" ||
-			(self.mode == "attack" && !game.cd.detect(self.targetunit, self))) {
+			(self.mode == "attack" && !game.cd.detect(self.targetunit, self)) ||
+			(self.mode == "attack_building" && !game.cd.detect(self.targetunit, self))) {
 		if (self.mode == "attack") {
 			self.targetx = self.targetunit.x;
 			self.targety = self.targetunit.y;
@@ -156,6 +150,15 @@ Infantry.prototype.update = function(elapsedTime) {
 				self.getPath(self.targetunit.x, self.targetunit.y);
 			}
 			self.mode = "attack";
+		}
+		else if (self.mode == "attack_building") {
+			self.targetx = self.targetunit.x;
+			self.targety = self.targetunit.y;
+			if(Math.floor(self.targetx/64) != self.nextNode.x || Math.floor(self.targety/64) != self.nextNode.y)
+			{
+				self.getPath(self.targetunit.x, self.targetunit.y);
+			}
+			self.mode = "attack_building";
 		}
 		var deltaxi = self.nextx - self.x;
 		var deltayi = self.nexty - self.y;
@@ -196,7 +199,8 @@ Infantry.prototype.update = function(elapsedTime) {
 		}
 	}
 	
-	else if (self.mode == "attack" && self.game.cd.detect(self.targetunit, self)) {
+	else if ((self.mode == "attack" && self.game.cd.detect(self.targetunit, self)) ||
+			(self.mode == "attack_building" && self.game.cd.detect(self.targetunit, self))) {
 		self.targetunit.health -= self.damage*secs;
 		//console.log(self.targetunit.health);
 		if (self.targetunit.health <= 0) {
@@ -246,6 +250,12 @@ Infantry.prototype.getAttackRange = function() {
 		y: self.y,
 		radius: self.radius + self.range
 	};
+}
+
+Infantry.prototype.attackBuilding = function(building) {
+	this.mode = "attack_building";
+	this.targetunit = building;
+	this.getPath(building.x, building.y);
 }
 /*
 Infantry.prototype.move = function(x, y) {
