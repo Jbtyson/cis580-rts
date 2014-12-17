@@ -2,7 +2,7 @@
 // James Tyson
 //----------------------------------
 GuiResources = function() {
-	this.loading = 11;
+	this.loading = 13;
 	
 	this.img = {
 		// Minimap
@@ -22,6 +22,8 @@ GuiResources = function() {
 		hopliteCommandButton: new Image(),
 		infantryCommandButton: new Image(),
 		towncenterCommandButton: new Image(),
+		barracksCommandButton: new Image(),
+		connectorCommandButton: new Image(),
 		commandButton: new Image(),
 		
 		// Resource Bar
@@ -76,7 +78,13 @@ GuiResources.prototype = {
 		this.img.infantryCommandButton.src = "img/ui/infantryCommandButton.png";
 		
 		this.img.towncenterCommandButton.onload = onload;
-		this.img.towncenterCommandButton.src = "img/ui/townCenterIcon.png";
+		this.img.towncenterCommandButton.src = "img/ui/towncenterCommandButton.png";
+
+		this.img.barracksCommandButton.onload = onload;
+		this.img.barracksCommandButton.src = "img/ui/barracksCommandButton.png";
+
+		this.img.connectorCommandButton.onload = onload;
+		this.img.connectorCommandButton.src = "img/ui/connectorCommandButton.png";
 	
 		// this.sfx.audio.onload = this.onload;
 		// this.sfx.audio.src = "gjr.wav";

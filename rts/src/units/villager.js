@@ -39,13 +39,18 @@ var Villager = function(x, y, faction, game) {
 	this.actions = [
 		{ 
 			thumbnail:Resource.gui.img.towncenterCommandButton, 
-			tooltipText:"Sample text to pretend to be a tooltip.", 
-			onClick:this.buildBarracks 
+			tooltipText:"Build a Towncenter.", 
+			onClick:this.buildTowncenter 
 		},
 		{ 
-			thumbnail:Resource.gui.img.villagerCommandButton, 
-			tooltipText:"Sample text to pretend to be a tooltip.", 
-			onClick:this.buildTowncenter 
+			thumbnail:Resource.gui.img.connectorCommandButton, 
+			tooltipText:"Build a Connector.", 
+			onClick:this.buildConnector 
+		},
+				{ 
+			thumbnail:Resource.gui.img.barracksCommandButton, 
+			tooltipText:"Build a Barracks.", 
+			onClick:this.buildBarracks 
 		},
 	];
 	// -----------------------------------------------------------------------------
@@ -227,6 +232,11 @@ Villager.prototype.move = function(x, y) {
 		this.mode = "move";
 		this.getPath(x, y);
 	},
+
+Villager.prototype.buildConnector = function(villager) {
+	villager.build(new Connector(0, 0, 0, 0, villager.game));
+}
+
 
 Villager.prototype.buildBarracks = function(villager) {
 	villager.build(new Barracks(0, 0, 0, 0, villager.game));
