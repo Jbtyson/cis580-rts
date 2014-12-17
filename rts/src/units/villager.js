@@ -218,12 +218,15 @@ Villager.prototype.attack = function(unit) {
 	self.targetunit = unit;
 }
 
+<<<<<<< Updated upstream
 Villager.prototype.attackBuilding = function(building) {
 	this.mode = "attack_building";
 	this.targetunit = building;
 	this.getPath(building.x, building.y);
 }
 
+=======
+>>>>>>> Stashed changes
 Villager.prototype.startMine = function(mine) {
 	var self = this;
 
