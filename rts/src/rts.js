@@ -197,10 +197,11 @@ Game.prototype = {
 	
 	endSelectBox: function(e) {
 		var self = this;
-	
-		// Clear the selected units (James)
-		self.selectedUnits = [];
-		self.selectedBuildings = [];
+		
+		if (!e.ctrlKey && !e.shiftKey) {
+			self.selectedUnits = [];
+			self.selectedBuildings = [];		
+		}
 		
 		for (var i = 0; i < this.playerFaction.units.length; i++) {
 			if (!e.ctrlKey && !e.shiftKey) {
@@ -209,7 +210,6 @@ Game.prototype = {
 			if (self.cd.detect(self.sb, this.playerFaction.units[i])) {
 				this.playerFaction.units[i].selected = true;
 				console.log(this.playerFaction.units[i]);
-				// Add the selected unit into the array of selected units (James)
 				self.selectedUnits.push(this.playerFaction.units[i]);
 			}
 		}
@@ -329,7 +329,8 @@ Game.prototype = {
 			var type = typeof(this.selectedUnits[0]);
 			this.selectedUnits.forEach(function(unit) {
 				if(type === typeof(unit))
-					unit.actions[actionNum].onClick(unit);
+					if(typeof(unit.actions[actionNum]) !== "undefined")
+						unit.actions[actionNum].onClick(unit);
 			});
 		}
 		// make the building with the lowest unitQueue perform the action
