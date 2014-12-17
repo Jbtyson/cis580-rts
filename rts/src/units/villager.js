@@ -29,18 +29,13 @@ var Villager = function(x, y, faction, game) {
 	// Unit icon for the unit bar
 	this.thumbnail = Resource.gui.img.villagerCommandButton;
 	// Declare action functions here
-	this.buildTowncenter = function() {
-		build(new Barracks());
-	};
-	this.buildTowncenter = function() {
-		build(new Towncenter());
-	};
+
 	// Declare array of actions here
 	this.actions = [
 		{ 
 			thumbnail:Resource.gui.img.towncenterCommandButton, 
 			tooltipText:"Sample text to pretend to be a tooltip.", 
-			onClick:this.buildTowncenter 
+			onClick:this.buildBarracks 
 		},
 		{ 
 			thumbnail:Resource.gui.img.villagerCommandButton, 
@@ -201,12 +196,23 @@ Villager.prototype.move = function(x, y) {
 	}
 }
 
+Villager.prototype.buildBarracks = function(villager) {
+	villager.build(new Barracks(0, 0, 0, 0, villager.game));
+}
+
+Villager.prototype.buildTowncenter = function(villager) {
+	villager.build(new Towncenter(0, 0, 0, 0, villager.game));
+}
+
 Villager.prototype.build = function(Building) {
 	var self = this;
+
+	this.game.phantom = new PhantomBuilding(Building.type, this.game);
+
 	self.move(Building.x,Building.y); 
 	self.mode = "build";
 	self.buildingunit = Building;
-	this.game.factions[0].buildings.push(Building);
+	
 }
 
 Villager.prototype.attack = function(unit) {

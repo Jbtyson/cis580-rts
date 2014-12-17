@@ -4,12 +4,7 @@ var Towncenter = function(x, y, orientation, factionIndex, game) {
 	this.factionIndex = factionIndex;
 	this.faction = game.factions[this.factionIndex];
 	
-	this.width = 128;
-	this.height = 128;
-	
 	this.unitbuildtime = 500;
-	
-	this.borderwidth = 6;
 
 	this.world_x = x;
 	this.world_y = y;
