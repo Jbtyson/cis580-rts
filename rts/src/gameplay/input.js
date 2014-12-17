@@ -75,6 +75,48 @@ Input.prototype = {
 			case 32: // spacebar
 				self.game.paused = !self.game.paused;
 				break;
+			case 66: // b; cycle through buildings
+				if( self.game.playerFaction.buildings.length > 0 ) {
+					if(self.game.buildingIndex < self.game.playerFaction.buildings.length ) {
+						var selB = self.game.playerFaction.buildings[self.game.buildingIndex++];
+					}
+					else{
+						self.game.buildingIndex = 0;
+						var selB = self.game.playerFaction.buildings[self.game.buildingIndex++];
+					}
+					self.game.selectedUnits.forEach( function(unit) {
+						unit.selected = false;
+					});
+					self.game.selectedUnits = []; // clear selected
+					self.game.selectedBuildings.forEach( function(building) {
+						building.selected = false;
+					});
+					self.game.selectedBuildings = []; // clear selected
+					self.game.selectedBuildings.push(selB); // select unit
+					selB.selected = true;
+				}
+				break;
+			case 86: // v; cycle through villagers
+				if( self.game.playerFaction.units.length > 0 ) {
+					if(self.game.unitIndex < self.game.playerFaction.units.length ) {
+						var su = self.game.playerFaction.units[self.game.unitIndex++];
+					}
+					else{//(self.game.unitIndex > self.game.playerFaction.units.length ) { // loop
+						self.game.unitIndex = 0;
+						var su = self.game.playerFaction.units[self.game.unitIndex++];
+					}
+					self.game.selectedBuildings.forEach( function(building) {
+						building.selected = false;
+					});
+					self.game.selectedBuildings = []; // clear selected
+					self.game.selectedUnits.forEach( function(unit) {
+						unit.selected = false;
+					});
+					self.game.selectedUnits = []; // clear selected
+					self.game.selectedUnits.push(su); // select unit
+					su.selected = true;
+				}
+				break;
 			case 72: // h; home/town center
 				var tc = self.game.playerFaction.buildings[0];
 				globalx = tc.world_x - 0.5*WIDTH;
