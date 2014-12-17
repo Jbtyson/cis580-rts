@@ -122,6 +122,11 @@ Game.prototype = {
 			this.sb.x = this.sb.x + globalxchange;
 		}
 		
+		// update Mineral Mines
+		self.mapMinerals.forEach( function(mineralMine) {
+			mineralMine.update(elapsedTime);
+		});
+		
 		// update units
 		self.factions.forEach( function(faction) {
 			for (var i = 0; i < faction.units.length; i++) {
@@ -187,7 +192,7 @@ Game.prototype = {
 		self.factions[1].playerResources.supply.add( self.factions[1].units[0].supply );
 		
 		// Add Map mineral Mines
-		self.mapMinerals.push(new MineralMine(64*2,64*6,50000));
+		self.mapMinerals.push(new MineralMine(64*2,64*7,50000));
 		self.mapMinerals.push(new MineralMine(64*18,64*16,50000));
 	},
 	
