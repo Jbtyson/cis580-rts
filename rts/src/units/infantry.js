@@ -152,11 +152,11 @@ Infantry.prototype.update = function(elapsedTime) {
 			self.mode = "attack";
 		}
 		else if (self.mode == "attack_building") {
-			self.targetx = self.targetunit.x;
-			self.targety = self.targetunit.y;
+			self.targetx = self.targetunit.world_x;
+			self.targety = self.targetunit.world_y;
 			if(Math.floor(self.targetx/64) != self.nextNode.x || Math.floor(self.targety/64) != self.nextNode.y)
 			{
-				self.getPath(self.targetunit.x, self.targetunit.y);
+				self.getPath(self.targetunit.world_x, self.targetunit.world_y);
 			}
 			self.mode = "attack_building";
 		}
@@ -239,7 +239,6 @@ Infantry.prototype.update = function(elapsedTime) {
 	}
 }
 
-
 Infantry.prototype.getHitbox = function() {
 	var self = this;
 	
@@ -262,11 +261,6 @@ Infantry.prototype.getAttackRange = function() {
 	};
 }
 
-Infantry.prototype.attackBuilding = function(building) {
-	this.mode = "attack_building";
-	this.targetunit = building;
-	this.getPath(building.x, building.y);
-}
 /*
 Infantry.prototype.move = function(x, y) {
 	var self = this;

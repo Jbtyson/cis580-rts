@@ -7,7 +7,7 @@ var Villager = function(x, y, faction, game) {
 	this.maxhealth = 60;
 	this.health = this.maxhealth;
 	
-	this.radius = 32;
+	this.radius = 16;
 	this.range = 0;
 	this.borderwidth = 6;
 	this.maxResources = 50;
@@ -23,6 +23,8 @@ var Villager = function(x, y, faction, game) {
 	this.x = x;
 	this.y = y;
 	this.faction = faction;
+	
+	this.type = "villager";
 	
 		// ------------------- James wrote this for gui stuff --------------------------
 	// -------It is necessary for gui to work, so make sure all units have it-------
@@ -48,7 +50,7 @@ var Villager = function(x, y, faction, game) {
 
 Villager.prototype = new Unit();
 
-Villager.prototype.render = function(ctx) {
+/*Villager.prototype.render = function(ctx) {
 	var self = this;
 
 	ctx.save();
@@ -74,15 +76,15 @@ Villager.prototype.render = function(ctx) {
 	ctx.rect(self.x-(maxbarlength/2)-globalx, self.y-(barheight/2)-globaly,	barlength, barheight);
 	ctx.fill();
 	ctx.restore();
-}
+}*/
 
 Villager.prototype.update = function(elapsedTime) {
 	var self = this;
 
 	var secs = elapsedTime / 1000;
 	if (self.mode == "move") {
-		var deltaxi = self.targetx - self.x;
-		var deltayi = self.targety - self.y;
+		var deltaxi = self.nextx - self.x;
+		var deltayi = self.nexty - self.y;
 		
 		// actually move
 		self.x += secs*self.velx;
@@ -90,12 +92,21 @@ Villager.prototype.update = function(elapsedTime) {
 		
 		// stop if target has been reached
 		if (self.mode == "move") {
-			var deltaxf = self.targetx - self.x;
-			var deltayf = self.targety - self.y;
-			if (deltaxi/deltaxf < 0 || deltaxi/deltaxf < 0) {
-				self.velx = 0;
-				self.vely = 0;
-				self.mode = "idle";
+			var deltaxf = this.nextx - this.x;
+			var deltayf = this.nexty - this.y;
+			if ((deltaxi/deltaxf < 0 || deltayi/deltayf < 0) || (deltaxf == 0 && deltayf == 0)) {
+				this.velx = 0;
+				this.vely = 0;
+				if(this.nextx != this.targetx && this.nexty != this.targety)
+				{
+					this.getNextDest();
+				}
+				else
+				{
+					this.velx = 0;
+					this.vely = 0;
+					this.mode = "idle";
+				}
 			}
 		}
 	}
@@ -175,26 +186,9 @@ Villager.prototype.getAttackRange = function() {
 }
 
 Villager.prototype.move = function(x, y) {
-	var self = this;
-
-	self.mode = "move";
-	self.targetx = x;
-	self.targety = y;
-	
-	var deltax = x - self.x;
-	var deltay = y - self.y;
-	
-	self.velx = Math.sqrt((self.maxvel*self.maxvel * deltax*deltax) /
-			(deltax*deltax + deltay*deltay));
-	self.vely = Math.sqrt((self.maxvel*self.maxvel * deltay*deltay) /
-			(deltax*deltax + deltay*deltay));
-	if (self.velx/deltax < 0) {
-		self.velx *= -1;
-	}
-	if (self.vely/deltay < 0) {
-		self.vely *= -1;
-	}
-}
+		this.mode = "move";
+		this.getPath(x, y);
+	},
 
 Villager.prototype.buildBarracks = function(villager) {
 	villager.build(new Barracks(0, 0, 0, 0, villager.game));
@@ -209,7 +203,7 @@ Villager.prototype.build = function(Building) {
 
 	this.game.phantom = new PhantomBuilding(Building.type, this.game);
 
-	self.move(Building.x,Building.y); 
+	self.getPath(Building.x,Building.y); 
 	self.mode = "build";
 	self.buildingunit = Building;
 	
@@ -219,7 +213,7 @@ Villager.prototype.attack = function(unit) {
 	var self = this;
 
 	// temporarily changes mode to "move"
-	self.move(unit.x, unit.y);
+	self.getPath(unit.x, unit.y);
 	self.mode = "attack";
 	self.targetunit = unit;
 }
@@ -234,7 +228,7 @@ Villager.prototype.startMine = function(mine) {
 	var self = this;
 
 	// temporarily changes mode to "move"
-	self.move(unit.x, unit.y);
+	self.getPath(unit.x, unit.y);
 	self.mode = "attack";
 	self.targetunit = unit;
 }

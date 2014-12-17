@@ -8,7 +8,7 @@
 
 var Army = function() {
 	// the mode can be any of:
-	// {action: "attack", targetbuilding: building}
+	// {action: "attack", target: building}
 	// {action: "wait"}
 	this.mode = {
 		action: "wait"
@@ -36,7 +36,7 @@ Army.prototype = {
 		// decide new orders
 		if (this.mode.action == "attack") {
 			// check if the building is dead
-			if (this.mode.targetbuilding.health <= 0) {
+			if (this.mode.target.health <= 0) {
 				console.log("target eliminated");
 				this.decideAction();
 			}
@@ -48,7 +48,11 @@ Army.prototype = {
 				this.units[i].selected = true;
 			}
 			// hard coded faction; probably bad
-			game.unitOrder(this.mode.targetbuilding.x + 10, this.mode.targetbuilding.y + 10, game.factions[1]);
+			if (this.mode.target.world_x === undefined) {
+				game.unitOrder(this.mode.target.x, this.mode.target.y, game.factions[1]);
+			} else {
+				game.unitOrder(this.mode.target.world_x + 10, this.mode.target.world_y + 10, game.factions[1]);
+			}
 			for (var i = 0; i < this.units.length; i++) {
 				this.units[i].selected = false;
 			}
@@ -60,7 +64,7 @@ Army.prototype = {
 				if (game.factions[0].units[i].mode == "attack_building") {
 					this.mode = {
 						action: "attack",
-						targetbuilding:game.factions[0].units[i]
+						target:game.factions[0].units[i]
 					};
 				}
 			}
@@ -70,12 +74,16 @@ Army.prototype = {
 	decideAction: function() {
 		if (this.units.length >= this.MAX_STRENGTH) {
 			this.updateCentroid();
-			var targetBuilding = this.findTarget();
-			this.mode = {
-				action: "attack",
-				targetbuilding: targetBuilding
+			var target = this.findTarget();
+			if (target == null) {
+				this.mode = { action: "wait" }
+			} else {
+				this.mode = {
+					action: "attack",
+					target: target
+				}
+				console.log("new target:", target);
 			}
-			console.log("new target:", targetBuilding);
 		} else {
 			this.mode = {
 				action: "wait"
@@ -88,20 +96,31 @@ Army.prototype = {
 		this.decideAction();
 	},
 	
-	// finds the closest enemy building
+	// finds the closest enemy building or unit
 	findTarget: function() {
 		var least_distance = 0;
-		var target_building = null;
+		var target = null;
+		// closest building
 		for (var i = 0; i < game.factions[0].buildings.length; i++) {
 			var distSqrd = 
-				Math.pow(this.centroidx - game.factions[0].buildings[i].x, 2) +
-				Math.pow(this.centroidy - game.factions[0].buildings[i].y, 2);
+				Math.pow(this.centroidx - game.factions[0].buildings[i].world_x, 2) +
+				Math.pow(this.centroidy - game.factions[0].buildings[i].world_y, 2);
 			if (least_distance == 0 || least_distance > distSqrd) {
 				least_distance = distSqrd;
-				target_building = game.factions[0].buildings[i];
+				target = game.factions[0].buildings[i];
 			}
 		}
-		return target_building;
+		// closest unit
+		for (var i = 0; i < game.factions[0].units.length; i++) {
+			var distSqrd = 
+				Math.pow(this.centroidx - game.factions[0].units[i].x, 2) +
+				Math.pow(this.centroidy - game.factions[0].units[i].y, 2);
+			if (least_distance == 0 || least_distance > distSqrd) {
+				least_distance = distSqrd;
+				target = game.factions[0].units[i];
+			}
+		}
+		return target;
 	},
 	
 	// updates the company centroid
