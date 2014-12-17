@@ -82,7 +82,7 @@ Villager.prototype.render = function(ctx) {
 Villager.prototype.update = function(elapsedTime) {
 	var self = this;
 	var secs = elapsedTime / 1000;
-	if (self.mode == "move") || 
+	if (self.mode == "move" || 
 	(self.mode == "goingToMine" && !game.cd.detect(self.targetunit, self)) ||
 	(self.mode == "returningToBase" && !game.cd.detect(self.targetunit, self))) {
 		var deltaxi = self.nextx - self.x;
