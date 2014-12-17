@@ -28,9 +28,8 @@ GuiResources = function() {
 		
 		// Resource Bar
 		resourceBar: new Image(),
-		minerals: new Image(),
-		gas: new Image(),
-		supply: new Image(),
+		mineralIcon: new Image(),
+		supplyIcon: new Image(),
 		
 		// Splash Screen
 		splash: new Image()
@@ -64,6 +63,10 @@ GuiResources.prototype = {
 		// Resource Bar
 		this.img.resourceBar.onload = onload;
 		this.img.resourceBar.src = "img/ui/resourceBar.png";
+		this.img.mineralIcon.onload = onload;
+		this.img.mineralIcon.src = "img/ui/mineralIcon.png";
+		this.img.supplyIcon.onload = onload;
+		this.img.supplyIcon.src = "img/ui/supplyIcon.png";
 		// Splash Screen
 		this.img.splash.onload = onload;
 		this.img.splash.src = "img/startScreen.png";

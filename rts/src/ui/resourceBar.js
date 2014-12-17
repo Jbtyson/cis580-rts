@@ -10,6 +10,9 @@ var ResourceBar = function(playerIndex) {
 	this.iconDimensions = { width:16, height:16 }
 	this.textOffset = { x:8, y:13 }
 	
+	this.mineralIcon = Resource.gui.img.mineralIcon;
+	this.supplyIcon = Resource.gui.img.supplyIcon;
+	
 	// Objects to manage resource information
 	this.minerals = {
 		img: null,
@@ -49,12 +52,8 @@ ResourceBar.prototype = {
 		context.drawImage(this.image, this.position.x, this.position.y);
 		
 		// Render the resource icons
-		context.fillStyle = "cyan";
-		context.fillRect(this.minerals.imgPosition.x, this.minerals.imgPosition.y, this.iconDimensions.width, this.iconDimensions.height);
-		/* context.fillStyle = "lime";
-		context.fillRect(this.gas.imgPosition.x, this.gas.imgPosition.y, this.iconDimensions.width, this.iconDimensions.height); */
-		context.fillStyle = "white";
-		context.fillRect(this.supply.imgPosition.x, this.supply.imgPosition.y, this.iconDimensions.width, this.iconDimensions.height);
+		context.drawImage(this.mineralIcon, this.minerals.imgPosition.x, this.minerals.imgPosition.y)
+		context.drawImage(this.supplyIcon, this.supply.imgPosition.x, this.supply.imgPosition.y);
 		
 		// Render the resource amounts
 		context.font = 'normal 12pt Calibri';
