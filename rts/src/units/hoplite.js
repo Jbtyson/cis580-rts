@@ -141,12 +141,22 @@ Hoplite.prototype.update = function(elapsedTime) {
 	else if (self.mode == "idle") {
 		self.game.factions.forEach( function(faction) {
 			for (var i = 0; i <  faction.units.length; i++) {
+				var otherUnit = {
+						getHitbox: function()
+						{
+							return faction.units[i].getHitbox();
+						},
+						getAttackRange: function()
+						{
+							return faction.units[i].getHitbox();
+						}
+					}
 				if (faction.units[i].faction != self.faction &&
 						self.game.cd.detect(self, faction.units[i])) {
 					self.attack(faction.units[i]);
 				}
 				else if (faction.units[i].faction == self.faction &&
-						game.cd.detect(self, faction.units[i]) && self != faction.units[i] && faction.units[i].mode == "idle") {
+						game.cd.detect(self, otherUnit) && self != faction.units[i] && faction.units[i].mode == "idle") {
 					self.loseStack(faction.units[i]);
 				}
 			}
