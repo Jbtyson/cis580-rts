@@ -18,6 +18,24 @@ var Tank = function(x, y, faction) {
 	this.getAttackRange = TankGetAttackRange;
 	this.move = TankMove;
 	this.attack = TankAttack;
+	
+	// ------------------- James wrote this for gui stuff --------------------------
+	// -------It is necessary for gui to work, so make sure all units have it-------
+	// Unit icon for the unit bar
+	this.thumbnail = Resource.gui.img.villagerCommandButton;
+	// Declare action functions here
+	this.testAction = function() {
+		console.log("test action performed");
+	};
+	// Declare array of actions here
+	this.actions = [
+		{ 
+			thumbnail:Resource.gui.img.villagerCommandButton, 
+			tooltipText:"Sample text to pretend to be a tooltip.", 
+			onClick:this.testAction 
+		},
+	];
+	// -----------------------------------------------------------------------------
 }
 
 TankRender = function(ctx) {
