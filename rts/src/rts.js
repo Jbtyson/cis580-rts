@@ -339,7 +339,9 @@ Game.prototype = {
 			var lowestIndex = 0;
 			var lowest = this.selectedBuildings[0].unitQueue.length;
 			this.selectedBuildings.forEach(function(building, index) {
-				if(building.unitQueue.length < lowest && type === typeof(building)) {
+				console.log(building instanceof selectedBuildings[0]);
+				console.log(typeof(building));
+				if(type === typeof(building) && building.unitQueue.length < lowest) {
 					lowestIndex = index;
 					lowest = building.unitQueue.length;
 				}
