@@ -7,7 +7,7 @@ var Hoplite = function(x, y, faction, game) {
 	this.game = game;
 
 	this.maxhealth = 60;
-	this.health = this.maxhealth;
+	//this.__proto__ = new Unit(x, y, this.maxhealth, color);
 	
 	this.radius = 16;
 	this.borderwidth = 6;
@@ -25,17 +25,17 @@ var Hoplite = function(x, y, faction, game) {
 	this.y = y;
 	this.faction = faction;
 	this.type = "hoplite";
-
-
-	// ------------------- James wrote this for gui stuff --------------------------
-	// -------It is necessary for gui to work, so make sure all units have it-------
-	// Unit icon for the unit bar
+	
 	this.thumbnail = Resource.gui.img.villagerCommandButton;
-	// Declare array of actions here
-	this.actions = [];
+	
+	//this.render = HopliteRender;
+	//this.update = HopliteUpdate;
+	//this.getHitbox = HopliteGetHitbox;
+	//this.move = HopliteMove;
+	//this.attack = HopliteAttack;
 }
 
-Hoplite.prototype = new Unit();
+Hoplite.prototype = new Unit(100,100,60,"#000000");
 
 Hoplite.prototype.render = function(context) {
 		//draw unit
@@ -59,7 +59,7 @@ Hoplite.prototype.render = function(context) {
 			context.drawImage(Resource.units.img.unitSelector,
 				this.x - globalx - this.radius, this.y - globaly - this.radius);
 		}
-}
+	},
 
 Hoplite.prototype.update = function(elapsedTime) {
 	var self = this;
@@ -67,8 +67,7 @@ Hoplite.prototype.update = function(elapsedTime) {
 	var secs = elapsedTime / 1000;
 
 	if (self.mode == "move" ||
-			(self.mode == "attack" && !game.cd.detect(self.targetunit, self)) ||
-			(self.mode == "attack_building" && !game.cd.detect(self.targetunit, self))) {
+			(self.mode == "attack" && !game.cd.detect(self.targetunit, self))) {
 		if (self.mode == "attack") {
 			self.targetx = self.targetunit.x;
 			self.targety = self.targetunit.y;
@@ -77,15 +76,6 @@ Hoplite.prototype.update = function(elapsedTime) {
 				self.getPath(self.targetunit.x, self.targetunit.y);
 			}
 			self.mode = "attack";
-		}
-		else if (self.mode == "attack_building") {
-			self.targetx = self.targetunit.x;
-			self.targety = self.targetunit.y;
-			if(Math.floor(self.targetx/64) != self.nextNode.x || Math.floor(self.targety/64) != self.nextNode.y)
-			{
-				self.getPath(self.targetunit.x, self.targetunit.y);
-			}
-			self.mode = "attack_building";
 		}
 		var deltaxi = self.nextx - self.x;
 		var deltayi = self.nexty - self.y;
@@ -126,8 +116,7 @@ Hoplite.prototype.update = function(elapsedTime) {
 		}
 	}
 	
-	else if ((self.mode == "attack" && self.game.cd.detect(self.targetunit, self)) ||
-			(self.mode == "attack_building" && self.game.cd.detect(self.targetunit, self))) {
+	else if (self.mode == "attack" && self.game.cd.detect(self.targetunit, self)) {
 		self.targetunit.health -= self.damage*secs;
 		//console.log(self.targetunit.health);
 		if (self.targetunit.health <= 0) {
@@ -176,12 +165,6 @@ Hoplite.prototype.attack = function(unit) {
 	this.mode = "attack";
 	this.targetunit = unit;
 	this.getPath(unit.x, unit.y);
-}
-
-Hoplite.prototype.attackBuilding = function(building) {
-	this.mode = "attack_building";
-	this.targetunit = building;
-	this.getPath(building.x, building.y);
 }
 
 Hoplite.prototype.getAttackRange = function() {

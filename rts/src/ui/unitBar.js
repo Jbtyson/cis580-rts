@@ -22,7 +22,7 @@ UnitBar.prototype = {
 			this.buttons = [];
 		}
 		// Check for a new list
-		else if(this.unitList !== unitList || this.buttons.length !== unitList.length) {
+		else if(this.unitList != unitList) {
 			this.unitList = unitList;
 			this.unit = unitList[0];
 			// Clear the thumbnails and create the new ones

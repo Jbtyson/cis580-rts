@@ -25,8 +25,7 @@ CommandPanel.prototype = {
 			this.unit = unit;
 			this.buttons = [];
 			for(i = 0; i < this.maxButtons && i < this.unit.actions.length; i++) {
-				console.log(this.buttons);
-				this.buttons.push(new Button());
+				this.buttons[i] = new Button();
 				this.buttons[i].image = this.unit.actions[i].thumbnail;
 				this.buttons[i].tooltipText = this.unit.actions[i].tooltipText;
 				this.buttons[i].position = {};

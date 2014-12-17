@@ -9,16 +9,16 @@ UNIT_SPRITE_DATA = [ {x:0, y: 0, width: 32, height: 32, animationFrames: 12} ];
 var MINING_RATE = 5;	// amount of minerals added each 'tick'
 var MINING_TIMER = 2000;	// time per mining 'tick' (milliseconds)
 
-var Unit = function() {
-	this.x = 100;
-	this.y = 100;
+var Unit = function(x, y, health, faction) {
+	this.x = x;
+	this.y = y;
 	this.radius;
 	//supply is the population cost for a unit, default 1
 	this.supply = 1;
 
-	this.health = 100;
-	this.faction;
-	this.maxhealth = 100;
+	this.health = health;
+	this.faction = faction;
+	this.maxhealth;
 	// mode is basically an enumeration. its values are:
 	// idle
 	// move
@@ -26,9 +26,6 @@ var Unit = function() {
 	// mine
 	// returningResource
 	this.mode = "idle";
-	
-	// true if this unit belongs to an army
-	this.conscripted = false;
 	
 	this.selected = false;
 	this.velx = 0;
@@ -157,35 +154,25 @@ Unit.prototype = {
 			this.animationTime += elapsedTime;
 			this.animationFrame = 0;
 		}
-	},
-
-	getHitbox: function() {
+},
+getHitbox: function() {
 		return {
 			type: "circle",
 			x: this.x,
 			y: this.y,
 			radius: this.radius
 		};
-	},
-
-	getAttackRange: function() {
-	},
-
-	move: function(x, y) {
+},
+getAttackRange: function() {
+},
+move: function(x, y) {
 		this.mode = "move";
 		this.getPath(x, y);
 	},
-
-	attack: function(unit) {
+attack: function(unit) {
 		this.mode = "attack";
 		this.targetunit = unit;
 		this.getPath(unit.x, unit.y);
-	},
-	
-	attackBuilding: function() {//building) {
-		//this.mode = "attack_building";
-		//this.targetunit = building;
-		//this.getPath(building.x, building.y);
 	},
 
 	/* C.J. Dopheide
@@ -283,7 +270,8 @@ Unit.prototype = {
 	
 	/* C.J. Dopheide
 	This is just a quick and dirty way to get the units out from that ball that they tend
-	to form.
+	to form.  Since it just uses random values to shake them apart, it takes awhile and looks
+	ugly, someone might want to update it at some point.
 	*/
 	loseStack: function(unit)
 	{

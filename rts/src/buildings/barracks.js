@@ -7,30 +7,6 @@ var Barracks = function(x,y,orientation,faction) {
 	this.actions = [{thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.buildVillager},
 					{thumbnail:Resource.gui.img.hopliteCommandButton, onClick:this.buildHoplite},
 					{thumbnail:Resource.gui.img.infantryCommandButton, onClick:this.buildInfantry}];
-					
-	// ------------------- James wrote this for gui stuff --------------------------
-	// -------It is necessary for gui to work, so make sure all units have it-------
-	// Unit icon for the unit bar
-	this.thumbnail = Resource.gui.img.villagerCommandButton;
-	// Declare array of actions here
-	this.actions = [
-		{ 
-			thumbnail:Resource.gui.img.villagerCommandButton, 
-			tooltipText:"Build a Villager.", 
-			onClick:this.buildVillager 
-		},
-		{ 
-			thumbnail:Resource.gui.img.hopliteCommandButton, 
-			tooltipText:"Build a Hoplite.", 
-			onClick:this.buildHoplite 
-		},
-		{ 
-			thumbnail:Resource.gui.img.infantryCommandButton, 
-			tooltipText:"Build an Infantry unit.", 
-			onClick:this.buildInfantry 
-		},
-	];
-	// -----------------------------------------------------------------------------
 }
 
 Barracks.prototype = new Building(2, this.orientation, this.factionIndex, this.game);

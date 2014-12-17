@@ -3,11 +3,13 @@
 // 1. there is an attack on a building or villager
 // 2. the number of soldiers reaches MAX_STRENGTH
 // in case 1, the army runs to defend.
-// after the defense is over, the army returns to the waiting state
+// after the defense is over, the army disbands
+// and the units join another army
 // in case 2, the army attacks until it is dead
 
 var Army = function() {
 	// the mode can be any of:
+	// {action: "defend", targetx: int, targety: int}
 	// {action: "attack", targetbuilding: building}
 	// {action: "wait"}
 	this.mode = {
@@ -21,53 +23,8 @@ var Army = function() {
 Army.prototype = {
 	MAX_STRENGTH: 3,
 	
-	update: function(elapsedTime) {
-		// remove casualties
-		/*
-		for (var i = 0; i < this.units.length; i++) {
-			if (this.units[i].health <= 0) {
-				this.units.splice(i, 1);
-				i--;
-				continue;
-			}
-		}
-		*/
-		
-		// decide new orders
-		if (this.mode.action == "attack") {
-			// check if the building is dead
-			if (this.mode.targetbuilding.health <= 0) {
-				console.log("target eliminated");
-				this.decideAction();
-			}
-		}
-		if (this.mode.action == "attack") {
-			
-			// temporarily select all army units
-			for (var i = 0; i < this.units.length; i++) {
-				this.units[i].selected = true;
-			}
-			// hard coded faction; probably bad
-			game.unitOrder(this.mode.targetbuilding.x + 10, this.mode.targetbuilding.y + 10, game.factions[1]);
-			for (var i = 0; i < this.units.length; i++) {
-				this.units[i].selected = false;
-			}
-		}
-		
-		else if (this.mode.action == "wait") {
-			// check if we need to defend our buildings
-			for (var i = 0; i < game.factions[0].units.length; i++) {
-				if (game.factions[0].units[i].mode == "attack_building") {
-					this.mode = {
-						action: "attack",
-						targetbuilding:game.factions[0].units[i]
-					};
-				}
-			}
-		}
-	},
-	
-	decideAction: function() {
+	addUnit: function(unit) {
+		this.units.push(unit);
 		if (this.units.length >= this.MAX_STRENGTH) {
 			this.updateCentroid();
 			var targetBuilding = this.findTarget();
@@ -75,17 +32,16 @@ Army.prototype = {
 				action: "attack",
 				targetbuilding: targetBuilding
 			}
-			console.log("new target:", targetBuilding);
-		} else {
-			this.mode = {
-				action: "wait"
-			}
 		}
 	},
 	
-	addUnit: function(unit) {
-		this.units.push(unit);
-		this.decideAction();
+	// army is called forth to protect the realm
+	defend: function(x, y) {
+		this.mode = {
+			action: "defend",
+			targetx: x,
+			targety: y
+		};
 	},
 	
 	// finds the closest enemy building

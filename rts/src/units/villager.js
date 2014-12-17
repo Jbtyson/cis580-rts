@@ -5,7 +5,7 @@ var Villager = function(x, y, faction, game) {
 	this.game = game;
 
 	this.maxhealth = 60;
-	this.health = this.maxhealth;
+	//this.__proto__ = new Unit(x, y, this.maxhealth, color);
 	
 	this.radius = 32;
 	this.range = 0;
@@ -17,41 +17,44 @@ var Villager = function(x, y, faction, game) {
 	// in health per second
 	this.damage = 3;
 	
-	this.Villagerbuildingspeed = 5;
-	//this.buildking
+	this.mode = 0;
+	this.movefinished = 0;
+	this.Villagerbuildingspeed = 15;
+	this.buildingx = 0;
+	this.buildingy = 0;
 
+	this.building = 0;
+
+	this.buildingstart = 0;
+	//this.buildking
+	this.type = "villager";
 	this.x = x;
 	this.y = y;
 	this.faction = faction;
+	
+	//this.render = VillagerRender;
+	//this.update = VillagerUpdate;
+	//this.getHitbox = VillagerGetHitbox;
+	//this.move = VillagerMove;
 	
 		// ------------------- James wrote this for gui stuff --------------------------
 	// -------It is necessary for gui to work, so make sure all units have it-------
 	// Unit icon for the unit bar
 	this.thumbnail = Resource.gui.img.villagerCommandButton;
 	// Declare action functions here
-	this.buildTowncenter = function() {
-		build(new Barracks());
-	};
-	this.buildTowncenter = function() {
-		build(new Towncenter());
-	};
+
 	// Declare array of actions here
 	this.actions = [
 		{ 
-			thumbnail:Resource.gui.img.towncenterCommandButton, 
-			tooltipText:"Sample text to pretend to be a tooltip.", 
-			onClick:this.buildTowncenter 
-		},
-		{ 
 			thumbnail:Resource.gui.img.villagerCommandButton, 
 			tooltipText:"Sample text to pretend to be a tooltip.", 
-			onClick:this.buildTowncenter 
+			onClick:this.buildtowncenter
 		},
 	];
 	// -----------------------------------------------------------------------------
 }
 
-Villager.prototype = new Unit();
+Villager.prototype = new Unit(100,100,this.maxhealth,this.faction);
 
 Villager.prototype.render = function(ctx) {
 	var self = this;
@@ -83,12 +86,11 @@ Villager.prototype.render = function(ctx) {
 
 Villager.prototype.update = function(elapsedTime) {
 	var self = this;
-
 	var secs = elapsedTime / 1000;
-	if (self.mode == "move") {
+	if (self.mode == "move" || (self.mode == "build" && !self.game.cd.detect(self.building, self))){
 		var deltaxi = self.targetx - self.x;
 		var deltayi = self.targety - self.y;
-		
+
 		// actually move
 		self.x += secs*self.velx;
 		self.y += secs*self.vely;
@@ -114,11 +116,14 @@ Villager.prototype.update = function(elapsedTime) {
 		}
 	}
 	
-	else if(self.mode == "build" && self.x == self.buildingunit.x + self.radius && self.y == self.buildingunit.y + self.radius){
-		buildingunit.buildingHp += self.Villagerbuildingspeed * secs;
-		if(buildingunit.buildingHp >= buildingunit.health){
-			self.mode = "idle";	
-		}
+	else if(self.mode == "build"){ 
+		//self.move(Building.world_x,Building.world_y); 
+
+			this.building.buildingHp += self.Villagerbuildingspeed * secs;
+			if(this.building.buildingHp >= this.building.health){
+				this.game.factions[0].buildings.push(this.building);
+				self.mode = "idle";	
+			}
 	}
 
 	else if (self.mode == "idle" || self.mode == "build") {
@@ -201,13 +206,35 @@ Villager.prototype.move = function(x, y) {
 	}
 }
 
-Villager.prototype.build = function(Building) {
-	var self = this;
-	self.move(Building.x,Building.y); 
-	self.mode = "build";
-	self.buildingunit = Building;
-	this.game.factions[0].buildings.push(Building);
+/*Villager.prototype.isinposition = function(x,y){
+	console.log(this.mode);
+	while(this.mode!="idle"){
+		console.log(this.mode);
+	}
+}*/
+
+
+Villager.prototype.setbuildingposition = function(x,y){
+
+	this.building.world_x = x;
+	this.building.world_y = y;
+	//if(this.x-x<130){
+		//this.build(this.building);
+	//}
 }
+
+Villager.prototype.buildtowncenter = function(villager) {
+	game.input.mode = "placement";
+	self.mode = "build";
+	villager.building = new Towncenter(0,0,0,0,game);
+	this.building = villager.building;
+}
+
+/*Villager.prototype.build = function(Building) {
+	var self = this;
+	this.building = Building;
+	
+}*/
 
 Villager.prototype.attack = function(unit) {
 	var self = this;
@@ -218,15 +245,6 @@ Villager.prototype.attack = function(unit) {
 	self.targetunit = unit;
 }
 
-<<<<<<< Updated upstream
-Villager.prototype.attackBuilding = function(building) {
-	this.mode = "attack_building";
-	this.targetunit = building;
-	this.getPath(building.x, building.y);
-}
-
-=======
->>>>>>> Stashed changes
 Villager.prototype.startMine = function(mine) {
 	var self = this;
 

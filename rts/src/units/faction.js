@@ -4,7 +4,6 @@ var Faction = function(color) {
 	this.units = [];
 	this.buildings = [];
 	this.playerResources = new FactionResources();
-	this.armies = new Array();
 }
 
 Faction.prototype = {
