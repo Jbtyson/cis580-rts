@@ -16,7 +16,6 @@ Body.prototype = {
 		for (var i = 0; i < this.faction.buildings.length; i++) {
 			if (this.faction.buildings[i].isBuilding == false) {
 				// TODO: make a variety of units
-				// TODO: add units to army
 				this.faction.buildings[i].buildHoplite(this.faction.buildings[i]);
 				foundTC = true;
 				break;

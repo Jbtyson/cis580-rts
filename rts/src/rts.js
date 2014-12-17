@@ -134,8 +134,14 @@ Game.prototype = {
 				faction.units[i].update(elapsedTime);
 			}
 			
-			for(i = 0; i < faction.buildings.length; i++){
-			  faction.buildings[i].update(elapsedTime);
+			for (var i = 0; i < faction.buildings.length; i++) {
+				if (faction.buildings[i].health <= 0) {
+					// removes unit from array and ensures no units are skipped
+					faction.buildings.splice(i, 1);
+					i--;
+					continue;
+				}
+				faction.buildings[i].update(elapsedTime);
 			}
 		});
 		
@@ -244,7 +250,7 @@ Game.prototype = {
 			}
 		};
 		
-		self.moveUnit(x, y);
+		self.moveUnit(x, y, faction);
 
 		// check if the click was on an enemy unit
 		self.factions.forEach( function(faction) {
@@ -254,6 +260,21 @@ Game.prototype = {
 					for (var j = 0; j < thisFaction.units.length; j++) {
 						if (thisFaction.units[j].selected) {
 							thisFaction.units[j].attack(faction.units[i]);
+						}
+					}
+					return;
+				}
+			}
+		});
+		
+		// check if the click was on an enemy building
+		self.factions.forEach( function(faction) {
+			for (var i = 0; i < faction.buildings.length; i++) {
+				if (faction != thisFaction &&
+						self.cd.detect(faction.buildings[i], mousebox)) {
+					for (var j = 0; j < thisFaction.units.length; j++) {
+						if (thisFaction.units[j].selected) {
+							thisFaction.units[j].attackBuilding(faction.buildings[i]);
 						}
 					}
 					return;
@@ -277,18 +298,16 @@ Game.prototype = {
 		});
 	},
 	
-	moveUnit: function(x, y) {
+	moveUnit: function(x, y, faction) {
 		var self = this;
 		
 		// more efficient to have a seperate array of selected units
 		// instead of searching the whole thing; fix later, if necessary
-		self.factions.forEach( function(faction) {
-			for (var i = 0; i < faction.units.length; i++) {
-				if (faction.units[i].selected) {
-					faction.units[i].move(x, y);
-				}
+		for (var i = 0; i < faction.units.length; i++) {
+			if (faction.units[i].selected) {
+				faction.units[i].move(x, y);
 			}
-		});
+		}
 	},
 	
 	// Selects a unit from the array of selected units

@@ -278,8 +278,7 @@ attack: function(unit) {
 	
 	/* C.J. Dopheide
 	This is just a quick and dirty way to get the units out from that ball that they tend
-	to form.  Since it just uses random values to shake them apart, it takes awhile and looks
-	ugly, someone might want to update it at some point.
+	to form.
 	*/
 	loseStack: function(unit)
 	{
