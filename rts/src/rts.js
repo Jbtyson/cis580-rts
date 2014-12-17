@@ -34,6 +34,8 @@ var Game = function (canvasId) {
 	this.backBufferContext = this.backBuffer.getContext('2d');
 	
 	this.input = new Input(this.screen, window, myself);
+
+	this.phantom = null;
 	
 	// Necessary for gui making - James
 	this.selectedUnits = [];
@@ -148,6 +150,9 @@ Game.prototype = {
 				faction.buildings[i].update(elapsedTime);
 			}
 		});
+
+		//If there is a phantom building, update it.
+		if(this.phantom != null) this.phantom.update(elapsedTime);
 		
 		// update AI
 		self.brain.update(elapsedTime);
@@ -399,6 +404,9 @@ Game.prototype = {
 		if (self.sb != null) {
 			self.sb.render(self.backBufferContext);
 		}
+
+		//If there is a phantom building, render it.
+		if(this.phantom != null) this.phantom.render(self.backBufferContext);
 		
 		// Render the GUI
 		self.gui.render(self.backBufferContext);
