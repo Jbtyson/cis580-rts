@@ -479,7 +479,7 @@ Game.prototype = {
 		
 			// Check which players are still active
 			self.factions.forEach( function(faction,index,array) {
-				if( faction.buildings.length == 0 && faction.buildings.length == 0 ) { //&& faction.armies.length == 0) {
+				if( faction.units.length == 0 && faction.buildings.length == 0 ) { //&& faction.armies.length == 0) {
 					self.activePlayers--;
 					self.inactivePlayers.push(array.splice(index--,1));
 				}
