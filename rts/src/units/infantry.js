@@ -4,7 +4,7 @@
 UNIT_SPRITE_DATA = [ {x:0, y: 0, width: 32, height: 32, animationFrames: 12} ];
 
 var Infantry = function(x, y, faction, game) {
-	
+	this.game = game;
 	this.maxhealth = 30;
 	this.health = this.maxhealth;
 	//this.__proto__ = new Unit(x, y, this.maxhealth, faction);
@@ -142,93 +142,89 @@ Infantry.prototype.update = function(elapsedTime) {
 }
 */
 Infantry.prototype.update = function(elapsedTime) {
-		var self = this;
-		var secs = elapsedTime / 1000;
-		//console.log(this.mode);
-		if (this.mode == "move" ||
-				(this.mode == "attack" && !game.cd.detect(this.targetunit, this))) {
-			if (this.mode == "attack") {
-				this.targetx = this.targetunit.x;
-				this.targety = this.targetunit.y;
-				if(Math.floor(this.targetx/64) != this.nextNode.x || Math.floor(this.targety/64) != this.nextNode.y)
+	var self = this;
+
+	var secs = elapsedTime / 1000;
+
+	if (self.mode == "move" ||
+			(self.mode == "attack" && !game.cd.detect(self.targetunit, self))) {
+		if (self.mode == "attack") {
+			self.targetx = self.targetunit.x;
+			self.targety = self.targetunit.y;
+			if(Math.floor(self.targetx/64) != self.nextNode.x || Math.floor(self.targety/64) != self.nextNode.y)
+			{
+				self.getPath(self.targetunit.x, self.targetunit.y);
+			}
+			self.mode = "attack";
+		}
+		var deltaxi = self.nextx - self.x;
+		var deltayi = self.nexty - self.y;
+
+		
+		// actually move
+		self.x += secs*self.velx;
+		self.y += secs*self.vely;
+		
+		//update currentNode
+		//self.curNode.x = Math.floor(self.x/64);
+		//self.curNode.y = Math.floor(self.y/64);
+		
+		// start moving to the next node or stop if target has been reached
+		if (self.mode == "move") {
+			var deltaxf = self.nextx - self.x;
+			var deltayf = self.nexty - self.y;
+			if ((deltaxi/deltaxf < 0 || deltayi/deltayf < 0) || (deltaxf == 0 && deltayf == 0)) {
+				self.velx = 0;
+				self.vely = 0;
+				if(self.nextx != self.targetx && self.nexty != self.targety)
 				{
-					this.getPath(this.targetunit.x, this.targetunit.y);
+					self.getNextDest();
+				}
+				else
+				{
+					self.velx = 0;
+					self.vely = 0;
+					self.mode = "idle";
 				}
 			}
-			var deltaxi = this.nextx - this.x;
-			var deltayi = this.nexty - this.y;
-			
-			// actually move
-			this.x += secs*this.velx;
-			this.y += secs*this.vely;
-			
-			// start moving to the next node or stop if target has been reached
-			if (this.mode == "move") {
-				var deltaxf = this.nextx - this.x;
-				var deltayf = this.nexty - this.y;
-				if ((deltaxi/deltaxf < 0 || deltayi/deltayf < 0) || (deltaxf == 0 && deltayf == 0)) {
-					this.velx = 0;
-					this.vely = 0;
-					if(this.nextx != this.targetx && this.nexty != this.targety)
-					{
-						this.getNextDest();
-					}
-					else
-					{
-						this.velx = 0;
-						this.vely = 0;
-						this.mode = "idle";
-					}
-					
-					this.animationTime += elapsedTime;
-					console.log(this.animationTime);
+			this.animationTime += elapsedTime;
 	  
-					if(this.animationTime >= 50){
-						this.animationTime = 0;
-						this.animationFrame = (this.animationFrame + 1) % UNIT_SPRITE_DATA[0].animationFrames;
-					}
-				}
+			if(this.animationTime >= 50){
+				this.animationTime = 0;
+				this.animationFrame = (this.animationFrame + 1) % UNIT_SPRITE_DATA[0].animationFrames;
 			}
 		}
-		
-		else if (this.mode == "attack" && game.cd.detect(this.targetunit, this)) {
-			this.targetunit.health -= this.damage*secs;
-			//console.log(this.targetunit.health);
-			if (this.targetunit.health <= 0) {
-				this.mode = "idle";
-				this.targetunit = null;
-			}
-			this.animationTime += elapsedTime;
-			this.animationFrame = 0;
+	}
+	
+	else if (self.mode == "attack" && self.game.cd.detect(self.targetunit, self)) {
+		self.targetunit.health -= self.damage*secs;
+		//console.log(self.targetunit.health);
+		if (self.targetunit.health <= 0) {
+			self.mode = "idle";
+			self.targetunit = null;
 		}
-		
-		else if (this.mode == "idle") {
-			game.factions.forEach( function(faction) {
-				for (var i = 0; i <  faction.units.length; i++) {
-					var otherUnit = {
-						getHitbox: function()
-						{
-							return faction.units[i].getHitbox();
-						},
-						getAttackRange: function()
-						{
-							return faction.units[i].getHitbox();
-						}
-					}
-					if (faction.units[i].faction != self.faction &&
-							game.cd.detect(self, faction.units[i])) {
-						self.attack(faction.units[i]);
-					}
-					else if (faction.units[i].faction == self.faction &&
-							game.cd.detect(self, otherUnit) && self != faction.units[i] && faction.units[i].mode == "idle") {
-						self.loseStack(faction.units[i]);
-					}
+		this.animationTime += elapsedTime;
+		this.animationFrame = 0;
+	}
+	
+	else if (self.mode == "idle") {
+		self.game.factions.forEach( function(faction) {
+			for (var i = 0; i <  faction.units.length; i++) {
+				if (faction.units[i].faction != self.faction &&
+						self.game.cd.detect(self, faction.units[i])) {
+					self.attack(faction.units[i]);
 				}
-			})
-			this.animationTime += elapsedTime;
-			this.animationFrame = 0;
-		}
-},
+				else if (faction.units[i].faction == self.faction &&
+						game.cd.detect(self, faction.units[i]) && self != faction.units[i] && faction.units[i].mode == "idle") {
+					self.loseStack(faction.units[i]);
+				}
+			}
+		});
+		this.animationTime += elapsedTime;
+		this.animationFrame = 0;
+	}
+}
+
 
 Infantry.prototype.getHitbox = function() {
 	var self = this;

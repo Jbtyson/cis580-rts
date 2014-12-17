@@ -76,7 +76,7 @@ GuiResources.prototype = {
 		this.img.infantryCommandButton.src = "img/ui/infantryCommandButton.png";
 		
 		this.img.towncenterCommandButton.onload = onload;
-		this.img.towncenterCommandButton.src = "img/ui/towncenterCommandButton.png";
+		this.img.towncenterCommandButton.src = "img/ui/townCenterIcon.png";
 	
 		// this.sfx.audio.onload = this.onload;
 		// this.sfx.audio.src = "gjr.wav";

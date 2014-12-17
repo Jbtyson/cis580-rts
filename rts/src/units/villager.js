@@ -43,7 +43,7 @@ var Villager = function(x, y, faction, game) {
 	// Declare array of actions here
 	this.actions = [
 		{ 
-			thumbnail:Resource.gui.img.villagerCommandButton, 
+			thumbnail:Resource.gui.img.towncenterCommandButton, 
 			tooltipText:"Sample text to pretend to be a tooltip.", 
 			onClick:this.buildTowncenter 
 		},
