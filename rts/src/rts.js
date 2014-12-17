@@ -49,6 +49,10 @@ var Game = function (canvasId) {
 	this.activePlayers = this.numPlayers;
 	this.inactivePlayers = [];
 	
+	// for shortcut key selecting
+	this.unitIndex = 0;
+	this.buildingIndex = 0;
+	
 	this.credits = new Credits();
 
 	this.playlist = [];
