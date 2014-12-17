@@ -1,6 +1,5 @@
 // Max Erdwien
 // Screen Size
-//Ryan Woodburn: replaced hoplites with infantry, changed cd.detect method call in UnitOrder
 var WIDTH = 640;
 var HEIGHT = 640;
 
@@ -211,6 +210,7 @@ Game.prototype = {
 		
 		// Add Map mineral Mines
 		self.mapMinerals.push(new MineralMine(64*2,64*7,50000));
+		self.mapMinerals.push(new MineralMine(64*5,64*7,100));
 		self.mapMinerals.push(new MineralMine(64*18,64*16,50000));
 	},
 	
