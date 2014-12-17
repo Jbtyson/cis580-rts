@@ -81,13 +81,12 @@ Villager.prototype.render = function(ctx) {
 
 Villager.prototype.update = function(elapsedTime) {
 	var self = this;
-
 	var secs = elapsedTime / 1000;
 	if (self.mode == "move" || 
 	(self.mode == "goingToMine" && !game.cd.detect(self.targetunit, self)) ||
 	(self.mode == "returningToBase" && !game.cd.detect(self.targetunit, self))) {
-		var deltaxi = self.targetx - self.x;
-		var deltayi = self.targety - self.y;
+		var deltaxi = self.targetunit.x - self.x;
+		var deltayi = self.targetunit.y - self.y;
 		
 		// actually move
 		self.x += secs*self.velx;
@@ -95,8 +94,8 @@ Villager.prototype.update = function(elapsedTime) {
 		
 		// stop if target has been reached
 		if (self.mode == "move") {
-			var deltaxf = self.targetx - self.x;
-			var deltayf = self.targety - self.y;
+			var deltaxf = self.targetunit.x - self.x;
+			var deltayf = self.targetunit.y - self.y;
 			if (deltaxi/deltaxf < 0 || deltaxi/deltaxf < 0) {
 				self.velx = 0;
 				self.vely = 0;
