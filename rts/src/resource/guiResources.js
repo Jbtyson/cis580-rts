@@ -2,11 +2,12 @@
 // James Tyson
 //----------------------------------
 GuiResources = function() {
-	this.loading = 8;
+	this.loading = 11;
 	
 	this.img = {
 		// Minimap
 		minimap: new Image(),
+		minimap_map: new Image(),
 		
 		// Unit Panel
 		unitPanel: new Image(),
@@ -17,6 +18,10 @@ GuiResources = function() {
 		
 		// Command Panel
 		commandPanel: new Image(),
+		villagerCommandButton: new Image(),
+		hopliteCommandButton: new Image(),
+		infantryCommandButton: new Image(),
+		towncenterCommandButton: new Image(),
 		commandButton: new Image(),
 		
 		// Resource Bar
@@ -35,10 +40,12 @@ GuiResources = function() {
 
 GuiResources.prototype = {
 	load: function() {
-		onload = function() { this.loading -= 1; console.log("got here");}
+		onload = function() { this.loading -= 1;}
 		// Minimap
 		this.img.minimap.onload = onload;
 		this.img.minimap.src = "img/ui/minimap.png";
+		this.img.minimap_map.onload = onload;
+		this.img.minimap_map.src = "img/ui/rts_minimap.png";
 		// Unit Panel
 		this.img.unitPanel.onload = onload;
 		this.img.unitPanel.src = "img/ui/unitPanel.png";
@@ -58,6 +65,18 @@ GuiResources.prototype = {
 		// Splash Screen
 		this.img.splash.onload = onload;
 		this.img.splash.src = "img/startScreen.png";
+		
+		this.img.villagerCommandButton.onload = onload;
+		this.img.villagerCommandButton.src = "img/ui/villagerCommandButton.png";
+		
+		this.img.hopliteCommandButton.onload = onload;
+		this.img.hopliteCommandButton.src = "img/ui/hopliteCommandButton.png";
+		
+		this.img.infantryCommandButton.onload = onload;
+		this.img.infantryCommandButton.src = "img/ui/infantryCommandButton.png";
+		
+		this.img.towncenterCommandButton.onload = onload;
+		this.img.towncenterCommandButton.src = "img/ui/townCenterIcon.png";
 	
 		// this.sfx.audio.onload = this.onload;
 		// this.sfx.audio.src = "gjr.wav";

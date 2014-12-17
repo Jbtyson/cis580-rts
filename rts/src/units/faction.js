@@ -3,7 +3,8 @@ var Faction = function(color) {
 	this.color = color;
 	this.units = [];
 	this.buildings = [];
-	this.gold = 0;
+	this.playerResources = new FactionResources();
+	this.armies = new Array();
 }
 
 Faction.prototype = {

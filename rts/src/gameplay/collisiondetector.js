@@ -12,7 +12,10 @@ CollisionDetector.prototype = {
 		var collision = false;
 		if (a.type == "circle") {
 			if (b.type == "circle") {
-				b = q.getAttackRange();
+				var temp = q.getAttackRange();
+				if (temp != undefined) {
+					b = temp;
+				}
 				collision = this.twoCircles(a, b);
 			} else if (b.type == "rect") {
 				collision = this.circleRect(a, b);
@@ -21,6 +24,9 @@ CollisionDetector.prototype = {
 			}
 		} else if (a.type == "rect") {
 			if (b.type == "circle") {
+				if (q.getAttackRange != undefined) {
+					b = q.getAttackRange();
+				}
 				collision = this.circleRect(b, a);
 			} else if (b.type == "rect") {
 				collision = this.twoRects(a, b);
