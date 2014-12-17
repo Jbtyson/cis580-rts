@@ -8,7 +8,7 @@ var Villager = function(x, y, faction, game) {
 	this.health = this.maxhealth;
 	
 	this.type = "villager";
-	this.radius = 32;
+	this.radius = 16;
 	this.range = 0;
 	this.borderwidth = 6;
 	this.maxResources = 50;
@@ -148,13 +148,12 @@ Villager.prototype.update = function(elapsedTime) {
 		self.mode = "mining";
 	}
 	
-	else if (self.mode == "mining" && self.resources >= self.maxResources)
+	/*else if (self.mode == "mining" && self.resources >= self.maxResources)
 	{
 		if (self.resources > self.maxResources) self.resources = self.maxResources;
 		self.mode = "returningToBase";
 		self.targetunit = self.game.factions[0].buildings[0];//todo: check for closest town center
-		console.log(self.targetunit);
-	}
+	}*/
 	
 	else if (self.mode == "returningToBase" && game.cd.detect(self.targetunit, self))
 	{
@@ -162,10 +161,17 @@ Villager.prototype.update = function(elapsedTime) {
 		self.mode = "goingToMine";
 		self.targetunit = self.targetMine;
 	}
-	//change later
+	
 	else if (self.mode == "mining")
 	{
-		self.resources++;
+		self.resources += elapsedTime;
+		if (self.resources >= MINING_TIMER) 
+		{
+			self.resources = 0;
+			self.targetunit.subtract(MINING_RATE);
+			self.game.factions[self.faction].playerResources.minerals.add(MINING_RATE);
+			if (!self.targetunit.canSubtract(MINING_RATE)) self.mode = "idle";
+		}
 	}
 	
 	else console.log("unhandled case");
@@ -259,8 +265,6 @@ Villager.prototype.attackBuilding = function(building) {
 Villager.prototype.startMine = function(mine) {
 	var self = this;
 
-	// temporarily changes mode to "move"
-	self.move(mine.x, mine.y);
 	self.mode = "goingToMine";
 	self.targetunit = mine;
 	self.targetMine = mine;

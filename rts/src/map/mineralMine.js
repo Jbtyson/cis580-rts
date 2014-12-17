@@ -45,7 +45,12 @@ MineralMine.prototype.render = function(context) {
 	
 MineralMine.prototype.update = function(elapsedTime) {
 	
-	this.animationTime += elapsedTime;
+	if (this.amount > 0) this.animationTime += elapsedTime;
+	else 
+	{
+		this.animationFrame = 0;
+		this.animationTime = 0;
+	}
 	
 	if(this.animationTime >= 50){
 	    this.animationTime = 0;

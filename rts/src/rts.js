@@ -210,6 +210,7 @@ Game.prototype = {
 		
 		// Add Map mineral Mines
 		self.mapMinerals.push(new MineralMine(64*2,64*7,50000));
+		self.mapMinerals.push(new MineralMine(64*5,64*7,100));
 		self.mapMinerals.push(new MineralMine(64*18,64*16,50000));
 	},
 	
