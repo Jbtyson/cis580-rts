@@ -27,6 +27,8 @@ var Villager = function(x, y, faction, game) {
 	this.y = y;
 	this.faction = faction;
 	
+	this.type = "villager";
+	
 		// ------------------- James wrote this for gui stuff --------------------------
 	// -------It is necessary for gui to work, so make sure all units have it-------
 	// Unit icon for the unit bar

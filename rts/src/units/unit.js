@@ -182,10 +182,10 @@ Unit.prototype = {
 		this.getPath(unit.x, unit.y);
 	},
 	
-	attackBuilding: function() {//building) {
-		//this.mode = "attack_building";
-		//this.targetunit = building;
-		//this.getPath(building.x, building.y);
+	attackBuilding: function(building) {
+		this.mode = "attack_building";
+		this.targetunit = building;
+		this.getPath(building.world_x, building.world_y);
 	},
 
 	/* C.J. Dopheide

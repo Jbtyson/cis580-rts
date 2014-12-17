@@ -2,19 +2,19 @@ var Brain = function(faction) {
 	this.faction = faction;
 	this.body = new Body(faction);
 	
-	this.time = 11;
+	this.time = 0;
 	// a stack of all the failure messages we get as we traverse the decision flow chart
 	// used to detect cycles
 	this.failure_stack;
 }
 
 Brain.prototype = {
-	MAX_TIME: 15,
+	MAX_TIME: 4,
 	
 	// goes through flow chart once every MAX_TIME seconds
 	update: function(elapsedTime) {
 		// temporarily commented, so that the only way to traverse is with 't'
-		//this.time += elapsedTime/1000;
+		this.time += elapsedTime/1000;
 		if (this.time >= this.MAX_TIME) {
 			this.time -= this.MAX_TIME;
 			this.traverse();
