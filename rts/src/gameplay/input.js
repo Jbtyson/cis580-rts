@@ -8,6 +8,8 @@ var Input = function(screen, window, game) {
 	this.mousex = 0;
 	this.mousey = 0;
 	
+	this.mode = 0;
+	
 	var self = this;
 	window.onkeydown = function (e) { self.keyDown(e); };
 	window.onkeyup = function (e) { self.keyUp(e); };
@@ -30,7 +32,7 @@ var Input = function(screen, window, game) {
 	this.mousescroll = false;
 }
 
-Input.prototype = {	
+Input.prototype = {
 	keyDown: function(e) {
 		var self = this;
 
@@ -229,6 +231,14 @@ Input.prototype = {
 		 * 2 = right click
 		 */
 		if (e.button == 0) {
+		  
+		  if(self.game.phantom != null){
+		    game.input.mode = "placement";
+		    //self.game.buildingVillager.move(self.mousex + globalx, self.mousey + globaly);
+		    
+		  }
+		  
+		  
 			// Perform the clicked action on the first unit in either selected buildings or units
 			if (self.game.gui.isClickOnUi(self.mousex, self.mousey)) {
 				var actionNum = self.game.gui.getButtonClicked(self.mousex, self.mousey);
@@ -236,8 +246,14 @@ Input.prototype = {
 					self.game.performAction(actionNum);
 				}
 			}
-			else
+			else{
+			  
+			  if(self.mode == "placement"){
+			    self.game.buildingVillager.move(self.mousex + globalx, self.mousey + globaly);
+			  }
+			 
 				self.game.startSelectBox(self.mousex+globalx, self.mousey+globaly);
+			}
 		} else if (e.button == 2) {
 			
 		} else if (e.button == 1) {
@@ -253,8 +269,15 @@ Input.prototype = {
 			if(self.game.gui.isClickOnUi(self.mousex, self.mousey)) {
 				// do nothing for now
 			}
-			else
+			else{
+				
+				if(self.mode == "placement"){
+				  self.mode = "normal";
+				}
+				
 				self.game.endSelectBox(e);
+				
+			}
 			if(self.game.phantom != null){
 				self.game.tryToBuild = true;
 			}

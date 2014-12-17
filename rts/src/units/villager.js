@@ -21,11 +21,15 @@ var Villager = function(x, y, faction, game) {
 	this.Villagerbuildingspeed = 5;
 	//this.buildking
 	
+	this.building = "";
+	
 	this.targetMine;
 
 	this.x = x;
 	this.y = y;
 	this.faction = faction;
+	
+	this.mode = 0;
 	
 	this.type = "villager";
 	
@@ -37,20 +41,20 @@ var Villager = function(x, y, faction, game) {
 
 	// Declare array of actions here
 	this.actions = [
-		{ 
-			thumbnail:Resource.gui.img.towncenterCommandButton, 
-			tooltipText:"Build a Towncenter.", 
-			onClick:this.buildTowncenter 
+		{
+			thumbnail:Resource.gui.img.towncenterCommandButton,
+			tooltipText:"Build a Towncenter.",
+			onClick:this.buildTowncenter
 		},
-		{ 
-			thumbnail:Resource.gui.img.connectorCommandButton, 
-			tooltipText:"Build a Connector.", 
-			onClick:this.buildConnector 
+		{
+			thumbnail:Resource.gui.img.connectorCommandButton,
+			tooltipText:"Build a Connector.",
+			onClick:this.buildConnector
 		},
-				{ 
-			thumbnail:Resource.gui.img.barracksCommandButton, 
-			tooltipText:"Build a Barracks.", 
-			onClick:this.buildBarracks 
+				{
+			thumbnail:Resource.gui.img.barracksCommandButton,
+			tooltipText:"Build a Barracks.",
+			onClick:this.buildBarracks
 		},
 	];
 	// -----------------------------------------------------------------------------
@@ -58,40 +62,13 @@ var Villager = function(x, y, faction, game) {
 
 Villager.prototype = new Unit();
 
-/*Villager.prototype.render = function(ctx) {
-	var self = this;
-
-	ctx.save();
-	ctx.beginPath();
-	if (self.selected) {
-		ctx.strokeStyle = "#00FF00";
-	} else {
-		ctx.strokeStyle = "#000000";
-	}
-	ctx.lineWidth = self.borderwidth;
-	ctx.fillStyle = self.color;
-	ctx.beginPath();
-	ctx.arc(self.x-globalx, self.y-globaly, self.radius-(self.borderwidth/2), 0, 2*Math.PI, false);
-	ctx.fill();
-	ctx.stroke();
-	
-	// draw health bar
-	var maxbarlength = 16;
-	var barheight = 4;
-	var barlength = maxbarlength * (self.health/self.maxhealth);
-	ctx.fillStyle = "#00FF00";
-	ctx.beginPath();
-	ctx.rect(self.x-(maxbarlength/2)-globalx, self.y-(barheight/2)-globaly,	barlength, barheight);
-	ctx.fill();
-	ctx.restore();
-}*/
-
 Villager.prototype.update = function(elapsedTime) {
 	var self = this;
 	var secs = elapsedTime / 1000;
-	if (self.mode == "move" || 
+	if (self.mode == "move" ||
 	(self.mode == "goingToMine" && !game.cd.detect(self.targetunit, self)) ||
-	(self.mode == "returningToBase" && !game.cd.detect(self.targetunit, self))) {
+	(self.mode == "returningToBase" && !game.cd.detect(self.targetunit, self)) ||
+	(self.mode == "build" && !game.cd.detect(self.building, self))) {
 		var deltaxi = self.nextx - self.x;
 		var deltayi = self.nexty - self.y;
 		
@@ -133,7 +110,7 @@ Villager.prototype.update = function(elapsedTime) {
 	else if(self.mode == "build" && self.x == self.buildingunit.x + self.radius && self.y == self.buildingunit.y + self.radius){
 		buildingunit.buildingHp += self.Villagerbuildingspeed * secs;
 		if(buildingunit.buildingHp >= buildingunit.health){
-			self.mode = "idle";	
+			self.mode = "idle";
 		}
 	}
 
@@ -170,7 +147,7 @@ Villager.prototype.update = function(elapsedTime) {
 	else if (self.mode == "mining")
 	{
 		self.resources += elapsedTime;
-		if (self.resources >= MINING_TIMER) 
+		if (self.resources >= MINING_TIMER)
 		{
 			self.resources = 0;
 			self.targetunit.subtract(MINING_RATE);
@@ -229,9 +206,26 @@ Villager.prototype.getAttackRange = function() {
 }
 
 Villager.prototype.move = function(x, y) {
-		this.mode = "move";
-		this.getPath(x, y);
-	},
+	var self = this;
+
+	self.mode = "move";
+	self.targetx = x;
+	self.targety = y;
+	
+	var deltax = x - self.x;
+	var deltay = y - self.y;
+	
+	self.velx = Math.sqrt((self.maxvel*self.maxvel * deltax*deltax) /
+			(deltax*deltax + deltay*deltay));
+	self.vely = Math.sqrt((self.maxvel*self.maxvel * deltay*deltay) /
+			(deltax*deltax + deltay*deltay));
+	if (self.velx/deltax < 0) {
+		self.velx *= -1;
+	}
+	if (self.vely/deltay < 0) {
+		self.vely *= -1;
+	}
+},
 
 Villager.prototype.buildConnector = function(villager) {
 	villager.build(new Connector(0, 0, 0, 0, villager.game));
@@ -250,9 +244,8 @@ Villager.prototype.build = function(Building) {
 	var self = this;
 
 	this.game.phantom = new PhantomBuilding(Building.type, this.game);
-
-	self.getPath(Building.x,Building.y); 
-	self.mode = "build";
+  this.game.buildingVillager = self;
+	self.getPath(Building.x,Building.y);
 	self.buildingunit = Building;
 	
 }
