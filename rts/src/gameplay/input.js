@@ -143,6 +143,7 @@ Input.prototype = {
 					// reset game
 					game.gameOver = false;
 					game.activePlayers = game.numPlayers;
+					self.game.credits.reset();
 				}
 				break;
 		}

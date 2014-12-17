@@ -53,7 +53,7 @@ var Villager = function(x, y, faction, game) {
 
 Villager.prototype = new Unit();
 
-Villager.prototype.render = function(ctx) {
+/*Villager.prototype.render = function(ctx) {
 	var self = this;
 
 	ctx.save();
@@ -79,7 +79,7 @@ Villager.prototype.render = function(ctx) {
 	ctx.rect(self.x-(maxbarlength/2)-globalx, self.y-(barheight/2)-globaly,	barlength, barheight);
 	ctx.fill();
 	ctx.restore();
-}
+}*/
 
 Villager.prototype.update = function(elapsedTime) {
 	var self = this;
