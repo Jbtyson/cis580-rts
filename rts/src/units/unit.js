@@ -6,7 +6,7 @@ UNIT_SPRITE_DATA = [ {x:0, y: 0, width: 32, height: 32, animationFrames: 12} ];
 // modified by: C.J. Dopheide
 
 // Aaron - resource variables
-var MINING_RATE = 5;	// amount of minerals added each 'tick'
+var MINING_RATE = 50;	// amount of minerals added each 'tick'
 var MINING_TIMER = 2000;	// time per mining 'tick' (milliseconds)
 
 var Unit = function() {
@@ -182,10 +182,10 @@ Unit.prototype = {
 		this.getPath(unit.x, unit.y);
 	},
 	
-	attackBuilding: function() {//building) {
-		//this.mode = "attack_building";
-		//this.targetunit = building;
-		//this.getPath(building.x, building.y);
+	attackBuilding: function(building) {
+		this.mode = "attack_building";
+		this.targetunit = building;
+		this.getPath(building.world_x, building.world_y);
 	},
 
 	/* C.J. Dopheide

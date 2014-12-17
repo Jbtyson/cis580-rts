@@ -3,10 +3,6 @@ var Barracks = function(x,y,orientation,faction) {
 	this.world_y = y;
 	this.factionIndex = faction;
 	this.orientation = orientation;
-
-	this.actions = [{thumbnail:Resource.gui.img.villagerCommandButton, onClick:this.buildVillager},
-					{thumbnail:Resource.gui.img.hopliteCommandButton, onClick:this.buildHoplite},
-					{thumbnail:Resource.gui.img.infantryCommandButton, onClick:this.buildInfantry}];
 					
 	// ------------------- James wrote this for gui stuff --------------------------
 	// -------It is necessary for gui to work, so make sure all units have it-------

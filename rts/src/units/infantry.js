@@ -152,11 +152,11 @@ Infantry.prototype.update = function(elapsedTime) {
 			self.mode = "attack";
 		}
 		else if (self.mode == "attack_building") {
-			self.targetx = self.targetunit.x;
-			self.targety = self.targetunit.y;
+			self.targetx = self.targetunit.world_x;
+			self.targety = self.targetunit.world_y;
 			if(Math.floor(self.targetx/64) != self.nextNode.x || Math.floor(self.targety/64) != self.nextNode.y)
 			{
-				self.getPath(self.targetunit.x, self.targetunit.y);
+				self.getPath(self.targetunit.world_x, self.targetunit.world_y);
 			}
 			self.mode = "attack_building";
 		}
@@ -214,12 +214,22 @@ Infantry.prototype.update = function(elapsedTime) {
 	else if (self.mode == "idle") {
 		self.game.factions.forEach( function(faction) {
 			for (var i = 0; i <  faction.units.length; i++) {
+				var otherUnit = {
+						getHitbox: function()
+						{
+							return faction.units[i].getHitbox();
+						},
+						getAttackRange: function()
+						{
+							return faction.units[i].getHitbox();
+						}
+					}
 				if (faction.units[i].faction != self.faction &&
 						self.game.cd.detect(self, faction.units[i])) {
 					self.attack(faction.units[i]);
 				}
 				else if (faction.units[i].faction == self.faction &&
-						game.cd.detect(self, faction.units[i]) && self != faction.units[i] && faction.units[i].mode == "idle") {
+						game.cd.detect(self, otherUnit) && self != faction.units[i] && faction.units[i].mode == "idle") {
 					self.loseStack(faction.units[i]);
 				}
 			}
@@ -228,7 +238,6 @@ Infantry.prototype.update = function(elapsedTime) {
 		this.animationFrame = 0;
 	}
 }
-
 
 Infantry.prototype.getHitbox = function() {
 	var self = this;
@@ -252,11 +261,6 @@ Infantry.prototype.getAttackRange = function() {
 	};
 }
 
-Infantry.prototype.attackBuilding = function(building) {
-	this.mode = "attack_building";
-	this.targetunit = building;
-	this.getPath(building.x, building.y);
-}
 /*
 Infantry.prototype.move = function(x, y) {
 	var self = this;
